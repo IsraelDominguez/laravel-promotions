@@ -21,4 +21,9 @@ class PromotionRepository {
                 $query->where('value', $value);
         })->where('promo_id', $promo_id)->get();
     }
+
+    public function getPromotionActiveByCampaign($campaign_id) {
+
+        return Campaign::findOrFail($campaign_id)->promotions()->where('starts','<=',new Carbon('now'))->where('ends','>=',new Carbon('now'))->firstOrFail();
+    }
 }
