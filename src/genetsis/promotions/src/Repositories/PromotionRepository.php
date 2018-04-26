@@ -1,6 +1,7 @@
 <?php namespace Genetsis\Promotions\Repositories;
 
 use Genetsis\Promotions\Contracts\PromotionParticipationInterface;
+use Genetsis\Promotions\Models\Campaign;
 use Genetsis\Promotions\Models\Participation;
 use Genetsis\Promotions\Models\Promotion;
 
