@@ -25,6 +25,6 @@ class PromotionRepository {
 
     public function getPromotionActiveByCampaign($campaign_id) {
 
-        return Campaign::findOrFail($campaign_id)->promotions()->where('starts','<=',new Carbon('now'))->where('ends','>=',new Carbon('now'))->firstOrFail();
+        return Campaign::findOrFail($campaign_id)->promotions()->where('starts','<=',now())->where('ends','>=',now())->firstOrFail();
     }
 }
