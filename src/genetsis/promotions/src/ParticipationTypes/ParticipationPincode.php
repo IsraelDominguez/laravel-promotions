@@ -32,7 +32,7 @@ class ParticipationPincode extends PromotionParticipation implements PromotionPa
                     ->where(function($q) {
                         $q->whereNull('expires')->orWhereDate('expires', '>=', Carbon::today()->toDateString());
                     })
-                    ->first()) {
+                    ->firstOrFail()) {
 
                     $this->save();
 
