@@ -21,7 +21,8 @@ class PincodeFilterParticipation extends GenericFilterParticipation implements F
 
             \Log::debug('Before Pincode Filter');
 
-            Assert::nullOrIsEmpty($participation->getPincode(), 'Pincode is required');
+            Assert::notNull($participation->getPincode(), 'Pincode is required');
+            Assert::notEmpty($participation->getPincode(), 'Pincode is required');
 
             $this->promotion_service->getPincodeByCode($participation->getPincode());
 
