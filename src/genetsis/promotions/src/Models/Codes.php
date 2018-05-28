@@ -22,6 +22,6 @@ class Codes extends Model
     }
 
     public function participation() {
-        return $this->hasOne(Participation::class, 'participation_id');
+        return $this->hasOne(Participation::class);
     }
 }

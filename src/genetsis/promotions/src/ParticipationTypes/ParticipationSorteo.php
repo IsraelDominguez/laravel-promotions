@@ -6,8 +6,6 @@ use Genetsis\Promotions\Services\ExtraFieldsParticipationService;
 
 class ParticipationSorteo extends PromotionParticipation implements PromotionParticipationInterface
 {
-    protected $extra_fields_service;
-
     public function __construct(FilterParticipationInterface $filter_participation)
     {
         $this->filter_participation = $filter_participation;

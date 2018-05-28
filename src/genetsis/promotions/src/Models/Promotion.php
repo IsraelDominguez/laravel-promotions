@@ -47,7 +47,7 @@ class Promotion extends Model
     }
 
     public function codes() {
-        return $this->belongsTo(Codes::class);
+        return $this->hasMany(Codes::class, 'promo_id');
     }
 
     /**
