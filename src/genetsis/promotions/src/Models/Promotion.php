@@ -46,7 +46,9 @@ class Promotion extends Model
         return $this->hasMany(Rewards::class, 'promo_id');
     }
 
-
+    public function codes() {
+        return $this->belongsTo(Codes::class);
+    }
 
     /**
      * The "booting" method of the model.
@@ -59,6 +61,8 @@ class Promotion extends Model
 
         Promotion::deleting(function ($model) {
             $model->extra_fields()->delete();
+            $model->rewards()->delete();
+            $model->codes()->delete();
         });
     }
 

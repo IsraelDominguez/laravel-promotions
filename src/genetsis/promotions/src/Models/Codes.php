@@ -17,7 +17,11 @@ class Codes extends Model
 
     public $timestamps = false;
 
+    public function promotion() {
+        return $this->belongsTo(Promotion::class);
+    }
+
     public function participation() {
-        return $this->belongsTo(Participation::class);
+        return $this->hasOne(Participation::class, 'participation_id');
     }
 }

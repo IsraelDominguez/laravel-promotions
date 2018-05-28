@@ -8,10 +8,9 @@ class ParticipationSorteo extends PromotionParticipation implements PromotionPar
 {
     protected $extra_fields_service;
 
-    public function __construct(FilterParticipationInterface $filter_participation, ExtraFieldsParticipationService $extra_fields_service)
+    public function __construct(FilterParticipationInterface $filter_participation)
     {
         $this->filter_participation = $filter_participation;
-        $this->extra_fields_service = $extra_fields_service;
     }
 
 

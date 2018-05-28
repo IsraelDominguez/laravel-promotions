@@ -42,6 +42,11 @@ class Participation extends Model
         return $this->hasMany(RewardsParticipations::class);
     }
 
+    public function codes() {
+        return $this->hasOne(Codes::class);
+    }
+
+
     public function getExtraFieldByKey($key) {
         return $this->extraFields->filter(function($field) use ($key){
             if ($field->key == $key){
