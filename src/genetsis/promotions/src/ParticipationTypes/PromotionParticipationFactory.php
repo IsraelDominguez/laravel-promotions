@@ -2,7 +2,9 @@
 
 use Genetsis\Promotions\Contracts\FilterParticipationInterface;
 use Genetsis\Promotions\Contracts\PromotionParticipationInterface;
+use Genetsis\Promotions\Exceptions\PromotionException;
 use Genetsis\Promotions\Models\Promotion;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PromotionParticipationFactory
 {
@@ -27,7 +29,7 @@ class PromotionParticipationFactory
                 throw new \Exception('Promotion Type Not Implement correct Interface: '.$class);
             }
 
-            \App::when($class)->needs(FilterParticipationInterface::class)->give(\Genetsis\Promotions\Services\GenericFilterParticipationService::class);
+            \App::when($class)->needs(FilterParticipationInterface::class)->give(\Genetsis\Promotions\Filters\GenericFilterParticipation::class);
             return \App::make($class)->setPromoId($promotion->id);
         } catch (ModelNotFoundException $e) {
             throw new PromotionException("Promotion Not Found: " . $promo_id);

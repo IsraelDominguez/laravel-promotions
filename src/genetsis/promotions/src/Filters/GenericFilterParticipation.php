@@ -1,4 +1,4 @@
-<?php namespace Genetsis\Promotions\Services;
+<?php namespace Genetsis\Promotions\Filters;
 
 use Genetsis\Promotions\Contracts\AfterFilterParticipationInterface;
 use Genetsis\Promotions\Contracts\BeforeFilterParticipationInterface;
@@ -9,7 +9,7 @@ use Genetsis\Promotions\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Webmozart\Assert\Assert;
 
-class GenericFilterParticipationService implements FilterParticipationInterface, AfterFilterParticipationInterface, BeforeFilterParticipationInterface {
+class GenericFilterParticipation implements FilterParticipationInterface, AfterFilterParticipationInterface, BeforeFilterParticipationInterface {
 
     protected $extra_participations;
     protected $promotion_service;
@@ -21,14 +21,10 @@ class GenericFilterParticipationService implements FilterParticipationInterface,
         $this->promotion_service = \App::make(PromotionService::class);
         $this->extra_fields_service = \App::make(ExtraFieldsParticipationService::class);
         $this->rewards_service =  \App::make(RewardsParticipationService::class);
-//        $this->extra_participations = $extra_participations;
-//        $this->promotion_service = $promotion_service;
-//        $this->extra_fields_service = $extra_fields_service;
-//        $this->rewards_service = $rewards_service;
     }
 
     public function after(PromotionParticipationInterface $participation) {
-        \Log::debug('After Generic Fitler');
+        \Log::debug('After Generic Filter');
         // Save Rewards
         if ($participation->getRewards()) {
             $this->rewards_service->addRewardsParticipation($participation);
@@ -44,7 +40,7 @@ class GenericFilterParticipationService implements FilterParticipationInterface,
 
     public function before(PromotionParticipationInterface $participation) {
         try {
-            \Log::debug('Before Generic Fitler');
+            \Log::debug('Before Generic Filter');
             // Check if promo is active
             Assert::true($this->promotion_service->isActive($participation->promo), sprintf('Promotion with name %s is not active.', $participation->promo->name));
 
