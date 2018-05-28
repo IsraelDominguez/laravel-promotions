@@ -1,6 +1,7 @@
 <?php namespace Genetsis\Promotions\ParticipationTypes;
 
 use Carbon\Carbon;
+use Genetsis\Promotions\Contracts\FilterParticipationInterface;
 use Genetsis\Promotions\Contracts\PromotionParticipationInterface;
 use Genetsis\Promotions\Models\Moment;
 use Illuminate\Support\Facades\DB;
