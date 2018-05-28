@@ -13,7 +13,7 @@ class PincodeFilterParticipation extends GenericFilterParticipation implements F
 
 
     public function __construct() {
-
+        parent::__construct();
     }
 
     public function after(PromotionParticipationInterface $participation) {
