@@ -5,7 +5,6 @@ use Genetsis\Promotions\Contracts\FilterParticipationInterface;
 use Genetsis\Promotions\Contracts\PromotionParticipationInterface;
 use Genetsis\Promotions\Exceptions\PromotionException;
 
-use Genetsis\Promotions\Models\Codes;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Webmozart\Assert\Assert;
 
@@ -24,12 +23,7 @@ class PincodeFilterParticipation extends GenericFilterParticipation implements F
 
             Assert::nullOrIsEmpty($participation->getPincode(), 'Pincode is required');
 
-            Codes::where('code', $participation->getPincode())
-                ->where('used', null)
-                ->where(function($q) {
-                    $q->whereNull('expires')->orWhereDate('expires', '>=', Carbon::today()->toDateString());
-                })
-                ->firstOrFail();
+            $this->promotion_service->getPincodeByCode($participation->getPincode());
 
         } catch (\InvalidArgumentException $e) {
             throw new PromotionException($e->getMessage());

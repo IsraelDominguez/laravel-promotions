@@ -3,7 +3,7 @@
 use Carbon\Carbon;
 use Genetsis\Promotions\Contracts\FilterParticipationInterface;
 use Genetsis\Promotions\Contracts\PromotionParticipationInterface;
-use Genetsis\Promotions\Models\Codes;
+use Genetsis\Promotions\Services\PromotionService;
 use Illuminate\Support\Facades\DB;
 
 class ParticipationPincode extends PromotionParticipation implements PromotionParticipationInterface {
@@ -14,9 +14,12 @@ class ParticipationPincode extends PromotionParticipation implements PromotionPa
      */
     protected $pincode = '';
 
+    protected $promotion_service;
+
     public function __construct(FilterParticipationInterface $filter_participation)
     {
         $this->filter_participation = $filter_participation;
+        $this->promotion_service = \App::make(PromotionService::class);
     }
 
     public function participate() {
@@ -27,23 +30,13 @@ class ParticipationPincode extends PromotionParticipation implements PromotionPa
             DB::transaction(function () {
                 \Log::info(sprintf('User %s participate in a Pincode Promotion %s with Pincode %s', $this->getUserId(), $this->promo->name, $this->getPincode()));
 
-                if ($code = Codes::where('code', $this->getPincode())
-                    ->where('used', null)
-                    ->where(function($q) {
-                        $q->whereNull('expires')->orWhereDate('expires', '>=', Carbon::today()->toDateString());
-                    })
-                    ->firstOrFail()) {
+                $code = $this->promotion_service->getPicodeByCode($this->getPincode());
 
-                    $this->save();
+                $this->save();
 
-                    $code->participation()->associate($this);
-                    $code->used = Carbon::now();
-                    $code->save();
-
-                } else {
-                    \Log::info('Pincode Promotion: used or invalid Pincode');
-                    throw new \Exception('Used or Invalid Pincode');
-                }
+                $code->participation()->associate($this);
+                $code->used = Carbon::now();
+                $code->save();
             });
 
             $this->after($this);

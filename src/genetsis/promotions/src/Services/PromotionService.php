@@ -5,6 +5,7 @@ use Genetsis\Promotions\Exceptions\PromotionException;
 use Genetsis\Promotions\Exceptions\UserExceedParticipationsException;
 use Genetsis\Promotions\Exceptions\UserExceedTodayParticipationsException;
 use Genetsis\Promotions\Exceptions\UserPromotionException;
+use Genetsis\Promotions\Models\Codes;
 use Genetsis\Promotions\Models\Participation;
 
 class PromotionService
@@ -96,5 +97,15 @@ class PromotionService
             }
         }
         return true;
+    }
+
+    public function getPincodeByCode($pincode) {
+
+        return Codes::where('code', $pincode)
+                ->where('used', null)
+                ->where(function($q) {
+                    $q->whereNull('expires')->orWhereDate('expires', '>=', Carbon::today()->toDateString());
+                })
+                ->firstOrFail();
     }
 }
