@@ -43,7 +43,6 @@ class ParticipationPincode extends PromotionParticipation implements PromotionPa
             });
 
             $this->after($this);
-            \Log::info(sprintf('User %s participate in a Pincode Promotion %s', $this->getUserId(), $this->promo->name));
 
         } catch (\Exception $e) {
             \Log::error($e->getMessage());
