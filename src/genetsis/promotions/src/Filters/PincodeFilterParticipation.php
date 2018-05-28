@@ -9,19 +9,11 @@ use Genetsis\Promotions\Exceptions\PromotionException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Webmozart\Assert\Assert;
 
-class PincodeFilterParticipation extends GenericFilterParticipation implements FilterParticipationInterface, AfterFilterParticipationInterface, BeforeFilterParticipationInterface {
+class PincodeFilterParticipation extends GenericFilterParticipation implements FilterParticipationInterface, BeforeFilterParticipationInterface {
 
 
     public function __construct() {
         parent::__construct();
-    }
-
-    public function after(PromotionParticipationInterface $participation) {
-
-        parent::after($participation);
-
-        \Log::debug('After Pincode Filter');
-
     }
 
     public function before(PromotionParticipationInterface $participation) {

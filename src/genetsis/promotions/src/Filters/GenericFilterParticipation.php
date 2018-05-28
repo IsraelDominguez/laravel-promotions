@@ -29,15 +29,7 @@ class GenericFilterParticipation implements FilterParticipationInterface, AfterF
 
     public function after(PromotionParticipationInterface $participation) {
         \Log::debug('After Generic Filter');
-        // Save Rewards
-        if ($participation->getRewards()) {
-            $this->rewards_service->addRewardsParticipation($participation);
-        }
 
-        // Save Extra Fields Participations
-        if ($participation->getExtraFields()) {
-            $this->extra_fields_service->addExtraFieldsParticipation($participation);
-        }
         // Consume Extra Participations is necessary
         $this->extra_participations->consumeUserExtraParticipation($participation);
     }
