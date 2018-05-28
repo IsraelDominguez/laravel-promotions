@@ -3,7 +3,7 @@
 use Carbon\Carbon;
 use Genetsis\Promotions\Contracts\FilterParticipationInterface;
 use Genetsis\Promotions\Contracts\PromotionParticipationInterface;
-use Genetsis\Promotions\Models\Moment;
+use Genetsis\Promotions\Models\Codes;
 use Illuminate\Support\Facades\DB;
 
 class ParticipationPincode extends PromotionParticipation implements PromotionParticipationInterface {
@@ -26,15 +26,14 @@ class ParticipationPincode extends PromotionParticipation implements PromotionPa
 
             DB::transaction(function () {
                 // Update moment only when pincode is valid, not expires and not used
-                if ($moment = Moment::where('code_to_send', $this->getPincode())->where('used', null)->first()) {
+                if ($code = Codes::where('code', $this->getPincode())->where('used', null)->first()) {
                     //TODO: check if moment is expires
 
-                    $moment->used = Carbon::now();
-                    $moment->save();
-
-                    $this->moment_id = $moment->id;
-
                     $this->save();
+
+                    $code->used = Carbon::now();
+                    $code->participation($this);
+                    $code->save();
 
                     \Log::info(sprintf('User %s participate in a Pincode Promotion %s with Pincode %s', $this->getUserId(), $this->promo->name, $this->getPincode()));
                 } else {
