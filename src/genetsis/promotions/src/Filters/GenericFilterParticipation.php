@@ -6,6 +6,10 @@ use Genetsis\Promotions\Contracts\FilterParticipationInterface;
 use Genetsis\Promotions\Contracts\PromotionParticipationInterface;
 use Genetsis\Promotions\Exceptions\PromotionException;
 use Genetsis\Promotions\Models\User;
+use Genetsis\Promotions\Services\ExtraFieldsParticipationService;
+use Genetsis\Promotions\Services\ExtraParticipationService;
+use Genetsis\Promotions\Services\PromotionService;
+use Genetsis\Promotions\Services\RewardsParticipationService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Webmozart\Assert\Assert;
 
