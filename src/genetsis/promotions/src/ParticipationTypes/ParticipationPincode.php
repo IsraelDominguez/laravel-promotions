@@ -25,9 +25,14 @@ class ParticipationPincode extends PromotionParticipation implements PromotionPa
             $this->before($this);
 
             DB::transaction(function () {
-                // Update moment only when pincode is valid, not expires and not used
-                if ($code = Codes::where('code', $this->getPincode())->where('used', null)->first()) {
-                    //TODO: check if moment is expires
+                \Log::info(sprintf('User %s participate in a Pincode Promotion %s with Pincode %s', $this->getUserId(), $this->promo->name, $this->getPincode()));
+
+                if ($code = Codes::where('code', $this->getPincode())
+                    ->where('used', null)
+                    ->where(function($q) {
+                        $q->whereNull('expires')->orWhereDate('expires', '>=', Carbon::today()->toDateString());
+                    })
+                    ->first()) {
 
                     $this->save();
 
@@ -35,9 +40,8 @@ class ParticipationPincode extends PromotionParticipation implements PromotionPa
                     $code->used = Carbon::now();
                     $code->save();
 
-                    \Log::info(sprintf('User %s participate in a Pincode Promotion %s with Pincode %s', $this->getUserId(), $this->promo->name, $this->getPincode()));
                 } else {
-                    \Log::info(sprintf('User %s participate in a Pincode Promotion: "%s" with an used or invalid Pincode "%s"', $this->getUserId(), $this->promo->name, $this->getPincode()));
+                    \Log::info('Pincode Promotion: used or invalid Pincode');
                     throw new \Exception('Used or Invalid Pincode');
                 }
             });
