@@ -43,7 +43,7 @@ class Participation extends Model
     }
 
     public function codes() {
-        return $this->belongsTo(Codes::class);
+        return $this->hasOne(Codes::class);
     }
 
 

@@ -31,8 +31,8 @@ class ParticipationPincode extends PromotionParticipation implements PromotionPa
 
                     $this->save();
 
+                    $code->participation()->associate($this);
                     $code->used = Carbon::now();
-                    $code->participation($this);
                     $code->save();
 
                     \Log::info(sprintf('User %s participate in a Pincode Promotion %s with Pincode %s', $this->getUserId(), $this->promo->name, $this->getPincode()));

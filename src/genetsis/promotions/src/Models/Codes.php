@@ -18,10 +18,10 @@ class Codes extends Model
     public $timestamps = false;
 
     public function promotion() {
-        return $this->belongsTo(Promotion::class);
+        return $this->belongsTo(Promotion::class, 'poromo_id');
     }
 
     public function participation() {
-        return $this->hasOne(Participation::class);
+        return $this->belongsTo(Participation::class, 'participation_id');
     }
 }
