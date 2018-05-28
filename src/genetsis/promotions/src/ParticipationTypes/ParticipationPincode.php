@@ -21,7 +21,7 @@ class ParticipationPincode extends PromotionParticipation implements PromotionPa
     public function participate() {
 
         try {
-            $this->filter_participation->befere($this);
+            $this->before($this);
 
             DB::transaction(function () {
                 // Update moment only when pincode is valid, not expires and not used
@@ -42,7 +42,8 @@ class ParticipationPincode extends PromotionParticipation implements PromotionPa
                 }
             });
 
-            $this->filter_participation->after($this);
+            $this->after($this);
+            \Log::info(sprintf('User %s participate in a Pincode Promotion %s', $this->getUserId(), $this->promo->name));
 
         } catch (\Exception $e) {
             \Log::error($e->getMessage());
