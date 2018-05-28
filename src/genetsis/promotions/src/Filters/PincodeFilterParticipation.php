@@ -30,8 +30,8 @@ class PincodeFilterParticipation extends GenericFilterParticipation implements F
 
             \Log::debug('Before Pincode Filter');
 
+            //TODO: check exist and not used pincode
             \Log::debug('Check Valid Pincode');
-
 
         } catch (PromotionException $e) {
             throw $e;
