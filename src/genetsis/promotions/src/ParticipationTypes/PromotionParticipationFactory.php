@@ -18,7 +18,7 @@ class PromotionParticipationFactory
     {
         try {
             $promotion = Promotion::findOrFail($promo_id);
-            $class = __NAMESPACE__.'\Participation'.str_replace(' ', '', $promotion->type->name);;
+            $class = __NAMESPACE__.'\Participation'.str_replace(' ', '', $promotion->type->name);
 
             if (!class_exists($class)) {
                 throw new \Exception('Promotion Type Not Defined: '.$class);
@@ -29,7 +29,13 @@ class PromotionParticipationFactory
                 throw new \Exception('Promotion Type Not Implement correct Interface: '.$class);
             }
 
-            \App::when($class)->needs(FilterParticipationInterface::class)->give(\Genetsis\Promotions\Filters\GenericFilterParticipation::class);
+            $filter_class = '\Genetsis\Promotions\Filters\\'.str_replace(' ', '', $promotion->type->name).'FilterParticipation';
+            if (!class_exists($filter_class)) {
+                $filter_class = '\Genetsis\Promotions\Filters\GenericFilterParticipation';
+            }
+
+            \App::when($class)->needs(FilterParticipationInterface::class)->give($filter_class);
+
             return \App::make($class)->setPromoId($promotion->id);
         } catch (ModelNotFoundException $e) {
             throw new PromotionException("Promotion Not Found: " . $promo_id);
