@@ -16,10 +16,10 @@
                         <a class="nav-link" data-toggle="tab" href="#participations" role="tab" aria-expanded="false">Participations</a>
                     </li>
                     {{--<li class="nav-item">--}}
-                        {{--<a class="nav-link" data-toggle="tab" href="#messages" role="tab">Pincodes</a>--}}
+                    {{--<a class="nav-link" data-toggle="tab" href="#messages" role="tab">Pincodes</a>--}}
                     {{--</li>--}}
                     {{--<li class="nav-item">--}}
-                        {{--<a class="nav-link" data-toggle="tab" href="#settings" role="tab">Win Moments</a>--}}
+                    {{--<a class="nav-link" data-toggle="tab" href="#settings" role="tab">Win Moments</a>--}}
                     {{--</li>--}}
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#statistics" role="tab">Statistics</a>
@@ -31,18 +31,25 @@
                         Number of Participations: {{ count($promotion->participations) }}
                         <br>
                         Unique Users Participations: {{ $unique_users }}
+                        <br>
+                        @isset($pincodes)
+                            Pincodes: {{ count($pincodes->all) }}
+                            <br>- Used: {{ count($pincodes->used) }}
+                            <br>- Free: {{ count($pincodes->all)-count($pincodes->used) }}
+                        @endisset
                     </div>
                     <div class="tab-pane fade" id="participations" role="tabpanel" aria-expanded="false">
                         <table id="data-participations" class="table table-bordered table-striped">
                             <thead class="thead-inverse">
-                                <tr>
-                                    <td>#</td>
-                                    <td>User ID</td>
-                                    <td>Email</td>
-                                    <td>Date</td>
-                                    <td>Origin</td>
-                                    <td>Sponsor</td>
-                                </tr>
+                            <tr>
+                                <td>#</td>
+                                <td>User ID</td>
+                                <td>Email</td>
+                                <td>Date</td>
+                                <td>Origin</td>
+                                <td>Sponsor</td>
+                                @isset($pincodes) <td>Pincode</td> @endisset
+                            </tr>
                             </thead>
                         </table>
                     </div>
@@ -146,11 +153,12 @@
                     {data: 'date'},
                     {data: 'origin'},
                     {data: 'sponsor'},
+                        @isset($pincodes) {data: 'code.code'}, @endisset
                     {data: 'status'},
                     {data: 'extra', name: 'extra', orderable: false, searchable: false},
                     {data: 'delete', name: 'delete', orderable: false, searchable: false, className: 'delete'},
                     {data: 'edit', name: 'edit', orderable: false, searchable: false, className: 'edit'}
-                    ]
+                ]
             });
 
             $('#modal-edition').on('show.bs.modal', function (event) {
@@ -207,7 +215,7 @@
 //                $('#modal-edition').modal('toggle');
 //            });
 
-                $('#data-participations tbody').on('click', 'td.delete', function () {
+            $('#data-participations tbody').on('click', 'td.delete', function () {
                 var tr = $(this).closest('tr');
                 var row = table.row(tr);
                 var id = row.data().id;

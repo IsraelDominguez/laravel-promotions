@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Psy\VarDumper\Dumper;
-use Yajra\Datatables\Facades\Datatables;
 
 class PromotionsController extends AdminController
 {
@@ -127,9 +126,18 @@ class PromotionsController extends AdminController
             return count($item);
         })->all();
 
+        if ($promotion->type->code == PromoType::PINCODE_TYPE) {
+            $pincodes = new \stdClass();
+            $pincodes->all = $promotion->codes;
+
+            $pincodes->used = $promotion->participations->filter(function($p) {
+                return $p->has('code');
+            })->all();
+        }
+
         ksort($participations);
 
-        return view('promotion::promotions.show',compact('promotion','unique_users', 'participations', 'days', 'hours'));
+        return view('promotion::promotions.show',compact('promotion','unique_users', 'participations', 'days', 'hours', 'pincodes'));
     }
 
 

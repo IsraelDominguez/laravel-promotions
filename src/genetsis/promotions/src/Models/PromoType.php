@@ -13,6 +13,10 @@ class PromoType extends Model
      */
     protected $table = 'promo_type';
 
+    const PINCODE_TYPE = 'pincode';
+    const SORTEO_TYPE = 'sorteo';
+    const MOMENT_TYPE = 'moment';
+
     /**
      * Get the Campaign record associated with the Promotion
      */
