@@ -30,7 +30,7 @@ class ParticipationPincode extends PromotionParticipation implements PromotionPa
             DB::transaction(function () {
                 \Log::info(sprintf('User %s participate in a Pincode Promotion %s with Pincode %s', $this->getUserId(), $this->promo->name, $this->getPincode()));
 
-                $code = $this->promotion_service->getPincodeByCode($this->getPincode());
+                $code = $this->promotion_service->getPincodeByCode($this->getPincode(), $this->promo->id);
 
                 $this->save();
 
@@ -42,7 +42,6 @@ class ParticipationPincode extends PromotionParticipation implements PromotionPa
             $this->after($this);
 
         } catch (\Exception $e) {
-            \Log::error($e->getMessage());
             return ParticipationResult::i()->setParticipation($this)->setStatus(ParticipationResult::STATUS_KO)->setMessage($e->getMessage());
         }
 

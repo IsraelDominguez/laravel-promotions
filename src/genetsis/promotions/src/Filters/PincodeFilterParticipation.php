@@ -24,7 +24,7 @@ class PincodeFilterParticipation extends GenericFilterParticipation implements F
             Assert::notNull($participation->getPincode(), 'Pincode is required');
             Assert::notEmpty($participation->getPincode(), 'Pincode is required');
 
-            $this->promotion_service->getPincodeByCode($participation->getPincode());
+            $this->promotion_service->getPincodeByCode($participation->getPincode(), $participation->promo);
 
         } catch (\InvalidArgumentException $e) {
             throw new PromotionException($e->getMessage());
