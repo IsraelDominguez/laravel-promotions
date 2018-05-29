@@ -13,17 +13,17 @@ use Genetsis\Promotions\Services\RewardsParticipationService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Webmozart\Assert\Assert;
 
-class SorteoFilterParticipation extends GenericFilterParticipation implements FilterParticipationInterface, AfterFilterParticipationInterface, BeforeFilterParticipationInterface {
+class SorteoFilterParticipation extends GenericFilterParticipation implements FilterParticipationInterface {
 
     public function __construct() {
         parent::__construct();
     }
 
-    public function after(PromotionParticipationInterface $participation) {
-        parent::before($participation);
-    }
-
-    public function before(PromotionParticipationInterface $participation) {
-        parent::before($participation);
-    }
+//    public function after(PromotionParticipationInterface $participation) {
+//        parent::after($participation);
+//    }
+//
+//    public function before(PromotionParticipationInterface $participation) {
+//        parent::before($participation);
+//    }
 }
