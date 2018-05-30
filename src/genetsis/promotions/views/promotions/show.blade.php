@@ -39,19 +39,21 @@
                         @endisset
                     </div>
                     <div class="tab-pane fade" id="participations" role="tabpanel" aria-expanded="false">
-                        <table id="data-participations" class="table table-bordered table-striped">
-                            <thead class="thead-inverse">
-                            <tr>
-                                <td>#</td>
-                                <td>User ID</td>
-                                <td>Email</td>
-                                <td>Date</td>
-                                <td>Origin</td>
-                                <td>Sponsor</td>
-                                @isset($pincodes) <td>Pincode</td> @endisset
-                            </tr>
-                            </thead>
-                        </table>
+                        <div class="table-responsive">
+                            <table id="data-participations" class="table table-bordered table-striped">
+                                <thead class="thead-inverse">
+                                <tr>
+                                    <td>#</td>
+                                    <td>User ID</td>
+                                    <td>Email</td>
+                                    <td>Date</td>
+                                    <td>Origin</td>
+                                    <td>Sponsor</td>
+                                    @isset($pincodes) <td>Pincode</td> @endisset
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
                     </div>
 
                     <div class="tab-pane fade" id="statistics" role="tabpanel">
