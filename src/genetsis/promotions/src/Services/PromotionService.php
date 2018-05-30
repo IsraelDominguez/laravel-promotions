@@ -103,7 +103,7 @@ class PromotionService
 
         return Codes::where('code', $pincode)
                 ->where('used', null)
-                ->where('promotion_id', $promotion->id)
+                ->where('promo_id', $promotion->id)
                 ->where(function($q) {
                     $q->whereNull('expires')->orWhereDate('expires', '>=', Carbon::today()->toDateString());
                 })
