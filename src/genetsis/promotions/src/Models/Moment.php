@@ -17,7 +17,11 @@ class Moment extends Model
 
     public $timestamps = false;
 
+    public function promotion() {
+        return $this->belongsTo(Promotion::class, 'promo_id');
+    }
+
     public function participation() {
-        return $this->belongsTo(Participation::class);
+        return $this->belongsTo(Participation::class, 'participation_id');
     }
 }

@@ -2,6 +2,7 @@
 
 use Carbon\Carbon;
 use Genetsis\Promotions\Contracts\PromotionParticipationInterface;
+use Genetsis\Promotions\Exceptions\PromotionException;
 use Genetsis\Promotions\Models\Moment;
 use Illuminate\Support\Facades\DB;
 
@@ -13,35 +14,41 @@ class ParticipationWinMoment extends PromotionParticipation implements Promotion
     }
 
     public function participate() {
-        $result = ParticipationResult::i();
-        try {
-            $this->filter_participation->before($this);
 
-            DB::transaction(function ($result) {
-                if ($moment = Moment::where('used', null)->where('date', '>', Carbon::now())->lockForUpdate()->first()) {
-                    //$participation->moment()->save($moment);
+        try {
+            $participation_result = ParticipationResult::STATUS_OK;
+
+            $this->before($this);
+
+            DB::transaction(function () use ($participation_result) {
+                \Log::info(sprintf('User %s participate in a WinMomment Promotion %s', $this->getUserId(), $this->promo->name, $this->getPincode()));
+
+                if ($moment = Moment::where('used', null)->where('promo_id', $this->promo->id)->where('date', '>=', Carbon::now())->lockForUpdate()->first()) {
+
+                    $this->save();
+
                     $moment->used = Carbon::now();
+                    $moment->participation()->associate($this);
+
                     $moment->save();
 
                     \Log::info(sprintf('User %s Win Moment %s in  %s', $this->getUserId(), $moment->date, $this->promo->name));
-                    $result->setResult(ParticipationResult::RESULT_WIN);
+                    $participation_result = ParticipationResult::RESULT_WIN;
                 } else {
-                    // Not Win
-                    \Log::info(sprintf('User %s Not Win Moment in  %s', $this->getUserId(), $this->promo->name));
-                    $result->setResult(ParticipationResult::RESULT_NOTWIN);
-                }
-                $this->save();
 
-                $result->setStatus(ParticipationResult::STATUS_OK);
-                \Log::info(sprintf('User %s participate in a Sorteo Promotion %s', $this->getUserId(), $this->promo->name));
+                    \Log::info(sprintf('User %s Not Win Moment in  %s', $this->getUserId(), $this->promo->name));
+                    $participation_result = ParticipationResult::RESULT_NOTWIN;
+                }
             });
 
-            $this->filter_participation->after($this);
+            $this->after($this);
 
         } catch (\Exception $e) {
-            return $result->setParticipation($this)->setStatus(ParticipationResult::STATUS_KO)->setMessage($e->getMessage());
+            return ParticipationResult::i()->setParticipation($this)->setStatus(ParticipationResult::STATUS_KO)->setMessage($e->getMessage());
         }
 
-        return $result->setParticipation($this);
+        return ParticipationResult::i()->setParticipation($this)->setStatus($participation_result);
     }
+
+
 }

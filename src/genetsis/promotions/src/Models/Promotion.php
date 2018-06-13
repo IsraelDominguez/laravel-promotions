@@ -50,6 +50,11 @@ class Promotion extends Model
         return $this->hasMany(Codes::class, 'promo_id');
     }
 
+    public function moment() {
+        return $this->hasMany(Moment::class, 'promo_id');
+    }
+
+
     /**
      * The "booting" method of the model.
      *
@@ -63,6 +68,7 @@ class Promotion extends Model
             $model->extra_fields()->delete();
             $model->rewards()->delete();
             $model->codes()->delete();
+            $model->moment()->delete();
         });
     }
 

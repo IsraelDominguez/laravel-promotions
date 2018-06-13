@@ -22,10 +22,6 @@ class Participation extends Model
     //public $incrementing = false;
     public $timestamps = false;
 
-    public function moment() {
-        return $this->hasOne(Moment::class);
-    }
-
     public function promo() {
         return $this->belongsTo(Promotion::class, 'promo_id');
     }
@@ -44,6 +40,10 @@ class Participation extends Model
 
     public function code() {
         return $this->hasOne(Codes::class, 'participation_id', 'id');
+    }
+
+    public function moment() {
+        return $this->hasOne(Moment::class, 'participation_id', 'id');
     }
 
 
@@ -80,6 +80,13 @@ class Participation extends Model
                 $model->code->participation_id = null;
                 $model->code->used = null;
                 $model->code->save();
+            }
+
+            if ($model->moment != null) {
+                $model->moment->participation_id = null;
+                $model->code->used = null;
+                $model->code->code_send = null;
+                $model->moment->save();
             }
         });
 
