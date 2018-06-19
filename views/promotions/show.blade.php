@@ -1,4 +1,4 @@
-@extends('promotion::layouts.admin-sections')
+@extends('genetsis-admin::layouts.admin-sections')
 
 @section('section-content')
     <div class="card">

@@ -1,12 +1,17 @@
 <?php namespace Genetsis\Promotions\Providers;
 
-
+use Genetsis\Promotions\Commands\InstallPromotions;
 use Genetsis\Promotions\Events\PromoUserSubscriber;
 use Illuminate\Support\ServiceProvider;
 
 class PromotionServiceProvider extends ServiceProvider
 {
-
+    /**
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
+    protected $defer = false;
 
     /**
      * Bootstrap the application services.
@@ -15,12 +20,10 @@ class PromotionServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->handleMigrations();
-        $this->handleRoutes();
-        $this->handleViews();
-        $this->handleEvents();
+//        $admin_menu = $this->app->make('AdminMenu');
+//        $admin_menu->add('promotion::partials.promotion_menu');
 
-        $this->app->make(\Illuminate\Database\Eloquent\Factory::class)->load(__DIR__.'/../../database/factories');
+        \AdminMenu::add('promotion::partials.promotion_menu');
     }
 
     /**
@@ -30,8 +33,15 @@ class PromotionServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->registerModelFactories();
+        $this->handleMigrations();
+        $this->handleRoutes();
+        $this->handleViews();
+        $this->handleEvents();
+        $this->handleCommands();
 
+        $this->app->make(\Illuminate\Database\Eloquent\Factory::class)->load(__DIR__.'/../../database/factories');
+
+        $this->registerModelFactories();
     }
 
     private function registerModelFactories() {
@@ -54,5 +64,13 @@ class PromotionServiceProvider extends ServiceProvider
     private function handleEvents() {
         //\Event::listen( \Genetsis\Promotions\Events\PromoUserCreated::class,\Genetsis\Promotions\Events\PromoUserNotification::class);
         \Event::subscribe(PromoUserSubscriber::class);
+    }
+
+    private function handleCommands() {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                InstallPromotions::class
+            ]);
+        }
     }
 }

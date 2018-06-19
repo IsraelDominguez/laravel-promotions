@@ -1,6 +1,6 @@
 <?php namespace Genetsis\Promotions\Controllers;
 
-use App\Http\Controllers\Admin\AdminController;
+use Genetsis\Admin\Controllers\AdminController;
 use Genetsis\Promotions\Models\Participation;
 use Illuminate\Http\Request;
 

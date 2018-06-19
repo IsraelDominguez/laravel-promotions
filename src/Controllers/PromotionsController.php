@@ -1,6 +1,6 @@
 <?php namespace Genetsis\Promotions\Controllers;
 
-use App\Http\Controllers\Admin\AdminController;
+use Genetsis\Admin\Controllers\AdminController;
 use Carbon\Carbon;
 use Genetsis\Promotions\Models\Campaign;
 use Genetsis\Promotions\Models\ExtraFields;

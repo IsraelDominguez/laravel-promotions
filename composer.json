@@ -18,7 +18,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Genetsis\\Promotions\\": "src/genetsis/promotions/src"
+            "Genetsis\\Promotions\\": "src"
         }
     },
     "extra": {

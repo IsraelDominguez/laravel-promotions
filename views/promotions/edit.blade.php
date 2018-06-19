@@ -1,25 +1,21 @@
-@extends('promotion::layouts.admin-sections')
+@extends('genetsis-admin::layouts.admin-sections')
+
+@section('section-card-header')
+    @component('genetsis-admin::partials.card-header')
+        @slot('card_title')
+            Edit {{ title_case($section) }}
+        @endslot
+    @endcomponent
+@endsection
 
 @section('section-content')
+    <form action="{{ route('promotions.update', $promotion->id) }}" id="form" method="POST">
+        {{ csrf_field() }}
+        {{ method_field('PATCH') }}
 
-    <div class="card">
-        <div class="card-header">
-            <h2 class="card-title">Edit {{ title_case($section) }}</h2>
-        </div>
+        @include('promotion::promotions.form')
 
-        <div class="card-block">
-            @include('promotion::partials.show_errors')
-
-            <form action="{{ route('promotions.update', $promotion->id) }}" id="form" method="POST">
-                {{ csrf_field() }}
-                {{ method_field('PATCH') }}
-
-                @include('promotion::promotions.form')
-
-            </form>
-
-        </div>
-    </div>
+    </form>
 @endsection
 
 @section('custom-js')

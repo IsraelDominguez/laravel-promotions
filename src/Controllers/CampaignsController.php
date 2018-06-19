@@ -1,6 +1,6 @@
 <?php namespace Genetsis\Promotions\Controllers;
 
-use App\Http\Controllers\Admin\AdminController;
+use Genetsis\Admin\Controllers\AdminController;
 use Genetsis\Promotions\Models\Campaign;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
