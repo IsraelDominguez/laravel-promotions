@@ -11,7 +11,7 @@ class PromotionServiceProvider extends ServiceProvider
      *
      * @var bool
      */
-    protected $defer = false;
+    protected $defer = true;
 
     /**
      * Bootstrap the application services.
@@ -20,8 +20,12 @@ class PromotionServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-//        $admin_menu = $this->app->make('AdminMenu');
-//        $admin_menu->add('promotion::partials.promotion_menu');
+        $this->handleMigrations();
+        $this->handleRoutes();
+        $this->handleViews();
+        $this->handleEvents();
+        $this->handleCommands();
+        $this->registerModelFactories();
 
         \AdminMenu::add('promotion::partials.promotion_menu');
     }
@@ -33,15 +37,7 @@ class PromotionServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->handleMigrations();
-        $this->handleRoutes();
-        $this->handleViews();
-        $this->handleEvents();
-        $this->handleCommands();
-
         $this->app->make(\Illuminate\Database\Eloquent\Factory::class)->load(__DIR__.'/../../database/factories');
-
-        $this->registerModelFactories();
     }
 
     private function registerModelFactories() {
