@@ -19,7 +19,7 @@ class CreatePromosMomentsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('promo_id');
             $table->unsignedInteger('participation_id')->nullable();
-            $table->timestamp('date');
+            $table->timestamp('date')->nullable();
             $table->timestamp('used')->nullable();
             $table->string('code_to_send',100)->nullable();
             $table->timestamp('code_send')->nullable();

@@ -23,11 +23,10 @@ class ParticipationWinMoment extends PromotionParticipation implements Promotion
 
             DB::transaction(function () use (&$participation_result) {
                 \Log::info(sprintf('User %s participate in a WinMomment Promotion %s', $this->getUserId(), $this->promo->name));
+                //Save Participation user Win or Not Win
+                $this->save();
 
                 if ($moment = Moment::where('used', null)->where('promo_id', $this->promo->id)->where('date', '<=', Carbon::now())->lockForUpdate()->first()) {
-
-                    $this->save();
-
                     $moment->used = Carbon::now();
                     $moment->participation()->associate($this);
 
@@ -36,7 +35,6 @@ class ParticipationWinMoment extends PromotionParticipation implements Promotion
                     \Log::info(sprintf('User %s Win Moment %s in  %s', $this->getUserId(), $moment->date, $this->promo->name));
                     $participation_result = ParticipationResult::RESULT_WIN;
                 } else {
-
                     \Log::info(sprintf('User %s Not Win Moment in  %s', $this->getUserId(), $this->promo->name));
                     $participation_result = ParticipationResult::RESULT_NOTWIN;
                 }

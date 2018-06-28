@@ -141,8 +141,8 @@ class PromotionsController extends AdminController
             $moments->all = $promotion->moment;
 
             $moments->used = $promotion->participations->filter(function($p) {
-                return $p->has('moment');
-            })->all();
+                return $p->moment;
+            })->count();
         }
 
         ksort($participations);

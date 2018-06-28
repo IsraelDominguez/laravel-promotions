@@ -194,13 +194,13 @@
                     {data: 'date'},
                     {data: 'origin'},
                     {data: 'sponsor'},
-                        @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::PINCODE_TYPE)
-                    {data: 'code.code'},
-                        @endif
-                        @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::MOMENT_TYPE)
-                    {data: 'moment.date'},
-                    {data: 'moment.code_to_send'},
-                        @endif
+                    @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::PINCODE_TYPE)
+                        {data: 'code.code'},
+                    @endif
+                    @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::MOMENT_TYPE)
+                        {data: function(data) { return ((data.moment)?data.moment.date:'') }},
+                        {data: function(data) { return ((data.moment)?data.moment.code_to_send:'Not Win') }},
+                    @endif
                     {data: 'status'},
                     {data: 'extra', name: 'extra', orderable: false, searchable: false},
                     {data: 'delete', name: 'delete', orderable: false, searchable: false, className: 'delete'},
