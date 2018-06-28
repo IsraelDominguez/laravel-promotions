@@ -1,6 +1,7 @@
 <?php namespace Genetsis\Promotions\ParticipationTypes;
 
 use Carbon\Carbon;
+use Genetsis\Promotions\Contracts\FilterParticipationInterface;
 use Genetsis\Promotions\Contracts\PromotionParticipationInterface;
 use Genetsis\Promotions\Exceptions\PromotionException;
 use Genetsis\Promotions\Models\Moment;
@@ -20,10 +21,10 @@ class ParticipationWinMoment extends PromotionParticipation implements Promotion
 
             $this->before($this);
 
-            DB::transaction(function () use ($participation_result) {
-                \Log::info(sprintf('User %s participate in a WinMomment Promotion %s', $this->getUserId(), $this->promo->name, $this->getPincode()));
+            DB::transaction(function () use (&$participation_result) {
+                \Log::info(sprintf('User %s participate in a WinMomment Promotion %s', $this->getUserId(), $this->promo->name));
 
-                if ($moment = Moment::where('used', null)->where('promo_id', $this->promo->id)->where('date', '>=', Carbon::now())->lockForUpdate()->first()) {
+                if ($moment = Moment::where('used', null)->where('promo_id', $this->promo->id)->where('date', '<=', Carbon::now())->lockForUpdate()->first()) {
 
                     $this->save();
 

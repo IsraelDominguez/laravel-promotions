@@ -37,6 +37,12 @@
                             <br>- Used: {{ count($pincodes->used) }}
                             <br>- Free: {{ count($pincodes->all)-count($pincodes->used) }}
                         @endisset
+
+                        @isset($moments)
+                            Moments: {{ count($moments->all) }}
+                            <br>- Used: {{ count($moments->used) }}
+                            <br>- Free: {{ count($moments->all)-count($moments->used) }}
+                        @endisset
                     </div>
                     <div class="tab-pane fade" id="participations" role="tabpanel" aria-expanded="false">
                         <div class="table-responsive">
@@ -50,6 +56,7 @@
                                     <td>Origin</td>
                                     <td>Sponsor</td>
                                     @isset($pincodes) <td>Pincode</td> @endisset
+                                    @isset($moments) <td>Moment</td><td>Code</td>  @endisset
                                 </tr>
                                 </thead>
                             </table>
@@ -156,6 +163,8 @@
                     {data: 'origin'},
                     {data: 'sponsor'},
                         @isset($pincodes) {data: 'code.code'}, @endisset
+                        @isset($moments) {data: 'moment.date'}, @endisset
+                        @isset($moments) {data: 'moment.code_to_send'}, @endisset
                     {data: 'status'},
                     {data: 'extra', name: 'extra', orderable: false, searchable: false},
                     {data: 'delete', name: 'delete', orderable: false, searchable: false, className: 'delete'},

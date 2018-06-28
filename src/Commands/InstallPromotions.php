@@ -43,8 +43,8 @@ class InstallPromotions extends Command
         try {
 
             if ($this->confirm('Do you wish to install Promotion Extension')) {
-                Artisan::call('migrate');
-                Artisan::call('db:seed', ['--class' => PromotionTypesSeeder::class]);
+                Artisan::call('migrate', array('--force' => true));
+                Artisan::call('db:seed', ['--class' => PromotionTypesSeeder::class, '--force' => true]);
             }
 
             $this->info('Instalation complete');

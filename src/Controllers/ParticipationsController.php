@@ -55,7 +55,7 @@ class ParticipationsController extends AdminController
     public function show(Request $request, $id) {
 
         if ($request->ajax()) {
-            $participations = Participation::with('user')->with('extraFields')->with('code')->select('*')->where('promo_id', $id);
+            $participations = Participation::with('user')->with('extraFields')->with('code')->with('moment')->select('*')->where('promo_id', $id);
 
             return Datatables::of($participations)
                 ->addColumn('extra', function ($participation) {

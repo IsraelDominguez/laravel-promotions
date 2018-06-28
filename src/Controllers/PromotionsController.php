@@ -135,11 +135,19 @@ class PromotionsController extends AdminController
             })->all();
         }
 
+        if ($promotion->type->code == PromoType::MOMENT_TYPE) {
+            $moments = new \stdClass();
+            $moments->all = $promotion->moment;
+
+            $moments->used = $promotion->participations->filter(function($p) {
+                return $p->has('moment');
+            })->all();
+        }
+
         ksort($participations);
 
-        return view('promotion::promotions.show',compact('promotion','unique_users', 'participations', 'days', 'hours', 'pincodes'));
+        return view('promotion::promotions.show',compact('promotion','unique_users', 'participations', 'days', 'hours', 'pincodes', 'moments'));
     }
-
 
     /**
      * Show the form for editing the specified resource.

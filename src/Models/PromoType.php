@@ -15,7 +15,7 @@ class PromoType extends Model
 
     const PINCODE_TYPE = 'pincode';
     const SORTEO_TYPE = 'sorteo';
-    const MOMENT_TYPE = 'moment';
+    const MOMENT_TYPE = 'win-moment';
 
     /**
      * Get the Campaign record associated with the Promotion

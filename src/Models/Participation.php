@@ -84,8 +84,8 @@ class Participation extends Model
 
             if ($model->moment != null) {
                 $model->moment->participation_id = null;
-                $model->code->used = null;
-                $model->code->code_send = null;
+                $model->moment->used = null;
+                $model->moment->code_send = null;
                 $model->moment->save();
             }
         });
