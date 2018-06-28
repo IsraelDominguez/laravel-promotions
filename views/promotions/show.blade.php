@@ -15,16 +15,22 @@
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#participations" role="tab" aria-expanded="false">Participations</a>
                     </li>
-                    {{--<li class="nav-item">--}}
-                    {{--<a class="nav-link" data-toggle="tab" href="#messages" role="tab">Pincodes</a>--}}
-                    {{--</li>--}}
-                    {{--<li class="nav-item">--}}
-                    {{--<a class="nav-link" data-toggle="tab" href="#settings" role="tab">Win Moments</a>--}}
-                    {{--</li>--}}
-                    <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#statistics" role="tab">Statistics</a>
-                    </li>
+                    @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::PINCODE_TYPE)
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#pincodes" role="tab">Pincodes</a>
+                        </li>
+                    @endif
+                    @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::MOMENT_TYPE)
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#moments" role="tab">Win Moments</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#statistics" role="tab">Statistics</a>
+                        </li>
+                    @endif
                 </ul>
+
+
 
                 <div class="tab-content">
                     <div class="tab-pane fade active show" id="home" role="tabpanel" aria-expanded="true">
@@ -32,13 +38,13 @@
                         <br>
                         Unique Users Participations: {{ $unique_users }}
                         <br>
-                        @isset($pincodes)
+                        @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::PINCODE_TYPE)
                             Pincodes: {{ count($pincodes->all) }}
                             <br>- Used: {{ count($pincodes->used) }}
                             <br>- Free: {{ count($pincodes->all)-count($pincodes->used) }}
                         @endisset
 
-                        @isset($moments)
+                        @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::MOMENT_TYPE)
                             Moments: {{ count($moments->all) }}
                             <br>- Used: {{ count($moments->used) }}
                             <br>- Free: {{ count($moments->all)-count($moments->used) }}
@@ -55,8 +61,34 @@
                                     <td>Date</td>
                                     <td>Origin</td>
                                     <td>Sponsor</td>
-                                    @isset($pincodes) <td>Pincode</td> @endisset
-                                    @isset($moments) <td>Moment</td><td>Code</td>  @endisset
+                                    @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::PINCODE_TYPE) <td>Pincode</td> @endif
+                                    @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::MOMENT_TYPE) <td>Moment</td><td>Code</td> @endif
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="moments" role="tabpanel" aria-expanded="true">
+                        <div class="table-responsive">
+                            <table id="data-moments" class="table table-bordered table-striped">
+                                <thead class="thead-inverse">
+                                <tr>
+                                    <td>Date</td>
+                                    <td>Used</td>
+                                    <td>Code</td>
+                                    <td>Send</td>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="pincodes" role="tabpanel" aria-expanded="true">
+                        <div class="table-responsive">
+                            <table id="data-pincodes" class="table table-bordered table-striped">
+                                <thead class="thead-inverse">
+                                <tr>
+                                    <td>Used</td>
+                                    <td>Code</td>
                                 </tr>
                                 </thead>
                             </table>
@@ -162,14 +194,42 @@
                     {data: 'date'},
                     {data: 'origin'},
                     {data: 'sponsor'},
-                        @isset($pincodes) {data: 'code.code'}, @endisset
-                        @isset($moments) {data: 'moment.date'}, @endisset
-                        @isset($moments) {data: 'moment.code_to_send'}, @endisset
+                        @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::PINCODE_TYPE)
+                    {data: 'code.code'},
+                        @endif
+                        @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::MOMENT_TYPE)
+                    {data: 'moment.date'},
+                    {data: 'moment.code_to_send'},
+                        @endif
                     {data: 'status'},
                     {data: 'extra', name: 'extra', orderable: false, searchable: false},
                     {data: 'delete', name: 'delete', orderable: false, searchable: false, className: 'delete'},
                     {data: 'edit', name: 'edit', orderable: false, searchable: false, className: 'edit'}
                 ]
+            });
+
+            var table_moments = $('#data-moments').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '/api/v1/promotion/{{$promotion->id}}/moments',
+                columns: [
+                    {data: 'date'},
+                    {data: 'used'},
+                    {data: 'code_to_send'},
+                    {data: 'code_send'}
+                ],
+                order: [[ 1, "desc" ]]
+            });
+
+            var table_pincodes = $('#data-pincodes').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '/api/v1/promotion/{{$promotion->id}}/pincodes',
+                columns: [
+                    {data: 'used'},
+                    {data: 'code'}
+                ],
+                order: [[ 0, "desc" ]]
             });
 
             $('#modal-edition').on('show.bs.modal', function (event) {

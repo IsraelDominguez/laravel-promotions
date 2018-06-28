@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Psy\VarDumper\Dumper;
+use Yajra\DataTables\DataTables;
 
 class PromotionsController extends AdminController
 {
@@ -147,6 +148,40 @@ class PromotionsController extends AdminController
         ksort($participations);
 
         return view('promotion::promotions.show',compact('promotion','unique_users', 'participations', 'days', 'hours', 'pincodes', 'moments'));
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return mixed
+     * @throws \Exception
+     */
+    public function moments(Request $request, $id) {
+
+        if ($request->ajax()) {
+            $promotion = Promotion::findOrFail($id);
+
+            return DataTables::of($promotion->moment->sortByDesc('used')->map(function ($m) {
+                return $m;
+            }))->make(true);
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return mixed
+     * @throws \Exception
+     */
+    public function pincodes(Request $request, $id) {
+
+        if ($request->ajax()) {
+            $promotion = Promotion::findOrFail($id);
+
+            return DataTables::of($promotion->codes->sortByDesc('used')->map(function ($m) {
+                return $m;
+            }))->make(true);
+        }
     }
 
     /**

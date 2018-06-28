@@ -10,5 +10,8 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('participation/{id}', 'ParticipationsController@get');
             Route::put('participation/{id}', 'ParticipationsController@update');
         });
+
+        Route::get('promotion/{id}/moments', 'Genetsis\Promotions\Controllers\PromotionsController@moments');
+        Route::get('promotion/{id}/pincodes', 'Genetsis\Promotions\Controllers\PromotionsController@pincodes');
     });
 });
