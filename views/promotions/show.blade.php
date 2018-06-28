@@ -24,10 +24,10 @@
                         <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#moments" role="tab">Win Moments</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#statistics" role="tab">Statistics</a>
-                        </li>
                     @endif
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#statistics" role="tab">Statistics</a>
+                    </li>
                 </ul>
 
 
