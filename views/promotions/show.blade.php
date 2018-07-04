@@ -40,8 +40,8 @@
                         <br>
                         @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::PINCODE_TYPE)
                             Pincodes: {{ count($pincodes->all) }}
-                            <br>- Used: {{ count($pincodes->used) }}
-                            <br>- Free: {{ count($pincodes->all)-count($pincodes->used) }}
+                            <br>- Used: {{ $pincodes->used }}
+                            <br>- Free: {{ count($pincodes->all)-$pincodes->used }}
                         @endisset
 
                         @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::MOMENT_TYPE)

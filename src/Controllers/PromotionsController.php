@@ -132,8 +132,8 @@ class PromotionsController extends AdminController
             $pincodes->all = $promotion->codes;
 
             $pincodes->used = $promotion->participations->filter(function($p) {
-                return $p->has('code');
-            })->all();
+                return $p->code;
+            })->count();
         }
 
         if ($promotion->type->code == PromoType::MOMENT_TYPE) {
