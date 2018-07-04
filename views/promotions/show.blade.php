@@ -46,8 +46,8 @@
 
                         @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::MOMENT_TYPE)
                             Moments: {{ count($moments->all) }}
-                            <br>- Used: {{ count($moments->used) }}
-                            <br>- Free: {{ count($moments->all)-count($moments->used) }}
+                            <br>- Used: {{ $moments->used }}
+                            <br>- Free: {{ count($moments->all)-$moments->used }}
                         @endisset
                     </div>
                     <div class="tab-pane fade" id="participations" role="tabpanel" aria-expanded="false">
