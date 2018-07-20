@@ -198,8 +198,8 @@
                         {data: 'code.code'},
                     @endif
                     @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::MOMENT_TYPE)
-                        {data: function(data) { return ((data.moment)?data.moment.date:'') }},
-                        {data: function(data) { return ((data.moment)?data.moment.code_to_send:'Not Win') }},
+                        {data: function(data) { return ((data.moment)?data.moment.date:'') }, searchable:false, orderable:false},
+                        {data: function(data) { return ((data.moment)?data.moment.code_to_send:'Not Win') }, searchable:false, orderable:false},
                     @endif
                     {data: 'status'},
                     {data: 'extra', name: 'extra', orderable: false, searchable: false},
