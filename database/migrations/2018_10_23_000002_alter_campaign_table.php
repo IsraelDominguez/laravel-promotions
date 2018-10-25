@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AlterPromotionsTable extends Migration
+class AlterCampaignTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,10 +15,9 @@ class AlterPromotionsTable extends Migration
     {
         Schema::disableForeignKeyConstraints();
 
-        Schema::table('promo', function (Blueprint $table) {
+        Schema::table('promo_campaign', function (Blueprint $table) {
             $table->string('key',50)->unique()->nullable();
             $table->string('entry_point', 100)->nullable();
-            $table->boolean('has_mgm')->nullable();
         });
     }
 
@@ -30,8 +29,8 @@ class AlterPromotionsTable extends Migration
      */
     public function down()
     {
-        Schema::table('promo', function (Blueprint $table) {
-            $table->dropColumn(['key', 'entry_point', 'has_mgm']);
+        Schema::table('promo_campaign', function (Blueprint $table) {
+            $table->dropColumn(['key', 'entry_point']);
         });
     }
 }

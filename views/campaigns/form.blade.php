@@ -1,14 +1,33 @@
 
 <div class="row">
-    <div class="col-xs-12 col-md-4">
+    <div class="col-xs-12 col-md-6">
         <div class="form-group">
             <label>Name</label>
             <input type="text" class="form-control" name="name" id="name" value="{{ old('name', isset($campaign) ? $campaign->name : null) }}">
             <i class="form-group__bar"></i>
         </div>
     </div>
+    <div class="col-xs-12 col-md-6">
+        <div class="form-group">
+            <label for="key">Key</label>
+            <input type="text" class="form-control" name="key" id="key" value="{{ old('key', isset($campaign) ? $campaign->key : null) }}">
+            <i class="form-group__bar"></i>
+        </div>
+    </div>
+</div>
 
-    <div class="col-xs-12 col-md-4">
+<div class="row">
+    <div class="col-xs-12 col-md-6">
+        <div class="form-group">
+            <label for="entry_point">Entry Point</label>
+            <input type="text" class="form-control" name="entry_point" id="entry_point" value="{{ old('key', isset($campaign) ? $campaign->entry_point : null) }}">
+            <i class="form-group__bar"></i>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12 col-md-6">
         <div class="form-group">
             <label>Starts</label>
             <div class="input-group">
@@ -21,7 +40,7 @@
         </div>
     </div>
 
-    <div class="col-xs-12 col-md-4">
+    <div class="col-xs-12 col-md-6">
         <div class="form-group">
             <label>Ends</label>
             <div class="input-group">

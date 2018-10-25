@@ -44,13 +44,15 @@ class CampaignsController extends AdminController
     public function store(Request $request)
     {
         $this->validate($request, [
+            'key' => 'required|alpha_dash|max:50',
+            'entry_point' => 'nullable|alpha_dash|max:100',
             'name' => 'unique:promo_campaign|required',
             'ends' => 'nullable|after:starts'
         ]);
 
         Campaign::create($request->all());
         return redirect()->route('campaigns.home')
-            ->with('success','Campain created successfully');
+            ->with('success','Campaign created successfully');
     }
 
     /**
@@ -87,6 +89,8 @@ class CampaignsController extends AdminController
     public function update(Request $request, $id)
     {
         $this->validate($request, [
+            'key' => 'required|alpha_dash|max:50',
+            'entry_point' => 'nullable|alpha_dash|max:100',
             'name' => ['required',
                         Rule::unique('promo_campaign')->ignore($id)
             ],
