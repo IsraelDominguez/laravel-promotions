@@ -60,8 +60,13 @@ class PromotionsController extends AdminController
             'type_id' => 'required|integer',
             'max_user_participations' => 'nullable|integer|max:2',
             'max_user_participations_by_day' => 'nullable|integer|max:2',
-            'ends' => 'nullable|after:starts'
+            'ends' => 'nullable|after:starts',
+            'key' => 'required|alpha_dash|max:50',
+            'entry_point' => 'nullable|alpha_dash|max:100',
+            'has_mgm' => 'nullable'
         ]);
+
+        $request->merge(array('has_mgm' => $request->has('has_mgm') ? true : false));
 
         $promotion = Promotion::create($request->all());
 
@@ -195,6 +200,7 @@ class PromotionsController extends AdminController
         $campaigns = Campaign::latest()->get();
         $promotion = Promotion::findOrFail($id);
         $promo_types = PromoType::all();
+
         return view('promotion::promotions.edit',compact('promotion', 'campaigns','promo_types'));
     }
 
@@ -217,8 +223,13 @@ class PromotionsController extends AdminController
             'type_id' => 'required|integer',
             'max_user_participations' => 'nullable|digits_between:1,99',
             'max_user_participations_by_day' => 'nullable|digits_between:1,99',
-            'ends' => 'nullable|after:starts'
+            'ends' => 'nullable|after:starts',
+            'key' => 'required|alpha_dash|max:50',
+            'entry_point' => 'nullable|alpha_dash|max:100',
+            'has_mgm' => 'nullable'
         ]);
+
+        $request->merge(array('has_mgm' => $request->has('has_mgm') ? true : false));
 
         $promotion = Promotion::find($id);
         $promotion->update($request->all());

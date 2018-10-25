@@ -13,7 +13,7 @@ class Promotion extends Model
      */
     protected $table = 'promo';
 
-    protected $fillable = ['name', 'starts', 'ends', 'campaign_id', 'type_id', 'max_user_participations', 'max_user_participations_by_day'];
+    protected $fillable = ['name', 'starts', 'ends', 'campaign_id', 'type_id', 'max_user_participations', 'max_user_participations_by_day', 'key', 'has_mgm', 'entry_point'];
 
 //    protected $dateFormat = 'Y-m-d H:i';
 //

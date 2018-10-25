@@ -6,7 +6,15 @@
             <i class="form-group__bar"></i>
         </div>
     </div>
-
+    <div class="col-xs-12 col-md-6">
+        <div class="form-group">
+            <label for="key">Key</label>
+            <input type="text" class="form-control" name="key" id="key" value="{{ old('key', isset($promotion) ? $promotion->key : null) }}">
+            <i class="form-group__bar"></i>
+        </div>
+    </div>
+</div>
+<div class="row">
     <div class="col-xs-12 col-md-6">
         <div class="form-group">
             <label>Campaign</label>
@@ -21,6 +29,13 @@
                     >{{$campaign->name}}</option>
                 @endforeach
             </select>
+        </div>
+    </div>
+    <div class="col-xs-12 col-md-6">
+        <div class="form-group">
+            <label for="entry_point">Entry Point</label>
+            <input type="text" class="form-control" name="entry_point" id="entry_point" value="{{ old('key', isset($promotion) ? $promotion->entry_point : null) }}">
+            <i class="form-group__bar"></i>
         </div>
     </div>
 </div>
@@ -39,6 +54,16 @@
                     >{{$type->name}}</option>
                 @endforeach
             </select>
+        </div>
+    </div>
+    <div class="col-xs-12 col-md-6">
+        <div class="form-group">
+            <label>Has MGM</label>
+            <br>
+            <div class="toggle-switch">
+                <input type="checkbox" name="has_mgm" class="toggle-switch__checkbox" {{ old('has_mgm', isset($promotion) ? (($promotion->has_mgm) ? 'checked' : '') : '' )}}>
+                <i class="toggle-switch__helper"></i>
+            </div>
         </div>
     </div>
 </div>
