@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Participation extends Model
 {
+    use LogsActivity;
+
+
     /**
      * The table associated with the model.
      *

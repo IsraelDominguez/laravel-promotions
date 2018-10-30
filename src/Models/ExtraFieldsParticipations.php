@@ -5,6 +5,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ExtraFieldsParticipations extends Model
 {
+    use LogsActivity;
+
     protected $table = 'promo_extra_fields_participations';
 
     protected $fillable = ['participation_id', 'key', 'value'];

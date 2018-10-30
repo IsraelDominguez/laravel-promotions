@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model implements PromoUserInterface, PromoUserEmailInterface
 {
+    use LogsActivity;
+
     protected $photo = '';
 
     /**

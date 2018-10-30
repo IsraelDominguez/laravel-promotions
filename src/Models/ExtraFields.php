@@ -4,6 +4,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class ExtraFields extends Model
 {
+    use LogsActivity;
+
+
     /**
      * The table associated with the model.
      *

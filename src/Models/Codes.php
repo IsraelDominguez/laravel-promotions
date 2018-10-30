@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Codes extends Model
 {
+    use LogsActivity;
+
     /**
      * The table associated with the model.
      *

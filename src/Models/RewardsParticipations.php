@@ -4,6 +4,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class RewardsParticipations extends Model
 {
+    use LogsActivity;
+
     protected $table = 'promo_rewards_participations';
 
     protected $fillable = ['participation_id', 'key', 'amount'];
