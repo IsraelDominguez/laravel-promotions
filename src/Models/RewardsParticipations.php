@@ -1,6 +1,7 @@
 <?php namespace Genetsis\Promotions\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class RewardsParticipations extends Model
 {
