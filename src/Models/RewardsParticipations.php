@@ -1,12 +1,9 @@
 <?php namespace Genetsis\Promotions\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Activitylog\Traits\LogsActivity;
 
 class RewardsParticipations extends Model
 {
-    use LogsActivity;
-
     protected $table = 'promo_rewards_participations';
 
     protected $fillable = ['participation_id', 'key', 'amount'];

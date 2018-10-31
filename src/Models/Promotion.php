@@ -3,12 +3,9 @@
 namespace Genetsis\Promotions\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Activitylog\Traits\LogsActivity;
 
 class Promotion extends Model
 {
-    use LogsActivity;
-
 
     /**
      * The table associated with the model.

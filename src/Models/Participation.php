@@ -2,15 +2,10 @@
 
 namespace Genetsis\Promotions\Models;
 
-use Carbon\Carbon;
-use Genetsis\Promotions\Services\ExtraFieldsParticipationService;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Activitylog\Traits\LogsActivity;
 
 class Participation extends Model
 {
-    use LogsActivity;
-
 
     /**
      * The table associated with the model.

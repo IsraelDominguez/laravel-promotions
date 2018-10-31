@@ -5,11 +5,9 @@ namespace Genetsis\Promotions\Models;
 use Genetsis\Promotions\Contracts\PromoUserEmailInterface;
 use Genetsis\Promotions\Contracts\PromoUserInterface;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Activitylog\Traits\LogsActivity;
 
 class User extends Model implements PromoUserInterface, PromoUserEmailInterface
 {
-    use LogsActivity;
 
     protected $photo = '';
 

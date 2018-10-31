@@ -2,11 +2,9 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Spatie\Activitylog\Traits\LogsActivity;
 
 class ExtraFieldsParticipations extends Model
 {
-    use LogsActivity;
 
     protected $table = 'promo_extra_fields_participations';
 
