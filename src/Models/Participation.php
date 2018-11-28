@@ -77,6 +77,7 @@ class Participation extends Model
         static::deleting(function ($model) {
             $model->extraFields()->delete();
             $model->rewards()->delete();
+            $model->qr()->delete();
 
             if ($model->code != null) {
                 $model->code->participation_id = null;
