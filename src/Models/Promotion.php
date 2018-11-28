@@ -55,6 +55,13 @@ class Promotion extends Model
         return $this->hasMany(Moment::class, 'promo_id');
     }
 
+    public function qrspack() {
+        return $this->hasOne(QrsPack::class, 'promo_id');
+    }
+
+    public function qrs() {
+        return $this->hasMany(Qrs::class, 'promo_id');
+    }
 
     /**
      * The "booting" method of the model.
@@ -70,6 +77,7 @@ class Promotion extends Model
             $model->rewards()->delete();
             $model->codes()->delete();
             $model->moment()->delete();
+            $model->qrspack()->delete();
         });
     }
 

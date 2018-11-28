@@ -10,12 +10,19 @@
     ],
     "require": {
         "php": "^7.0",
-        "yajra/laravel-datatables-oracle": "~8.0"
+        "yajra/laravel-datatables-oracle": "~8.0",
+        "IsraelDominguez/sdk-consumer-rewards": "dev-master"
     },
     "require-dev": {
         "illuminate/database": "~5.4.0",
         "webmozart/assert": "1.3.0"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/IsraelDominguez/sdk-consumer-rewards"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Genetsis\\Promotions\\": "src"

@@ -18,39 +18,29 @@
     </form>
 @endsection
 
-@section('custom-js')
+
+@push('custom-js')
     <script>
         $(document).ready(function() {
-            $("#submit").click(function() {
-                $("#form").submit();
-            });
-
             if ({{count($promotion->extra_fields)}} > 0) {
                 @foreach($promotion->extra_fields as $extra_field)
-                    add_extra_field('{{$extra_field->key}}', '{{$extra_field->name}}');
+                add_extra_field('{{$extra_field->key}}', '{{$extra_field->name}}', '{{$extra_field->type}}');
                 @endforeach
             } else {
-                add_extra_field('', '');
+                add_extra_field('', '','');
             }
 
             if ({{count($promotion->rewards)}} > 0) {
                 @foreach($promotion->rewards as $reward)
-                    add_reward('{{$reward->key}}', '{{$reward->name}}', '{{$reward->stock}}');
+                add_reward('{{$reward->key}}', '{{$reward->name}}', '{{$reward->stock}}');
                 @endforeach
             } else {
                 add_reward('', '', '');
             }
-
-            $("#new_extra_field").click(function (e) {
-                e.preventDefault();
-                add_extra_field('', '');
-            });
-
-            $("#new_reward").click(function (e) {
-                e.preventDefault();
-                add_reward('', '', '');
-            });
         });
     </script>
+@endpush
 
-@endsection
+@push('custom-js')
+    @include('promotion::promotions.scripts')
+@endpush

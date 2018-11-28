@@ -30,8 +30,6 @@
                     </li>
                 </ul>
 
-
-
                 <div class="tab-content">
                     <div class="tab-pane fade active show" id="home" role="tabpanel" aria-expanded="true">
                         Number of Participations: {{ count($promotion->participations) }}
@@ -63,6 +61,7 @@
                                     <td>Sponsor</td>
                                     @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::PINCODE_TYPE) <td>Pincode</td> @endif
                                     @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::MOMENT_TYPE) <td>Moment</td><td>Code</td> @endif
+                                    @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::QRS_TYPE) <td>QR</td> @endif
                                 </tr>
                                 </thead>
                             </table>
@@ -179,7 +178,7 @@
     </div>
 @endsection
 
-@section('custom-js')
+@push('custom-js')
 
     <script>
         $(document).ready(function () {
@@ -201,6 +200,9 @@
                         {data: function(data) { return ((data.moment)?data.moment.date:'') }, searchable:false, orderable:false},
                         {data: function(data) { return ((data.moment)?data.moment.code_to_send:'Not Win') }, searchable:false, orderable:false},
                     @endif
+                        @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::QRS_TYPE)
+                        {data: function(data) { return ((data.qr)?data.qr.qr:'') }, searchable:false, orderable:false},
+                        @endif
                     {data: 'status'},
                     {data: 'extra', name: 'extra', orderable: false, searchable: false},
                     {data: 'delete', name: 'delete', orderable: false, searchable: false, className: 'delete'},
@@ -208,6 +210,7 @@
                 ]
             });
 
+        @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::MOMENT_TYPE)
             var table_moments = $('#data-moments').DataTable({
                 processing: true,
                 serverSide: true,
@@ -220,7 +223,8 @@
                 ],
                 order: [[ 1, "desc" ]]
             });
-
+        @endif
+        @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::PINCODE_TYPE)
             var table_pincodes = $('#data-pincodes').DataTable({
                 processing: true,
                 serverSide: true,
@@ -231,7 +235,7 @@
                 ],
                 order: [[ 0, "desc" ]]
             });
-
+        @endif
             $('#modal-edition').on('show.bs.modal', function (event) {
                 var button = $(event.relatedTarget) // Button that triggered the modal
                 var id_participation = button.data('id');
@@ -432,4 +436,4 @@
 
     </script>
 
-@endsection
+@endpush

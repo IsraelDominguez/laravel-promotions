@@ -33,7 +33,7 @@ class ParticipationResult
     }
 
     /**
-     * @param mixed $participation
+     * @param PromotionParticipation $participation
      * @return ParticipationResult
      */
     public function setParticipation($participation)

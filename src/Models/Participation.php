@@ -45,6 +45,9 @@ class Participation extends Model
         return $this->hasOne(Moment::class, 'participation_id', 'id');
     }
 
+    public function qr() {
+        return $this->hasOne(Qrs::class, 'participation_id', 'id');
+    }
 
     public function getExtraFieldByKey($key) {
         return $this->extraFields->filter(function($field) use ($key){

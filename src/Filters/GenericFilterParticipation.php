@@ -51,8 +51,10 @@ class GenericFilterParticipation implements FilterParticipationInterface, AfterF
 
             $this->promotion_service->userCanParticipate($participation->getUserId(), $participation->promo);
 
-            if ($participation->getSponsor())
-                User::where('sponsor_code', hash('crc32',$participation->getSponsor(), false))->firstOrFail();
+            if ($participation->promo->has_mgm) {
+                if ($participation->getSponsor())
+                    User::where('sponsor_code', hash('crc32', $participation->getSponsor(), false))->firstOrFail();
+            }
 
             //Check Valid Extra Fields Defined in a Participation
             if ($participation->getExtraFields()) {

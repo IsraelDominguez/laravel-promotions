@@ -28,6 +28,12 @@ class PromotionServiceProvider extends ServiceProvider
         $this->registerModelFactories();
 
         \AdminMenu::add('promotion::partials.promotion_menu');
+
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__ . '/../../config/promotion.php' => config_path('promotion.php'),
+            ], 'config');
+        }
     }
 
     /**

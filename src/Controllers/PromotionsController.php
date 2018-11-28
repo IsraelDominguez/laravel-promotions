@@ -7,6 +7,7 @@ use Genetsis\Promotions\Models\ExtraFields;
 use Genetsis\Promotions\Models\Participation;
 use Genetsis\Promotions\Models\Promotion;
 use Genetsis\Promotions\Models\PromoType;
+use Genetsis\Promotions\Models\QrsPack;
 use Genetsis\Promotions\Models\Rewards;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -70,6 +71,18 @@ class PromotionsController extends AdminController
 
         $promotion = Promotion::create($request->all());
 
+        if ($promotion->type->code == PromoType::QRS_TYPE) {
+            //TODO: generate pack in Consumer Rewards
+
+            QrsPack::create([
+                'promo_id' => $promotion->id,
+                'pack' => $request->get('pack'),
+                'key' => $request->get('pack_key'),
+                'name' => $request->get('pack_name'),
+                'max' => $request->get('pack_max')
+            ]);
+        }
+
         if ($extra_fields_keys = $request->get('extra_field_keys')) {
             foreach ($extra_fields_keys as $key => $extra_field) {
                 if ($extra_field != null) {
@@ -107,7 +120,6 @@ class PromotionsController extends AdminController
      */
     public function show($id)
     {
-
         $promotion = Promotion::findOrFail($id);
 
         $unique_users = ($promotion->participations->map(function($participation){
@@ -149,8 +161,6 @@ class PromotionsController extends AdminController
                 return $p->moment;
             })->count();
         }
-
-        ksort($participations);
 
         return view('promotion::promotions.show',compact('promotion','unique_users', 'participations', 'days', 'hours', 'pincodes', 'moments'));
     }
@@ -234,6 +244,17 @@ class PromotionsController extends AdminController
         $promotion = Promotion::find($id);
         $promotion->update($request->all());
 
+        if ($promotion->type->code == PromoType::QRS_TYPE) {
+            //TODO: generate pack in Consumer Rewards
+
+            QrsPack::where('promo_id', $promotion->id)
+                ->update([
+                    'pack' => $request->get('pack'),
+                    'key' => $request->get('pack_key'),
+                    'name' => $request->get('pack_name'),
+                    'max' => $request->get('pack_max')
+                ]);
+        }
 
         if ($extra_fields_keys = $request->get('extra_field_keys')) {
             foreach ($promotion->extra_fields as $extra_field) {

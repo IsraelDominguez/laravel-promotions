@@ -23,8 +23,30 @@ class PromotionRepository {
         })->where('promo_id', $promo_id)->get();
     }
 
-    public function getPromotionActiveByCampaign($campaign_id) {
+    public function getPromotionActiveByCampaignKey($campaign_key) {
+        try {
+            $campaign = Campaign::where('key', $campaign_key)->firstOrFail();
+            return $this->getPromotionActiveByCampagin($campaign);
+        } catch (\Exception $e) {
 
-        return Campaign::findOrFail($campaign_id)->promotions()->where('starts','<=',now())->where('ends','>=',now())->firstOrFail();
+        }
+    }
+
+    public function getPromotionActiveByCampaignId($campaign_id) {
+        try {
+            $campaign = Campaign::findOrFail($campaign_id);
+            return $this->getPromotionActiveByCampagin($campaign);
+        } catch (\Exception $e) {
+
+        }
+    }
+
+
+    private function getPromotionActiveByCampagin(Campaign $campagin) {
+        try {
+            return $campagin->promotions()->where('starts','<=',now())->where('ends','>=',now())->firstOrFail();
+        } catch (\Exception $e) {
+
+        }
     }
 }

@@ -20,7 +20,7 @@
 
 @endsection
 
-@section('custom-js')
+@push('custom-js')
     <script>
         $(document).ready(function() {
             $("#submit").click(function() {
@@ -28,4 +28,4 @@
             });
         });
     </script>
-@endsection
+@endpush

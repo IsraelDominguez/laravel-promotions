@@ -15,26 +15,15 @@
     </form>
 @endsection
 
-@section('custom-js')
+@push('custom-js')
     <script>
-
         $(document).ready(function() {
             add_reward('','','');
-            add_extra_field('','');
-
-            $("#new_extra_field").click(function (e) {
-                e.preventDefault();
-                add_extra_field('', '');
-            });
-
-            $("#new_reward").click(function (e) {
-                e.preventDefault();
-                add_reward('', '', '');
-            });
-
-            $("#submit").click(function() {
-                $("#form").submit();
-            });
+            add_extra_field('','','');
         });
     </script>
-@endsection
+@endpush
+
+@push('custom-js')
+    @include('promotion::promotions.scripts')
+@endpush
