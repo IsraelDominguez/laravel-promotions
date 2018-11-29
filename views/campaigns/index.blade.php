@@ -33,7 +33,7 @@
                         <div class="actions">
                             <a class="actions__item zmdi zmdi-eye" href="{{ route('campaigns.show',$campaign->id) }}"></a>
                             <a class="actions__item zmdi zmdi-edit" href="{{ route('campaigns.edit',$campaign->id) }}"></a>
-                            <a class="actions__item zmdi zmdi-delete" onclick="javascript:$('#form-{{$campaign->id}}').submit();" id="del"></a>
+                            <a class="actions__item zmdi zmdi-delete" data-id="{{$campaign->id}}" id="del"></a>
                         </div>
                         <form action="{{ route('campaigns.destroy', $campaign->id) }}" method="POST" id="form-{{$campaign->id}}">
                             {{ csrf_field() }}
@@ -49,11 +49,27 @@
 @endsection
 
 @push('custom-js')
-    @if ($message = Session::get('success'))
     <script>
         $(document).ready(function() {
+            $('#del').click(function(){
+                clicked = this.dataset.id;
+                swal({
+                    title: 'Are you sure?',
+                    text: 'You will not be able to recover this promotion!',
+                    type: 'warning',
+                    showCancelButton: true,
+                    buttonsStyling: false,
+                    confirmButtonClass: 'btn btn-danger',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonClass: 'btn btn-secondary'
+                }).then(function(){
+                    $('#form-'+clicked).submit()
+                }).catch(swal.noop);
+            });
+
+            @if ($message = Session::get('success'))
             notify('{{ $message }}');
+            @endif
         });
     </script>
-    @endif
 @endpush
