@@ -8,7 +8,7 @@ class ExtraFields extends Model
     const TYPE_DATE = 'date';
     const TYPE_IMAGE = 'image';
     const TYPE_NUMBER = 'number';
-    const TYPE_LINK = 'number';
+    const TYPE_LINK = 'link';
 
     const TYPES = array(self::TYPE_STRING, self::TYPE_NUMBER, self::TYPE_IMAGE, self::TYPE_DATE, self::TYPE_LINK);
 
