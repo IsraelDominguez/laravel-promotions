@@ -22,6 +22,8 @@
 @push('custom-js')
     <script>
         $(document).ready(function() {
+            extra_fields_types.push({!!'"' . implode('", "', \Genetsis\Promotions\Models\ExtraFields::TYPES) . '"'!!});
+
             if ({{count($promotion->extra_fields)}} > 0) {
                 @foreach($promotion->extra_fields as $extra_field)
                 add_extra_field('{{$extra_field->key}}', '{{$extra_field->name}}', '{{$extra_field->type}}');

@@ -15,14 +15,16 @@
     </form>
 @endsection
 
-@push('custom-js')
+@prepend('custom-js')
     <script>
         $(document).ready(function() {
+            extra_fields_types.push({!!'"' . implode('", "', \Genetsis\Promotions\Models\ExtraFields::TYPES) . '"'!!});
+
             add_reward('','','');
             add_extra_field('','','');
         });
     </script>
-@endpush
+@endprepend
 
 @push('custom-js')
     @include('promotion::promotions.scripts')

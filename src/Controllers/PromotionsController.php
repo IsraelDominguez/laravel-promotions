@@ -44,6 +44,7 @@ class PromotionsController extends AdminController
     {
         $campaigns = Campaign::latest()->get();
         $promo_types = PromoType::all();
+
         return view('promotion::promotions.create', compact('campaigns', 'promo_types'));
     }
 
@@ -64,7 +65,11 @@ class PromotionsController extends AdminController
             'ends' => 'nullable|after:starts',
             'key' => 'required|alpha_dash|max:50',
             'entry_point' => 'nullable|alpha_dash|max:100',
-            'has_mgm' => 'nullable'
+            'has_mgm' => 'nullable',
+            'pack' => 'required_if:type_id,4|max:100',
+            'pack_key' => 'nullable|max:100',
+            'pack_name' => 'nullable|max:100',
+            'pack_max' => 'nullable|integer'
         ]);
 
         $request->merge(array('has_mgm' => $request->has('has_mgm') ? true : false));
@@ -72,7 +77,7 @@ class PromotionsController extends AdminController
         $promotion = Promotion::create($request->all());
 
         if ($promotion->type->code == PromoType::QRS_TYPE) {
-            //TODO: generate pack in Consumer Rewards
+            //TODO: generate pack in Consumer Rewards with Pack is EMPTY
 
             QrsPack::create([
                 'promo_id' => $promotion->id,
@@ -89,6 +94,7 @@ class PromotionsController extends AdminController
                     $extraField = new ExtraFields();
                     $extraField->key = $extra_field;
                     $extraField->name = $request->get('extra_field_names')[$key];
+                    $extraField->type = $request->get('extra_field_types')[$key];
                     $extraField->promo_id = $promotion->id;
                     $extraField->save();
                 }
@@ -269,13 +275,21 @@ class PromotionsController extends AdminController
                     if ($promotion->extra_fields->contains('key',$extra_field)) {
                         Log::debug("Edit extra field: ". $extra_field);
                         ExtraFields::where('key', $extra_field)
-                            ->update(['name' => $request->get('extra_field_names')[$key]]);
+                            ->update([
+                                'name' => $request->get('extra_field_names')[$key],
+                                'type' => $request->get('extra_field_types')[$key]
+                                ]);
                     } else {
                         Log::debug("New extra field: ". $extra_field);
+
                         $extraField = new ExtraFields();
                         $extraField->key = $extra_field;
                         $extraField->name = $request->get('extra_field_names')[$key];
+                        $extraField->type = $request->get('extra_field_types')[$key];
                         $extraField->promo_id = $promotion->id;
+
+                        Log::debug("Extra field: type" .$extraField->type);
+
                         $extraField->save();
                     }
                 }

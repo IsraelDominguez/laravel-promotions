@@ -16,7 +16,7 @@ class AddTypeExtraFieldsTable extends Migration
         Schema::disableForeignKeyConstraints();
 
         Schema::table('promo_extra_fields', function (Blueprint $table) {
-            $table->string('type',50)->default('string');
+            $table->string('type',50);
         });
     }
 
