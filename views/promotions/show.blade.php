@@ -189,7 +189,7 @@
                 columns: [
                     {data: 'id'},
                     {data: 'user_id'},
-                    {data: 'user.email', orderable: false},
+                    {data: 'user.email', orderable: true},
                     {data: 'date'},
                     {data: 'origin'},
                     {data: 'sponsor'},
@@ -201,10 +201,10 @@
                         {data: function(data) { return ((data.moment)?data.moment.code_to_send:'Not Win') }, searchable:false, orderable:false},
                     @endif
                     @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::QRS_TYPE)
-                        {data: 'qr.object_id', orderable:false, searchable: true},
+                        {data: 'qr.object_id', orderable:true, searchable: true},
                     @endif
                     {data: 'status'},
-                    {data: 'extra', name: 'extra', orderable: false, searchable: false},
+                    {data: 'extra', name: 'extra', orderable: false, searchable: true},
                     {data: 'delete', name: 'delete', orderable: false, searchable: false, className: 'delete'},
                     {data: 'edit', name: 'edit', orderable: false, searchable: false, className: 'edit'}
                 ]
