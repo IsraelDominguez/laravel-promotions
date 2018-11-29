@@ -59,10 +59,6 @@ class Promotion extends Model
         return $this->hasOne(QrsPack::class, 'promo_id');
     }
 
-    public function qrs() {
-        return $this->hasMany(Qrs::class, 'promo_id');
-    }
-
     /**
      * The "booting" method of the model.
      *
@@ -78,6 +74,9 @@ class Promotion extends Model
             $model->codes()->delete();
             $model->moment()->delete();
             $model->qrspack()->delete();
+            foreach ($model->participations as $participation) {
+                $participation->delete();
+            }
         });
     }
 
