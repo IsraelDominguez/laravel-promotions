@@ -150,6 +150,15 @@
 </div>
 <div class="row">
     <div class="col-xs-12 col-md-6">
+        <div class="form-group">
+            <label>Legal LInk</label>
+            <input type="text" class="form-control" maxlength="100" name="legal" id="legal" value="{{ old('legal', isset($promotion) ? $promotion->legal : null) }}">
+            <i class="form-group__bar"></i>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12 col-md-6">
         <h3 class="card-block__title">Extra Fields</h3>
         <div id="extra_fields">
 

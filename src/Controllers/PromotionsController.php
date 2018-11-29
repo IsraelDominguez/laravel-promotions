@@ -66,8 +66,9 @@ class PromotionsController extends AdminController
             'key' => 'required|alpha_dash|max:50',
             'entry_point' => 'nullable|alpha_dash|max:100',
             'has_mgm' => 'nullable',
-            'pack' => 'required_if:type_id,4|max:100',
-            'pack_key' => 'nullable|max:100',
+            'legal' => 'nullable|url|max:100',
+            'pack' => 'nullable|required_if:type_id,4|alpha_num|max:100',
+            'pack_key' => 'nullable|alpha_dash|max:100',
             'pack_name' => 'nullable|max:100',
             'pack_max' => 'nullable|integer'
         ]);
@@ -242,7 +243,12 @@ class PromotionsController extends AdminController
             'ends' => 'nullable|after:starts',
             'key' => 'required|alpha_dash|max:50',
             'entry_point' => 'nullable|alpha_dash|max:100',
-            'has_mgm' => 'nullable'
+            'has_mgm' => 'nullable',
+            'legal' => 'nullable|url|max:100',
+            'pack' => 'required_if:type_id,4|alpha_num|max:100',
+            'pack_key' => 'nullable|alpha_dash|max:100',
+            'pack_name' => 'nullable|max:100',
+            'pack_max' => 'nullable|integer'
         ]);
 
         $request->merge(array('has_mgm' => $request->has('has_mgm') ? true : false));
