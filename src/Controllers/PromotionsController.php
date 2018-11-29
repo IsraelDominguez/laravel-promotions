@@ -73,7 +73,7 @@ class PromotionsController extends AdminController
             'pack_max' => 'nullable|integer'
         ]);
 
-        $request->merge(array('has_mgm' => $request->has('has_mgm') ? true : false));
+        $request->merge(array('has_mgm' => $request->has('has_mgm')));
 
         $promotion = Promotion::create($request->all());
 
@@ -108,7 +108,7 @@ class PromotionsController extends AdminController
                     $rewardField = new Rewards();
                     $rewardField->key = $reward;
                     $rewardField->name = $request->get('reward_names')[$key];
-                    $rewardField->stock = ($request->get('reward_stocks')[$key]) ? ($request->get('reward_stocks')[$key]) : 0;
+                    $rewardField->stock = ($request->get('reward_stocks')[$key]) ?: 0;
                     $rewardField->promo_id = $promotion->id;
                     $rewardField->save();
                 }
@@ -245,13 +245,13 @@ class PromotionsController extends AdminController
             'entry_point' => 'nullable|alpha_dash|max:100',
             'has_mgm' => 'nullable',
             'legal' => 'nullable|url|max:100',
-            'pack' => 'required_if:type_id,4|alpha_num|max:100',
+            'pack' => 'nullable|required_if:type_id,4|alpha_num|max:100',
             'pack_key' => 'nullable|alpha_dash|max:100',
             'pack_name' => 'nullable|max:100',
             'pack_max' => 'nullable|integer'
         ]);
 
-        $request->merge(array('has_mgm' => $request->has('has_mgm') ? true : false));
+        $request->merge(array('has_mgm' => $request->has('has_mgm')));
 
         $promotion = Promotion::find($id);
         $promotion->update($request->all());
@@ -316,13 +316,13 @@ class PromotionsController extends AdminController
                     if ($promotion->rewards->contains('key',$reward)) {
                         Log::debug("Edit reward: ". $reward);
                         Rewards::where('key', $reward)
-                            ->update(['name' => $request->get('reward_names')[$key], 'stock'=>($request->get('reward_stocks')[$key]) ? ($request->get('reward_stocks')[$key]) : 0]);
+                            ->update(['name' => $request->get('reward_names')[$key], 'stock'=>($request->get('reward_stocks')[$key]) ?: 0]);
                     } else {
                         Log::debug("New reward: ". $extra_field);
                         $rewardField = new Rewards();
                         $rewardField->key = $reward;
                         $rewardField->name = $request->get('reward_names')[$key];
-                        $rewardField->stock = ($request->get('reward_stocks')[$key]) ? ($request->get('reward_stocks')[$key]) : 0;
+                        $rewardField->stock = ($request->get('reward_stocks')[$key]) ?: 0;
                         $rewardField->promo_id = $promotion->id;
                         $rewardField->save();
                     }
