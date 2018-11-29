@@ -15,7 +15,7 @@ class CreatePromosQrTable extends Migration
     {
         Schema::disableForeignKeyConstraints();
 
-        Schema::create('promo_qrs', function (Blueprint $table) {
+        Schema::create('promo_packs_qrs', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('promo_id');
             $table->string('pack', 100);
@@ -28,11 +28,9 @@ class CreatePromosQrTable extends Migration
 
         Schema::create('promo_participation_qrs', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('promo_id');
             $table->unsignedInteger('participation_id')->nullable();
-            $table->string('qr',100)->nullable();
+            $table->string('object_id',100)->nullable();
 
-            $table->foreign('promo_id')->references('id')->on('promo');
             $table->foreign('participation_id')->references('id')->on('promo_participations');
         });
         

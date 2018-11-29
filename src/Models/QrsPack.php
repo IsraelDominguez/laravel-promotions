@@ -12,7 +12,7 @@ class QrsPack extends Model
      *
      * @var string
      */
-    protected $table = 'promo_qrs';
+    protected $table = 'promo_packs_qrs';
 
     protected $fillable = ['pack', 'key', 'name', 'max', 'promo_id'];
 

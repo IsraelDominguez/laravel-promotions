@@ -14,13 +14,9 @@ class Qrs extends Model
      */
     protected $table = 'promo_participation_qrs';
 
-    protected $fillable = ['qr', 'promo_id', 'participation_id'];
+    protected $fillable = ['object_id', 'participation_id'];
 
     public $timestamps = false;
-
-    public function promotion() {
-        return $this->belongsTo(Promotion::class, 'promo_id');
-    }
 
     public function participation() {
         return $this->belongsTo(Participation::class, 'participation_id');

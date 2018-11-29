@@ -33,6 +33,9 @@ class ParticipationQrs extends PromotionParticipation implements PromotionPartic
         }
     }
 
+    /**
+     * @return ParticipationResult
+     */
     public function participate()
     {
         try {
@@ -40,7 +43,7 @@ class ParticipationQrs extends PromotionParticipation implements PromotionPartic
 
             $participation_qr = new Qrs();
 
-            $participation_qr->qr = $this->consumer_rewards->getMarketing()->generateQr(
+            $participation_qr->object_id = $this->consumer_rewards->getMarketing()->generateQr(
                 $this->promo->qrspack->pack,
                 new \ConsumerRewards\SDK\Transfer\User($this->getUserId())
             )->getObjectId();
@@ -48,12 +51,11 @@ class ParticipationQrs extends PromotionParticipation implements PromotionPartic
             $this->save();
 
             $participation_qr->participation()->associate($this);
-            $participation_qr->promotion()->associate($this->promo);
             $participation_qr->save();
 
             $this->after($this);
 
-            \Log::info(sprintf('User %s participate in a Sorteo Promotion %s', $this->getUserId(), $this->promo->name));
+            \Log::info(sprintf('User %s participate in a QRs Promotion %s', $this->getUserId(), $this->promo->name));
         } catch (\Exception $e) {
             \Log::error($e->getMessage());
             return ParticipationResult::i()->setParticipation($this)->setStatus(ParticipationResult::STATUS_KO)->setMessage($e->getMessage());
