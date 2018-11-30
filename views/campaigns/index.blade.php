@@ -33,7 +33,7 @@
                         <div class="actions">
                             <a class="actions__item zmdi zmdi-eye" href="{{ route('campaigns.show',$campaign->id) }}"></a>
                             <a class="actions__item zmdi zmdi-edit" href="{{ route('campaigns.edit',$campaign->id) }}"></a>
-                            <a class="actions__item zmdi zmdi-delete" data-id="{{$campaign->id}}" id="del"></a>
+                            <a class="actions__item zmdi zmdi-delete del" data-id="{{$campaign->id}}"></a>
                         </div>
                         <form action="{{ route('campaigns.destroy', $campaign->id) }}" method="POST" id="form-{{$campaign->id}}">
                             {{ csrf_field() }}
@@ -51,7 +51,7 @@
 @push('custom-js')
     <script>
         $(document).ready(function() {
-            $('#del').click(function(){
+            $('.del').click(function(){
                 clicked = this.dataset.id;
                 swal({
                     title: 'Are you sure?',

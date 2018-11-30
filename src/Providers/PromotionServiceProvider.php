@@ -2,6 +2,8 @@
 
 use Genetsis\Promotions\Commands\InstallPromotions;
 use Genetsis\Promotions\Events\PromoUserSubscriber;
+use Illuminate\Http\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 
 class PromotionServiceProvider extends ServiceProvider
@@ -28,6 +30,9 @@ class PromotionServiceProvider extends ServiceProvider
         $this->registerModelFactories();
 
         \AdminMenu::add('promotion::partials.promotion_menu');
+
+        Storage::disk('local')->putFileAs('samples', new File(__DIR__.'/../../config/winmoment_sample.csv'), 'winmoment_sample.csv');
+        Storage::disk('local')->putFileAs('samples', new File(__DIR__.'/../../config/pincodes_sample.csv'), 'pincodes_sample.csv');
 
         if ($this->app->runningInConsole()) {
             $this->publishes([

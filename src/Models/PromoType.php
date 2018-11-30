@@ -18,6 +18,8 @@ class PromoType extends Model
     const MOMENT_TYPE = 'win-moment';
     const QRS_TYPE = 'qrs';
 
+    const PROMO_TYPES = array('', self::SORTEO_TYPE, self::MOMENT_TYPE, self::PINCODE_TYPE, self::QRS_TYPE);
+
     /**
      * Get the Campaign record associated with the Promotion
      */

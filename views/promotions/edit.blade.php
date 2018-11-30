@@ -9,7 +9,7 @@
 @endsection
 
 @section('section-content')
-    <form action="{{ route('promotions.update', $promotion->id) }}" id="form" method="POST">
+    <form action="{{ route('promotions.update', $promotion->id) }}" id="form" method="POST" enctype="multipart/form-data">
         {{ csrf_field() }}
         {{ method_field('PATCH') }}
 

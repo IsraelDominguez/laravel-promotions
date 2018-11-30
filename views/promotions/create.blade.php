@@ -9,7 +9,7 @@
 @endsection
 
 @section('section-content')
-    <form action="{{ route('promotions.store') }}" id="form" method="POST">
+    <form action="{{ route('promotions.store') }}" id="form" method="POST" enctype="multipart/form-data">
         {{ csrf_field() }}
         @include('promotion::promotions.form')
     </form>
