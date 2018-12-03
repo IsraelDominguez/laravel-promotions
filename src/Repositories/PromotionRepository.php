@@ -28,7 +28,7 @@ class PromotionRepository {
             $campaign = Campaign::where('key', $campaign_key)->firstOrFail();
             return $this->getPromotionActiveByCampagin($campaign);
         } catch (\Exception $e) {
-
+            throw $e;
         }
     }
 
@@ -37,7 +37,7 @@ class PromotionRepository {
             $campaign = Campaign::findOrFail($campaign_id);
             return $this->getPromotionActiveByCampagin($campaign);
         } catch (\Exception $e) {
-
+            throw $e;
         }
     }
 
@@ -46,7 +46,7 @@ class PromotionRepository {
         try {
             return $campagin->promotions()->where('starts','<=',now())->where('ends','>=',now())->firstOrFail();
         } catch (\Exception $e) {
-
+            throw $e;
         }
     }
 }
