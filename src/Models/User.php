@@ -4,9 +4,10 @@ namespace Genetsis\Promotions\Models;
 
 use Genetsis\Promotions\Contracts\PromoUserEmailInterface;
 use Genetsis\Promotions\Contracts\PromoUserInterface;
+use Genetsis\Promotions\Contracts\PromoUserNameInterface;
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model implements PromoUserInterface, PromoUserEmailInterface
+class User extends Model implements PromoUserInterface, PromoUserEmailInterface, PromoUserNameInterface
 {
     protected $photo = '';
 

@@ -23,8 +23,9 @@ class PromoUserSubscriber
         try {
 
             $promo_user = User::updateOrCreate([
-                'id' => $new_promo_user->getId(),
-                'name' => ($new_promo_user instanceof PromoUserEmailInterface) ? $new_promo_user->getName() : '',
+                'id' => $new_promo_user->getId()
+            ], [
+                'name' => ($new_promo_user instanceof PromoUserNameInterface) ? $new_promo_user->getName() : '',
                 'email' => ($new_promo_user instanceof PromoUserEmailInterface) ? $new_promo_user->getEmail() : '',
                 'sponsor_code' => hash('crc32',$new_promo_user->getId(), false)
             ]);
