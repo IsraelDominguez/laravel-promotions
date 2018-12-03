@@ -72,8 +72,8 @@ class PromotionsController extends AdminController
             'pack_key' => 'nullable|alpha_dash|max:100',
             'pack_name' => 'nullable|max:100',
             'pack_max' => 'nullable|integer',
-            'win_moment_file' => 'nullable|required_if:type_id,3',
-            'pincodes_file' => 'nullable|required_if:type_id,2'
+            'win_moment_file' => 'nullable',
+            'pincodes_file' => 'nullable'
         ]);
 
         $request->merge(array('has_mgm' => $request->has('has_mgm')));
@@ -93,32 +93,36 @@ class PromotionsController extends AdminController
 
                 break;
             case PromoType::MOMENT_TYPE:
-                $moments = \Genetsis\Promotions\Seeds\PromotionSeedsHelper::csvToArray($request->file('win_moment_file')->getPathname());
-                foreach ($moments as $moment) {
-                    $codes[] = [
-                        'promo_id' => $promotion->id,
-                        'code_to_send' => $moment[0],
-                        'date' => $moment[1]
-                    ];
+                if ($request->hasFile('win_moment_file')) {
+                    $moments = \Genetsis\Promotions\Seeds\PromotionSeedsHelper::csvToArray($request->file('win_moment_file')->getPathname());
+                    foreach ($moments as $moment) {
+                        $codes[] = [
+                            'promo_id' => $promotion->id,
+                            'code_to_send' => $moment[0],
+                            'date' => $moment[1]
+                        ];
+                    }
+                    if (!empty($codes)) {
+                        \Illuminate\Support\Facades\DB::table('promo_moments')->insert($codes);
+                    }
+                    break;
                 }
-                if (!empty($codes)) {
-                    \Illuminate\Support\Facades\DB::table('promo_moments')->insert($codes);
-                }
-                break;
 
             case PromoType::PINCODE_TYPE:
-                $pincodes = \Genetsis\Promotions\Seeds\PromotionSeedsHelper::csvToArray($request->file('pincodes_file')->getPathname());
-                foreach ($pincodes as $pincode) {
-                    $codes[] = [
-                        'promo_id' => $promotion->id,
-                        'code' => $pincode[0],
-                        'expires' => $pincode[1]
-                    ];
+                if ($request->hasFile('pincodes_file')) {
+                    $pincodes = \Genetsis\Promotions\Seeds\PromotionSeedsHelper::csvToArray($request->file('pincodes_file')->getPathname());
+                    foreach ($pincodes as $pincode) {
+                        $codes[] = [
+                            'promo_id' => $promotion->id,
+                            'code' => $pincode[0],
+                            'expires' => $pincode[1]
+                        ];
+                    }
+                    if (!empty($codes)) {
+                        \Illuminate\Support\Facades\DB::table('promo_codes')->insert($codes);
+                    }
+                    break;
                 }
-                if (!empty($codes)) {
-                    \Illuminate\Support\Facades\DB::table('promo_codes')->insert($codes);
-                }
-                break;
         }
 
 
@@ -283,8 +287,8 @@ class PromotionsController extends AdminController
             'pack_key' => 'nullable|alpha_dash|max:100',
             'pack_name' => 'nullable|max:100',
             'pack_max' => 'nullable|integer',
-            'win_moment_file' => 'nullable|required_if:type_id,3',
-            'pincodes_file' => 'nullable|required_if:type_id,2'
+            'win_moment_file' => 'nullable',
+            'pincodes_file' => 'nullable'
         ]);
 
         $request->merge(array('has_mgm' => $request->has('has_mgm')));
@@ -317,33 +321,35 @@ class PromotionsController extends AdminController
 
                 break;
             case PromoType::MOMENT_TYPE:
-                $moments = \Genetsis\Promotions\Seeds\PromotionSeedsHelper::csvToArray($request->file('win_moment_file')->getPathname());
-                foreach ($moments as $moment) {
-                    $codes[] = [
-                        'promo_id' => $promotion->id,
-                        'code_to_send' => $moment[0],
-                        'date' => $moment[1]
-                    ];
+                if ($request->hasFile('win_moment_file')) {
+                    $moments = \Genetsis\Promotions\Seeds\PromotionSeedsHelper::csvToArray($request->file('win_moment_file')->getPathname());
+                    foreach ($moments as $moment) {
+                        $codes[] = [
+                            'promo_id' => $promotion->id,
+                            'code_to_send' => $moment[0],
+                            'date' => $moment[1]
+                        ];
+                    }
+                    if (!empty($codes)) {
+                        \Illuminate\Support\Facades\DB::table('promo_moments')->insert($codes);
+                    }
                 }
-                if (!empty($codes)) {
-                    \Illuminate\Support\Facades\DB::table('promo_moments')->insert($codes);
-                }
-
                 break;
 
             case PromoType::PINCODE_TYPE:
-                $pincodes = \Genetsis\Promotions\Seeds\PromotionSeedsHelper::csvToArray($request->file('pincodes_file')->getPathname());
-                foreach ($pincodes as $pincode) {
-                    $codes[] = [
-                        'promo_id' => $promotion->id,
-                        'code' => $pincode[0],
-                        'expires' => $pincode[1]
-                    ];
+                if ($request->hasFile('pincodes_file')) {
+                    $pincodes = \Genetsis\Promotions\Seeds\PromotionSeedsHelper::csvToArray($request->file('pincodes_file')->getPathname());
+                    foreach ($pincodes as $pincode) {
+                        $codes[] = [
+                            'promo_id' => $promotion->id,
+                            'code' => $pincode[0],
+                            'expires' => $pincode[1]
+                        ];
+                    }
+                    if (!empty($codes)) {
+                        \Illuminate\Support\Facades\DB::table('promo_codes')->insert($codes);
+                    }
                 }
-                if (!empty($codes)) {
-                    \Illuminate\Support\Facades\DB::table('promo_codes')->insert($codes);
-                }
-
                 break;
         }
 
