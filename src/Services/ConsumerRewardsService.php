@@ -51,4 +51,11 @@ class ConsumerRewardsService
             throw $e;
         }
     }
+
+    /**
+     * @return ConsumerRewards|null
+     */
+    public function getConsumerRewards() {
+        return $this->consumer_rewards;
+    }
 }

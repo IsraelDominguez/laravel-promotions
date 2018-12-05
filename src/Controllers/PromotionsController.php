@@ -1,5 +1,8 @@
 <?php namespace Genetsis\Promotions\Controllers;
 
+use ConsumerRewards\SDK\Exception\ConsumerRewardsException;
+use ConsumerRewards\SDK\Transfer\Configuration;
+use ConsumerRewards\SDK\Transfer\Pack;
 use Genetsis\Admin\Controllers\AdminController;
 use Carbon\Carbon;
 use Genetsis\Promotions\Models\Campaign;
@@ -9,11 +12,10 @@ use Genetsis\Promotions\Models\Promotion;
 use Genetsis\Promotions\Models\PromoType;
 use Genetsis\Promotions\Models\QrsPack;
 use Genetsis\Promotions\Models\Rewards;
+use Genetsis\Promotions\Services\ConsumerRewardsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
-use function PHPSTORM_META\type;
-use Psy\VarDumper\Dumper;
 use Yajra\DataTables\DataTables;
 
 class PromotionsController extends AdminController
@@ -55,7 +57,7 @@ class PromotionsController extends AdminController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, ConsumerRewardsService $consumerRewardsService)
     {
         $this->validate($request, [
             'name' => 'unique:promo|required|max:255',
@@ -68,7 +70,7 @@ class PromotionsController extends AdminController
             'entry_point' => 'nullable|alpha_dash|max:100',
             'has_mgm' => 'nullable',
             'legal' => 'nullable|url|max:100',
-            'pack' => 'nullable|required_if:type_id,4|alpha_num|max:100',
+            'pack' => 'nullable|alpha_num|max:100',
             'pack_key' => 'nullable|alpha_dash|max:100',
             'pack_name' => 'nullable|max:100',
             'pack_max' => 'nullable|integer',
@@ -82,18 +84,36 @@ class PromotionsController extends AdminController
 
         switch ($promotion->type->code) {
             case PromoType::QRS_TYPE:
-                //TODO: generate pack in Consumer Rewards with Pack is EMPTY
-                QrsPack::create([
-                    'promo_id' => $promotion->id,
-                    'pack' => $request->get('pack'),
-                    'key' => $request->get('pack_key'),
-                    'name' => $request->get('pack_name'),
-                    'max' => $request->get('pack_max')
-                ]);
+                try {
+                    if ($request->get('pack')!=null) {
+                        $pack_id = $request->get('pack');
+                    } else {
+                        $configurations[] = new Configuration("max", Configuration::CONFIGURATION_TYPE_INTEGER, $request->get('pack_max'));
+                        $pack = new Pack();
+                        $pack->setKey($request->get('pack_key'))->setDisplayName($request->get('pack_name'))->setConfigurations($configurations)->setType('consumer_rewards');
+
+                        $pack_created = $consumerRewardsService->getConsumerRewards()->getMarketing()->createPack($pack);
+                        $pack_id = $pack_created->getObjectId();
+                    }
+
+                    QrsPack::create([
+                        'promo_id' => $promotion->id,
+                        'pack' => $pack_id,
+                        'key' => $request->get('pack_key'),
+                        'name' => $request->get('pack_name'),
+                        'max' => $request->get('pack_max')
+                    ]);
+                } catch (ConsumerRewardsException $e) {
+
+                }
 
                 break;
             case PromoType::MOMENT_TYPE:
                 if ($request->hasFile('win_moment_file')) {
+                    if ($request->has('remove_prev')) {
+                        $promotion->moment()->delete();
+                    }
+
                     $moments = \Genetsis\Promotions\Seeds\PromotionSeedsHelper::csvToArray($request->file('win_moment_file')->getPathname());
                     foreach ($moments as $moment) {
                         $codes[] = [
@@ -124,8 +144,6 @@ class PromotionsController extends AdminController
                     break;
                 }
         }
-
-
 
         if ($extra_fields_keys = $request->get('extra_field_keys')) {
             foreach ($extra_fields_keys as $key => $extra_field) {
@@ -266,7 +284,7 @@ class PromotionsController extends AdminController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, ConsumerRewardsService $consumerRewardsService)
     {
 
         $this->validate($request, [
@@ -283,7 +301,7 @@ class PromotionsController extends AdminController
             'entry_point' => 'nullable|alpha_dash|max:100',
             'has_mgm' => 'nullable',
             'legal' => 'nullable|url|max:100',
-            'pack' => 'nullable|required_if:type_id,4|alpha_num|max:100',
+            'pack' => 'nullable|alpha_num|max:100',
             'pack_key' => 'nullable|alpha_dash|max:100',
             'pack_name' => 'nullable|max:100',
             'pack_max' => 'nullable|integer',
@@ -296,32 +314,38 @@ class PromotionsController extends AdminController
         $promotion = Promotion::find($id);
         $promotion->update($request->all());
 
-        if ($promotion->type->code == PromoType::QRS_TYPE) {
-            //TODO: generate pack in Consumer Rewards
-
-            QrsPack::where('promo_id', $promotion->id)
-                ->update([
-                    'pack' => $request->get('pack'),
-                    'key' => $request->get('pack_key'),
-                    'name' => $request->get('pack_name'),
-                    'max' => $request->get('pack_max')
-                ]);
-        }
-
         switch ($promotion->type->code) {
             case PromoType::QRS_TYPE:
-                //TODO: generate pack in Consumer Rewards with Pack is EMPTY
-                QrsPack::create([
-                    'promo_id' => $promotion->id,
-                    'pack' => $request->get('pack'),
-                    'key' => $request->get('pack_key'),
-                    'name' => $request->get('pack_name'),
-                    'max' => $request->get('pack_max')
-                ]);
+                try {
+                    if ($request->get('pack')!=null) {
+                        $pack_id = $request->get('pack');
+                    } else {
+                        $configurations[] = new Configuration("max", Configuration::CONFIGURATION_TYPE_INTEGER, $request->get('pack_max'));
+                        $pack = new Pack();
+                        $pack->setKey($request->get('pack_key'))->setDisplayName($request->get('pack_name'))->setConfigurations($configurations)->setType('consumer_rewards');
+
+                        $pack_created = $consumerRewardsService->getConsumerRewards()->getMarketing()->createPack($pack);
+                        $pack_id = $pack_created->getObjectId();
+                    }
+
+                    QrsPack::updateOrCreate(
+                        ['promo_id' => $promotion->id],
+                        [
+                            'pack' => $pack_id,
+                            'key' => $request->get('pack_key'),
+                            'name' => $request->get('pack_name'),
+                            'max' => $request->get('pack_max')
+                        ]);
+                } catch (ConsumerRewardsException $e) {
+                    Log::error($e->getMessage());
+                }
 
                 break;
             case PromoType::MOMENT_TYPE:
                 if ($request->hasFile('win_moment_file')) {
+                    if ($request->has('remove_prev')) {
+                        $promotion->moment()->delete();
+                    }
                     $moments = \Genetsis\Promotions\Seeds\PromotionSeedsHelper::csvToArray($request->file('win_moment_file')->getPathname());
                     foreach ($moments as $moment) {
                         $codes[] = [
@@ -338,6 +362,10 @@ class PromotionsController extends AdminController
 
             case PromoType::PINCODE_TYPE:
                 if ($request->hasFile('pincodes_file')) {
+                    if ($request->has('remove_prev')) {
+                        $promotion->codes()->delete();
+                    }
+
                     $pincodes = \Genetsis\Promotions\Seeds\PromotionSeedsHelper::csvToArray($request->file('pincodes_file')->getPathname());
                     foreach ($pincodes as $pincode) {
                         $codes[] = [
