@@ -22,7 +22,7 @@ class ConsumerRewardsService
                 'api' => config('promotion.consumer_rewards_api'),
                 'web' => config('promotion.consumer_rewards_web'),
             ], [
-                'logger' => \Log::getMonolog()
+                'logger' => app('log')->channel('stack')->getLogger()
             ]);
         } catch (ConsumerRewardsException $e) {
             throw new PromotionException("Fail Load Consumer Rewards");

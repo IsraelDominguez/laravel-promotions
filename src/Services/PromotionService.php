@@ -99,14 +99,4 @@ class PromotionService
         return true;
     }
 
-    public function getPincodeByCode($pincode, \Genetsis\Promotions\Models\Promotion $promotion) {
-
-        return Codes::where('code', $pincode)
-                ->where('used', null)
-                ->where('promo_id', $promotion->id)
-                ->where(function($q) {
-                    $q->whereNull('expires')->orWhereDate('expires', '>=', Carbon::today()->toDateString());
-                })
-                ->firstOrFail();
-    }
 }

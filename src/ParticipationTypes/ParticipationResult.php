@@ -14,8 +14,8 @@ class ParticipationResult
 
     const STATUS_OK = 200;
     const STATUS_KO = 500;
-    const RESULT_WIN = 'Win';
-    const RESULT_NOTWIN = 'Not Win';
+    const RESULT_WIN = 'WIN';
+    const RESULT_NOTWIN = 'NOT_WIN';
 
     public function __construct() {
     }

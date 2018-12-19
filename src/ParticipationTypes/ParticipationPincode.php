@@ -3,6 +3,9 @@
 use Carbon\Carbon;
 use Genetsis\Promotions\Contracts\FilterParticipationInterface;
 use Genetsis\Promotions\Contracts\PromotionParticipationInterface;
+use Genetsis\Promotions\Exceptions\InvalidPincodeException;
+use Genetsis\Promotions\Exceptions\PromotionException;
+use Genetsis\Promotions\Models\Codes;
 use Genetsis\Promotions\Services\PromotionService;
 use Illuminate\Support\Facades\DB;
 
@@ -14,29 +17,45 @@ class ParticipationPincode extends PromotionParticipation implements PromotionPa
      */
     protected $pincode = '';
 
-    protected $promotion_service;
-
     public function __construct(FilterParticipationInterface $filter_participation)
     {
         $this->filter_participation = $filter_participation;
-        $this->promotion_service = \App::make(PromotionService::class);
     }
 
     public function participate() {
 
         try {
+            $participation_result = ParticipationResult::STATUS_OK;
+
             $this->before($this);
 
-            DB::transaction(function () {
+            DB::transaction(function () use (&$participation_result) {
                 \Log::info(sprintf('User %s participate in a Pincode Promotion %s with Pincode %s', $this->getUserId(), $this->promo->name, $this->getPincode()));
 
-                $code = $this->promotion_service->getPincodeByCode($this->getPincode(), $this->promo);
+                //$code = $this->promotion_service->getPincodeByCode($this->getPincode(), $this->promo);
 
-                $this->save();
+                $code = Codes::where('code', $this->getPincode())
+                    ->where('promo_id', $this->getPromoId())
+                    ->where(function($q) {
+                        $q->whereNull('expires')->orWhereDate('expires', '>=', Carbon::today()->toDateString());
+                    })
+                    ->first();
 
-                $code->participation()->associate($this);
-                $code->used = Carbon::now();
-                $code->save();
+                if (empty($code) || ($code->used == null)) {
+                    throw new InvalidPincodeException("Pincode Used or Invalid");
+                } else {
+                    $this->save();
+
+                    $code->participation()->associate($this);
+                    $code->used = Carbon::now();
+                    $code->save();
+
+                    if ($code->win_code) {
+                        $participation_result = ParticipationResult::RESULT_WIN;
+                    } else {
+                        $participation_result = ParticipationResult::RESULT_NOTWIN;
+                    }
+                }
             });
 
             $this->after($this);
@@ -45,7 +64,7 @@ class ParticipationPincode extends PromotionParticipation implements PromotionPa
             return ParticipationResult::i()->setParticipation($this)->setStatus(ParticipationResult::STATUS_KO)->setMessage($e->getMessage());
         }
 
-        return ParticipationResult::i()->setParticipation($this)->setStatus(ParticipationResult::STATUS_OK);
+        return ParticipationResult::i()->setParticipation($this)->setStatus($participation_result);
     }
 
 

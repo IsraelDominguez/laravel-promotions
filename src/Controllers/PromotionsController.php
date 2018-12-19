@@ -60,13 +60,13 @@ class PromotionsController extends AdminController
     public function store(Request $request, ConsumerRewardsService $consumerRewardsService)
     {
         $this->validate($request, [
-            'name' => 'unique:promo|required|max:255',
+            'name' => 'required|unique:promo|max:255',
             'campaign_id' => 'required|integer',
             'type_id' => 'required|integer',
             'max_user_participations' => 'nullable|integer|max:2',
             'max_user_participations_by_day' => 'nullable|integer|max:2',
             'ends' => 'nullable|after:starts',
-            'key' => 'required|alpha_dash|max:50',
+            'key' => 'required|unique:promo|alpha_dash|max:50',
             'entry_point' => 'nullable|alpha_dash|max:100',
             'has_mgm' => 'nullable',
             'legal' => 'nullable|url|max:100',
@@ -297,7 +297,7 @@ class PromotionsController extends AdminController
             'max_user_participations' => 'nullable|digits_between:1,99',
             'max_user_participations_by_day' => 'nullable|digits_between:1,99',
             'ends' => 'nullable|after:starts',
-            'key' => 'required|alpha_dash|max:50',
+            'key' => ['required', Rule::unique('promo')->ignore($id),'alpha_dash', 'max:50'],
             'entry_point' => 'nullable|alpha_dash|max:100',
             'has_mgm' => 'nullable',
             'legal' => 'nullable|url|max:100',

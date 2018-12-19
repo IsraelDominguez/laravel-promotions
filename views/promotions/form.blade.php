@@ -34,7 +34,7 @@
     <div class="col-xs-12 col-md-6">
         <div class="form-group">
             <label for="entry_point">Entry Point</label>
-            <input type="text" class="form-control" name="entry_point" id="entry_point" value="{{ old('key', isset($promotion) ? $promotion->entry_point : null) }}">
+            <input type="text" class="form-control" name="entry_point" id="entry_point" value="{{ old('entry_point', isset($promotion) ? $promotion->entry_point : null) }}">
             <i class="form-group__bar"></i>
         </div>
     </div>

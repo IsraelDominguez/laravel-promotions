@@ -14,6 +14,9 @@ class ParticipationWinMoment extends PromotionParticipation implements Promotion
         $this->filter_participation = $filter_participation;
     }
 
+    /**
+     * @return ParticipationResult
+     */
     public function participate() {
 
         try {
@@ -23,6 +26,7 @@ class ParticipationWinMoment extends PromotionParticipation implements Promotion
 
             DB::transaction(function () use (&$participation_result) {
                 \Log::info(sprintf('User %s participate in a WinMomment Promotion %s', $this->getUserId(), $this->promo->name));
+
                 //Save Participation user Win or Not Win
                 $this->save();
 
