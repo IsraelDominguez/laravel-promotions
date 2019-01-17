@@ -54,13 +54,14 @@ class PromotionsController extends AdminController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Genetsis\Promotions\Exceptions\PromotionException
      */
-    public function store(Request $request, ConsumerRewardsService $consumerRewardsService)
+    public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|unique:promo|max:255',
+            'name' => 'required|unique:promo|max:50',
             'campaign_id' => 'required|integer',
             'type_id' => 'required|integer',
             'max_user_participations' => 'nullable|integer|max:2',
@@ -92,6 +93,7 @@ class PromotionsController extends AdminController
                         $pack = new Pack();
                         $pack->setKey($request->get('pack_key'))->setDisplayName($request->get('pack_name'))->setConfigurations($configurations)->setType('consumer_rewards');
 
+                        $consumerRewardsService = new ConsumerRewardsService();
                         $pack_created = $consumerRewardsService->getConsumerRewards()->getMarketing()->createPack($pack);
                         $pack_id = $pack_created->getObjectId();
                     }
@@ -135,7 +137,8 @@ class PromotionsController extends AdminController
                         $codes[] = [
                             'promo_id' => $promotion->id,
                             'code' => $pincode[0],
-                            'expires' => $pincode[1]
+                            'win_code' => $pincode[1],
+                            'expires' => $pincode[2]
                         ];
                     }
                     if (!empty($codes)) {
@@ -282,9 +285,10 @@ class PromotionsController extends AdminController
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Genetsis\Promotions\Exceptions\PromotionException
      */
-    public function update(Request $request, $id, ConsumerRewardsService $consumerRewardsService)
+    public function update(Request $request, $id)
     {
 
         $this->validate($request, [
@@ -324,6 +328,7 @@ class PromotionsController extends AdminController
                         $pack = new Pack();
                         $pack->setKey($request->get('pack_key'))->setDisplayName($request->get('pack_name'))->setConfigurations($configurations)->setType('consumer_rewards');
 
+                        $consumerRewardsService = new ConsumerRewardsService();
                         $pack_created = $consumerRewardsService->getConsumerRewards()->getMarketing()->createPack($pack);
                         $pack_id = $pack_created->getObjectId();
                     }
@@ -371,7 +376,8 @@ class PromotionsController extends AdminController
                         $codes[] = [
                             'promo_id' => $promotion->id,
                             'code' => $pincode[0],
-                            'expires' => $pincode[1]
+                            'win_code' => $pincode[1],
+                            'expires' => $pincode[2]
                         ];
                     }
                     if (!empty($codes)) {
