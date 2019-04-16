@@ -16,6 +16,7 @@ class ParticipationResult
     const STATUS_KO = 500;
     const RESULT_WIN = 'WIN';
     const RESULT_NOTWIN = 'NOT_WIN';
+    const RESULT_INVALID_PINCODE = 'INVALID_PINCODE';
 
     public function __construct() {
     }

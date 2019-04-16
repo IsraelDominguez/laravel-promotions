@@ -10,8 +10,8 @@
     ],
     "require": {
         "php": "^7.0",
-        "yajra/laravel-datatables-oracle": "~8.0",
-        "IsraelDominguez/sdk-consumer-rewards": "dev-master"
+        "yajra/laravel-datatables-oracle": "^9.0@dev",
+        "israeldominguez/sdk-consumer-rewards": "dev-master"
     },
     "require-dev": {
         "illuminate/database": "~5.4.0",
@@ -20,7 +20,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/IsraelDominguez/sdk-consumer-rewards"
+            "url": "https://github.com/israeldominguez/sdk-consumer-rewards"
         }
     ],
     "autoload": {

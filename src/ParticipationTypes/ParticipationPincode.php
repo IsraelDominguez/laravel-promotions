@@ -36,12 +36,12 @@ class ParticipationPincode extends PromotionParticipation implements PromotionPa
 
                 $code = Codes::where('code', $this->getPincode())
                     ->where('promo_id', $this->getPromoId())
-                    ->where(function($q) {
+                    ->where(function ($q) {
                         $q->whereNull('expires')->orWhereDate('expires', '>=', Carbon::today()->toDateString());
                     })
                     ->first();
 
-                if (empty($code) || ($code->used == null)) {
+                if (empty($code) || ($code->used != null)) {
                     throw new InvalidPincodeException("Pincode Used or Invalid");
                 } else {
                     $this->save();
@@ -60,11 +60,13 @@ class ParticipationPincode extends PromotionParticipation implements PromotionPa
 
             $this->after($this);
 
+        } catch (InvalidPincodeException $e) {
+            return ParticipationResult::i()->setParticipation($this)->setStatus(ParticipationResult::STATUS_KO)->setMessage($e->getMessage())->setResult(ParticipationResult::RESULT_INVALID_PINCODE);
         } catch (\Exception $e) {
             return ParticipationResult::i()->setParticipation($this)->setStatus(ParticipationResult::STATUS_KO)->setMessage($e->getMessage());
         }
 
-        return ParticipationResult::i()->setParticipation($this)->setStatus($participation_result);
+        return ParticipationResult::i()->setParticipation($this)->setStatus(ParticipationResult::STATUS_OK)->setResult($participation_result);
     }
 
 

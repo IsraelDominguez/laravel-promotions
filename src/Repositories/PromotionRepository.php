@@ -41,6 +41,14 @@ class PromotionRepository {
         }
     }
 
+    public function getPromotionActiveByKey($promotion_key) {
+        try {
+            return Promotion::where('starts','<=',now())->where('ends','>=',now())->where('key', $promotion_key)->firstOrFail();
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+
 
     private function getPromotionActiveByCampagin(Campaign $campagin) {
         try {
