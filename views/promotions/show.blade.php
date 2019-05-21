@@ -55,10 +55,10 @@
                                 <tr>
                                     <td>#</td>
                                     <td>User ID</td>
-                                    <td>Email</td>
                                     <td>Date</td>
                                     <td>Origin</td>
-                                    <td>Sponsor</td>
+                                    @if ($promotion->has_mgm) <td>Sponsor</td> @endif
+                                    <td>Status</td>
                                     @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::PINCODE_TYPE) <td>Pincode</td> @endif
                                     @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::MOMENT_TYPE) <td>Moment</td><td>Code</td> @endif
                                     @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::QRS_TYPE) <td>QR</td> @endif
@@ -189,10 +189,11 @@
                 columns: [
                     {data: 'id'},
                     {data: 'user_id'},
-                    {data: 'user.email', orderable: true},
                     {data: 'date'},
                     {data: 'origin'},
-                    {data: 'sponsor'},
+                    @if ($promotion->has_mgm)
+                        {data: 'sponsor'},
+                    @endif
                     @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::PINCODE_TYPE)
                         {data: 'code.code'},
                     @endif
@@ -204,10 +205,13 @@
                         {data: 'qr.object_id', orderable:true, searchable: true},
                     @endif
                     {data: 'status'},
-                    {data: 'extra', name: 'extra', orderable: false, searchable: true},
-                    {data: 'delete', name: 'delete', orderable: false, searchable: false, className: 'delete'},
-                    {data: 'edit', name: 'edit', orderable: false, searchable: false, className: 'edit'}
-                ]
+                    @if (count($promotion->extra_fields)>0)
+                        {data: 'extra', name: 'extra', orderable: false, searchable: true},
+                    @endif
+                    {data: 'delete', name: 'delete', orderable: false, searchable: false, className: 'delete pr-0'},
+                    {data: 'edit', name: 'edit', orderable: false, searchable: false, className: 'edit pl-0'}
+                ],
+                order: [[2, 'desc']]
             });
 
         @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::MOMENT_TYPE)
