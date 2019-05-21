@@ -14,6 +14,11 @@ class ExtraFieldsParticipations extends Model
     public $incrementing = false;
     public $timestamps = false;
 
+
+    public function extra_field() {
+        return $this->hasOne(ExtraFields::class, 'key', 'key');
+    }
+
     /**
      * Set the keys for a save update query.
      *

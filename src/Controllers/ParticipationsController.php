@@ -61,18 +61,18 @@ class ParticipationsController extends AdminController
             return Datatables::of($participations)
                 ->addColumn('extra', function ($participation) {
                     $text = '';
-                    foreach ($participation->extraFields as $extra_field) {
-                        switch ($extra_field->type) {
+                    foreach ($participation->extraFields as $extra_field_participation) {
+                        switch ($extra_field_participation->extra_field->type) {
                             case ExtraFields::TYPE_STRING:
                             case ExtraFields::TYPE_NUMBER:
                             case ExtraFields::TYPE_DATE:
-                                $text .= $extra_field->key . ": " . $extra_field->value . '<br/>';
+                                $text .= $extra_field_participation->key . ": " . $extra_field_participation->value . '<br/>';
                                 break;
                             case ExtraFields::TYPE_IMAGE:
-                                $text .= '<a href="/test-show-image/'.$extra_field->value.'" target="_blank">'.$extra_field->key.'</a><br/>';
+                                $text .= '<a href="/test-show-image/'.$extra_field_participation->value.'" target="_blank">'.$extra_field_participation->key.'</a><br/>';
                                 break;
                             case ExtraFields::TYPE_LINK:
-                                $text .= '<a href="'.$extra_field->value.'" target="_blank">'.$extra_field->value.'</a><br/>';
+                                $text .= '<a href="'.$extra_field_participation->value.'" target="_blank">'.$extra_field_participation->value.'</a><br/>';
                                 break;
                         }
                     }
