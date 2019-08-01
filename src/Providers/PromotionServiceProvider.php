@@ -29,7 +29,7 @@ class PromotionServiceProvider extends ServiceProvider
         $this->handleCommands();
         $this->registerModelFactories();
 
-        \AdminMenu::add('promotion::partials.promotion_menu');
+        \AdminMenu::add('promotion::partials.promotion_menu', [], 15);
 
         Storage::disk('local')->putFileAs('samples', new File(__DIR__.'/../../config/winmoment_sample.csv'), 'winmoment_sample.csv');
         Storage::disk('local')->putFileAs('samples', new File(__DIR__.'/../../config/pincodes_sample.csv'), 'pincodes_sample.csv');
