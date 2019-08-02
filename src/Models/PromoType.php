@@ -18,8 +18,6 @@ class PromoType extends Model
     const MOMENT_TYPE = 'win-moment';
     const QRS_TYPE = 'qrs';
 
-    const PROMO_TYPES = array('', self::SORTEO_TYPE, self::MOMENT_TYPE, self::PINCODE_TYPE, self::QRS_TYPE);
-
     /**
      * Scope to query only enable promo types
      * @param  \Illuminate\Database\Eloquent\Builder  $query
