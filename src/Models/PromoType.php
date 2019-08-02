@@ -21,6 +21,15 @@ class PromoType extends Model
     const PROMO_TYPES = array('', self::SORTEO_TYPE, self::MOMENT_TYPE, self::PINCODE_TYPE, self::QRS_TYPE);
 
     /**
+     * Scope to query only enable promo types
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeEnabled($query) {
+        return $query->where('enabled',1);
+    }
+
+    /**
      * Get the Campaign record associated with the Promotion
      */
     public function promotions()

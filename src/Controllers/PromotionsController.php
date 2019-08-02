@@ -46,7 +46,7 @@ class PromotionsController extends AdminController
     public function create()
     {
         $campaigns = Campaign::latest()->get();
-        $promo_types = PromoType::all();
+        $promo_types = PromoType::enabled()->get();
 
         return view('promotion::promotions.create', compact('campaigns', 'promo_types'));
     }
