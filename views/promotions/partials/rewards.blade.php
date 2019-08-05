@@ -8,11 +8,6 @@
 @prepend('custom-js')
     <script>
         $(document).ready(function() {
-            $("#new_reward").click(function (e) {
-                e.preventDefault();
-                add_reward('', '', '');
-            });
-
             @if (isset($promotion))
                 if ({{count($promotion->rewards)}} > 0) {
                     @foreach($promotion->rewards as $reward)
@@ -24,6 +19,11 @@
             @else
                 add_reward('','','');
             @endif
+
+            $("#new_reward").click(function (e) {
+                e.preventDefault();
+                add_reward('', '', '');
+            });
         });
     </script>
 @endprepend

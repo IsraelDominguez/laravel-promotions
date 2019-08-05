@@ -6,6 +6,7 @@ use ConsumerRewards\SDK\Transfer\Pack;
 use Genetsis\Admin\Controllers\AdminController;
 use Carbon\Carbon;
 use Genetsis\Promotions\Models\Campaign;
+use Genetsis\Promotions\Models\Entrypoint;
 use Genetsis\Promotions\Models\ExtraFields;
 use Genetsis\Promotions\Models\Participation;
 use Genetsis\Promotions\Models\Promotion;
@@ -482,4 +483,18 @@ class PromotionsController extends AdminController
             ->with('success','Promotion deleted successfully');
     }
 
+    /**
+     * Get all Entry Points for a Campaign
+     * @param $id int campaign_id
+     * @return \Illuminate\Http\Response
+     */
+    public function getEntrypoints($id) {
+        try {
+            $entrypoints = Entrypoint::where('campaign_id', $id)->get();
+        } catch (\Exception $e) {
+            return $this->sendError('Error', $e->getMessage());
+        }
+
+        return response()->json($entrypoints, 200);
+    }
 }

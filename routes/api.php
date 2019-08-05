@@ -13,5 +13,13 @@ Route::group(['middleware' => ['web']], function () {
 
         Route::get('promotion/{id}/moments', 'Genetsis\Promotions\Controllers\PromotionsController@moments');
         Route::get('promotion/{id}/pincodes', 'Genetsis\Promotions\Controllers\PromotionsController@pincodes');
+
+        Route::prefix('entrypoint')->group(function () {
+            Route::get('list/{campaign_id}', 'Genetsis\Promotions\Controllers\PromotionsController@getEntrypoints')->name('campaign.entrypoints');
+        });
     });
+
+
 });
+
+

@@ -146,7 +146,7 @@
             <input type="file" class="form-control" name="legal_file" id="legal_file" accept=".pdf">
 
             <div class="input-group actions">
-                <span class="input-group-addon"><a href="{{\Str::startsWith($promotion->legal, 'http') ? $promotion->legal : Storage::disk('public')->url($promotion->legal)}}" class="actions__item zmdi zmdi-link" target="_blank"></a></span>
+                <span class="input-group-addon"><a href="{{ isset($promotion) ? (\Str::startsWith($promotion->legal, 'http') ? $promotion->legal : Storage::disk('public')->url($promotion->legal))  : '#'}}" class="actions__item zmdi zmdi-link" target="_blank"></a></span>
                 <div class="form-group">
                     <input type="text" class="form-control" maxlength="100" placeholder="or link to file" name="legal" id="legal" value="{{ old('legal', $promotion->legal ?? null) }}">
                     <i class="form-group__bar"></i>

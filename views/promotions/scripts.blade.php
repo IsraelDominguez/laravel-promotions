@@ -37,7 +37,7 @@
 
         if (campaign_id != '') {
             $.ajax({
-                url: '/api/entrypoint/list/' + campaign_id,
+                url: '/api/v1/entrypoint/list/' + campaign_id,
                 method: 'GET',
                 datatype: 'json',
                 contentType: 'application/json',
