@@ -1,29 +1,28 @@
 <div class="row">
-    <div class="col-xs-12 col-md-6">
+    <div class="col-md-6">
         <div class="form-group">
-            <label>Name</label>
-            <input type="text" class="form-control" name="name" id="name" value="{{ old('name', isset($promotion) ? $promotion->name : null) }}">
+            <label>Name *</label>
+            <input type="text" class="form-control" name="name" id="name" value="{{ old('name', $promotion->name ?? null) }}" required>
             <i class="form-group__bar"></i>
         </div>
     </div>
-    <div class="col-xs-12 col-md-6">
+    <div class="col-md-6">
         <div class="form-group">
-            <label for="key">Key</label>
-            <input type="text" class="form-control" name="key" id="key" value="{{ old('key', isset($promotion) ? $promotion->key : null) }}">
+            <label for="key">Key *</label>
+            <input type="text" class="form-control" name="key" id="key" value="{{ old('key', $promotion->key ?? null) }}">
             <i class="form-group__bar"></i>
         </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-xs-12 col-md-6">
+
+    <div class="col-md-6">
         <div class="form-group">
-            <label>Campaign</label>
+            <label>Campaign *</label>
 
             <select class="select2" name="campaign_id">
                 <option value="">- Select -</option>
                 @foreach ($campaigns as $campaign)
                     <option value="{{$campaign->id}}"
-                    @if ((old('campaign_id', isset($promotion) ? $promotion->campaign->id : null) == $campaign->id))
+                    @if ((old('campaign_id', $promotion->campaign->id ?? null) == $campaign->id))
                         selected
                     @endif
                     >{{$campaign->name}}</option>
@@ -31,18 +30,18 @@
             </select>
         </div>
     </div>
-    <div class="col-xs-12 col-md-6">
+    <div class="col-md-6">
         <div class="form-group">
-            <label for="entry_point">Entry Point</label>
+            <label for="entry_point">Entry Point *</label>
             <input type="text" class="form-control" name="entry_point" id="entry_point" value="{{ old('entry_point', isset($promotion) ? $promotion->entry_point : null) }}">
             <i class="form-group__bar"></i>
         </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-xs-12 col-md-6">
+
+
+    <div class="col-md-6">
         <div class="form-group">
-            <label>Promo Type</label>
+            <label>Promo Type *</label>
 
             <select class="select2" name="type_id" id="promo_type">
                 <option value="">- Select -</option>
@@ -56,7 +55,22 @@
             </select>
         </div>
     </div>
-    <div class="col-xs-12 col-md-6">
+
+
+@include("promotion::promotions.types.qrs")
+
+@include("promotion::promotions.types.winmoment")
+
+@include("promotion::promotions.types.pincode")
+
+    <div class="col-6">
+        <div class="form-group">
+            <label>Max User Participations</label>
+            <input type="text" class="form-control" maxlength="2" name="max_user_participations" id="max_user_participations" value="{{ old('max_user_participations', isset($promotion) ? $promotion->max_user_participations : "1") }}">
+            <i class="form-group__bar"></i>
+        </div>
+    </div>
+    <div class="col-md-6">
         <div class="form-group">
             <label>Has MGM</label>
             <br>
@@ -66,127 +80,15 @@
             </div>
         </div>
     </div>
-</div>
+{{--    <div class="col-6">--}}
+{{--        <div class="form-group">--}}
+{{--            <label>Max User Participations By Day</label>--}}
+{{--            <input type="text" class="form-control" maxlength="2" name="max_user_participations_by_day" id="max_user_participations_by_day" value="{{ old('max_user_participations_by_day', isset($promotion) ? $promotion->max_user_participations_by_day : null) }}">--}}
+{{--            <i class="form-group__bar"></i>--}}
+{{--        </div>--}}
+{{--    </div>--}}
 
-<div class="card fields-types card-outline-info" style="display:{{(isset($promotion)&&($promotion->type->code == \Genetsis\Promotions\Models\PromoType::QRS_TYPE)) ? 'block' : 'none'}};" id="fields-type-4">
-    <div class="card-header">
-        <h2 class="card-title">Consumer Rewards Pack</h2>
-        <small class="card-subtitle">If you need create a new Pack, left empty pack field</small>
-    </div>
-    <div class="row card-block">
-        <div class="col-xs-12 col-md-6">
-            <div class="form-group">
-                <label>Pack</label>
-                <input type="text" class="form-control" maxlength="100" name="pack" id="pack" value="{{ old('pack', isset($promotion)&&(isset($promotion->qrspack)) ? $promotion->qrspack->pack : null) }}">
-                <i class="form-group__bar"></i>
-            </div>
-        </div>
-        <div class="col-xs-12 col-md-6">
-            <div class="form-group">
-                <label>Name</label>
-                <input type="text" class="form-control" maxlength="100" name="pack_name" id="pack_name" value="{{ old('pack_name', isset($promotion)&&(isset($promotion->qrspack)) ? $promotion->qrspack->name : null) }}">
-                <i class="form-group__bar"></i>
-            </div>
-        </div>
-        <div class="col-xs-12 col-md-6">
-            <div class="form-group">
-                <label>Key</label>
-                <input type="text" class="form-control" maxlength="100" name="pack_key" id="pack_key" value="{{ old('pack_key', isset($promotion)&&(isset($promotion->qrspack)) ? $promotion->qrspack->key : null) }}">
-                <i class="form-group__bar"></i>
-            </div>
-        </div>
-        <div class="col-xs-12 col-md-6">
-            <div class="form-group">
-                <label>Max Qrs</label>
-                <input type="text" class="form-control" maxlength="5" name="pack_max" id="pack_max" value="{{ old('pack_max', isset($promotion)&&(isset($promotion->qrspack)) ? $promotion->qrspack->max : null) }}">
-                <i class="form-group__bar"></i>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<div class="card fields-types card-outline-info" style="display:{{(isset($promotion)&&($promotion->type->code == \Genetsis\Promotions\Models\PromoType::MOMENT_TYPE)) ? 'block' : 'none'}};" id="fields-type-3">
-    <div class="card-header">
-        <h2 class="card-title">Win Moment Data</h2>
-    </div>
-    <div class="row card-block">
-        <div class="col-xs-12 col-md-6">
-            <div class="form-group">
-                <label>Import File (csv) <a href="{{route('download-sample', ['file' => 'winmoment_sample'])}}" target="_blank">download sample</a></label>
-                <input type="file" class="form-control" name="win_moment_file" id="win_moment_file" accept=".csv">
-                <i class="form-group__bar"></i>
-            </div>
-        </div>
-        <div class="col-xs-12 col-md-6">
-            <div class="form-group">
-                <label>Remove Previous Moments</label>
-                <br>
-                <div class="toggle-switch">
-                    <input type="checkbox" name="remove_prev" class="toggle-switch__checkbox">
-                    <i class="toggle-switch__helper"></i>
-                </div>
-            </div>
-        </div>
-        @if(!empty($promotion))
-        <div class="col-xs-12 col-md-6">
-            Total Moments: {{ count($promotion->moment) }}
-            <br/>
-            Used: {{$promotion->participations->filter(function($p) { return $p->moment; })->count()}}
-        </div>
-        @endif
-    </div>
-</div>
-<div class="card fields-types card-outline-info" style="display:{{(isset($promotion)&&($promotion->type->code == \Genetsis\Promotions\Models\PromoType::PINCODE_TYPE)) ? 'block' : 'none'}};" id="fields-type-2">
-    <div class="card-header">
-        <h2 class="card-title">Pincode Data</h2>
-    </div>
-    <div class="row card-block">
-        <div class="col-xs-12 col-md-6">
-            <div class="form-group">
-                <label>Import File (csv) <a href="{{route('download-sample', ['file' => 'pincodes_sample'])}}" target="_blank">download sample</a></label>
-                <input type="file" class="form-control" name="pincodes_file" id="pincodes_file" accept=".csv">
-                <i class="form-group__bar"></i>
-            </div>
-        </div>
-        <div class="col-xs-12 col-md-6">
-            <div class="form-group">
-                <label>Remove Previous Moments</label>
-                <br>
-                <div class="toggle-switch">
-                    <input type="checkbox" name="remove_prev" class="toggle-switch__checkbox">
-                    <i class="toggle-switch__helper"></i>
-                </div>
-            </div>
-        </div>
-        @if(!empty($promotion))
-            <div class="col-xs-12 col-md-6">
-                Total Moments: {{ count($promotion->codes) }}
-                <br/>
-                Used: {{$promotion->participations->filter(function($p) { return $p->code; })->count()}}
-            </div>
-        @endif
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-xs-12 col-md-6">
-        <div class="form-group">
-            <label>Max User Participations</label>
-            <input type="text" class="form-control" maxlength="2" name="max_user_participations" id="max_user_participations" value="{{ old('max_user_participations', isset($promotion) ? $promotion->max_user_participations : null) }}">
-            <i class="form-group__bar"></i>
-        </div>
-    </div>
-    <div class="col-xs-12 col-md-6">
-        <div class="form-group">
-            <label>Max User Participations By Day</label>
-            <input type="text" class="form-control" maxlength="2" name="max_user_participations_by_day" id="max_user_participations_by_day" value="{{ old('max_user_participations_by_day', isset($promotion) ? $promotion->max_user_participations_by_day : null) }}">
-            <i class="form-group__bar"></i>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-xs-12 col-md-6">
+    <div class="col-md-6">
         <div class="form-group">
             <label>Starts</label>
             <div class="input-group">
@@ -199,7 +101,7 @@
         </div>
     </div>
 
-    <div class="col-xs-12 col-md-6">
+    <div class="col-md-6">
         <div class="form-group">
             <label>Ends</label>
             <div class="input-group">
@@ -211,31 +113,24 @@
             </div>
         </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-xs-12 col-md-6">
+
+    <div class="col-md-6">
         <div class="form-group">
-            <label>Legal LInk</label>
-            <input type="text" class="form-control" maxlength="100" name="legal" id="legal" value="{{ old('legal', isset($promotion) ? $promotion->legal : null) }}">
+            <label>Legal</label>
+            <input type="file" class="form-control" name="legal_file" id="legal_file" accept=".pdf">
+            <input type="text" class="form-control" maxlength="100" placeholder="or link to file" name="legal" id="legal" value="{{ old('legal', isset($promotion) ? $promotion->legal : null) }}">
             <i class="form-group__bar"></i>
         </div>
     </div>
+
+
+@includeWhen(config('promotion.front_templates_enabled'), 'promotion::promotions.templates')
+
+@includeWhen(config('promotion.extra_fields_enabled'), 'promotion::promotions.partials.extrafields')
+@includeWhen(config('promotion.rewards_fields_enabled'), 'promotion::promotions.partials.rewards')
+
 </div>
-<div class="row">
-    <div class="col-xs-12 col-md-6">
-        <h3 class="card-block__title">Extra Fields</h3>
-        <div id="extra_fields">
 
-        </div>
-    </div>
-
-    <div class="col-xs-12 col-md-6">
-        <h3 class="card-block__title">Rewards</h3>
-        <div id="rewards">
-
-        </div>
-    </div>
-</div>
 
 <ul class="nav justify-content-center">
     <li class="nav-item">
