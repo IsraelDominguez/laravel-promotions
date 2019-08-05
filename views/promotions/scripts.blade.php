@@ -1,6 +1,10 @@
 
 <script>
     $(document).ready(function() {
+        $('#name').blur(function() {
+            $("#key").val(slugify($('#name').val()));
+        });
+
         $("#submit").click(function () {
             $("#form").submit();
         });
