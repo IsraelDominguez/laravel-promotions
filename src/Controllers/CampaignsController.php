@@ -1,5 +1,7 @@
 <?php namespace Genetsis\Promotions\Controllers;
 
+use App\Models\DruidApp;
+use App\Models\Entrypoint;
 use Genetsis\Admin\Controllers\AdminController;
 use Genetsis\Promotions\Models\Campaign;
 use Illuminate\Http\Request;
@@ -115,4 +117,59 @@ class CampaignsController extends AdminController
             ->with('success','Campaign deleted successfully');
     }
 
+    /**
+     * Refresh App Entrypoints from Druid
+     *
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function refresh($id)
+    {
+        $campaign = Campaign::findOrFail($id);
+
+        $druid_entrypoints = \RestApi::searchEntrypointsBy(['app'=>$id]);
+
+        $entrypoints = [];
+
+        foreach ($druid_entrypoints->getResources('entrypoints') as $druid_entrypoint) {
+
+            $fields = collect($druid_entrypoint->getConfigField())->map(function ($field) {
+                return $field->getField()->getKey();
+            })->toJson();
+
+            $ids = collect($druid_entrypoint->getConfigId())->map(function ($idfield) {
+                return $idfield->getField()->getName();
+            })->toJson();
+
+            $entrypoint = new Entrypoint();
+            $entrypoint->key = $druid_entrypoint->getKey();
+            $entrypoint->name = $druid_entrypoint->getDescription();
+            $entrypoint->ids = $ids;
+            $entrypoint->fields = $fields;
+
+            array_push($entrypoints, $entrypoint);
+        }
+
+
+        $campaign->entrypoints()->each(function($relation) use ($entrypoints){
+            if (!collect($entrypoints)->contains('key', $relation->key)) {
+                return $relation->delete();
+            }
+        });
+
+        collect($entrypoints)->map(function($entrypoint) use ($campaign) {
+            $campaign->entrypoints()->updateOrCreate(
+                ['key' => $entrypoint->key],
+                [
+                    'name' => $entrypoint->name,
+                    'ids' => json_encode($entrypoint->ids),
+                    'fields' => json_encode($entrypoint->fields)
+                ]
+            );
+        });
+
+
+        return redirect()->route('apps.edit', $id)
+            ->with('success','Entrypoints refresh successfully');
+    }
 }

@@ -12,6 +12,7 @@ Route::group(['middleware' => ['web']], function () {
                 'only' => ['index', 'show', 'edit', 'create', 'store', 'update', 'destroy'],
                 'names' => ['index' => 'campaigns.home']
             ]);
+            Route::get('campaigns/{id}/refresh', 'CampaignsController@refresh')->name('campaign.refresh');
 
             Route::resource('promotions', 'PromotionsController', [
                 'only' => ['index', 'show', 'edit', 'create', 'store', 'update', 'destroy'],

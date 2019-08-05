@@ -2,11 +2,12 @@
 
 namespace Genetsis\Promotions\Models;
 
+use Genetsis\Promotions\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
 
 class Campaign extends Model
 {
-
+    use Encryptable;
     /**
      * The table associated with the model.
      *
@@ -14,7 +15,9 @@ class Campaign extends Model
      */
     protected $table = 'promo_campaign';
 
-    protected $fillable = ['name', 'starts', 'ends', 'key', 'entry_point'];
+    protected $fillable = ['name', 'starts', 'ends', 'key', 'entry_point', 'client_id', 'secret'];
+
+    protected $encryptable = ['secret'];
 
     /**
      * Get the promotions for a campaign.
@@ -24,6 +27,14 @@ class Campaign extends Model
         return $this->hasMany(Promotion::class);
     }
 
+    /**
+     * Get the Entrypoints associated to this Druid App
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function entrypoints(){
+        return $this->hasMany(Entrypoint::class, 'campaign_id', 'id');
+    }
 
     /**
      * The "booting" method of the model.

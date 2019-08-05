@@ -14,8 +14,10 @@
         {{ method_field('PATCH') }}
 
         @include('promotion::campaigns.form')
-
     </form>
+
+    @includeWhen(!empty($campaign->client_id) && !empty($campaign->secret), 'promotion::campaigns.entrypoints')
+
 @endsection
 
 @push('custom-js')
