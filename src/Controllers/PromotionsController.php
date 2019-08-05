@@ -151,28 +151,32 @@ class PromotionsController extends AdminController
                 }
         }
 
-        if ($extra_fields_keys = $request->get('extra_field_keys')) {
-            foreach ($extra_fields_keys as $key => $extra_field) {
-                if ($extra_field != null) {
-                    $extraField = new ExtraFields();
-                    $extraField->key = $extra_field;
-                    $extraField->name = $request->get('extra_field_names')[$key];
-                    $extraField->type = $request->get('extra_field_types')[$key];
-                    $extraField->promo_id = $promotion->id;
-                    $extraField->save();
+        if (config('promotion.extra_fields_enabled')) {
+            if ($extra_fields_keys = $request->get('extra_field_keys')) {
+                foreach ($extra_fields_keys as $key => $extra_field) {
+                    if ($extra_field != null) {
+                        $extraField = new ExtraFields();
+                        $extraField->key = $extra_field;
+                        $extraField->name = $request->get('extra_field_names')[$key];
+                        $extraField->type = $request->get('extra_field_types')[$key];
+                        $extraField->promo_id = $promotion->id;
+                        $extraField->save();
+                    }
                 }
             }
         }
 
-        if ($rewards_keys = $request->get('reward_keys')) {
-            foreach ($rewards_keys as $key => $reward) {
-                if ($reward != null) {
-                    $rewardField = new Rewards();
-                    $rewardField->key = $reward;
-                    $rewardField->name = $request->get('reward_names')[$key];
-                    $rewardField->stock = ($request->get('reward_stocks')[$key]) ?: 0;
-                    $rewardField->promo_id = $promotion->id;
-                    $rewardField->save();
+        if (config('promotion.rewards_fields_enabled')) {
+            if ($rewards_keys = $request->get('reward_keys')) {
+                foreach ($rewards_keys as $key => $reward) {
+                    if ($reward != null) {
+                        $rewardField = new Rewards();
+                        $rewardField->key = $reward;
+                        $rewardField->name = $request->get('reward_names')[$key];
+                        $rewardField->stock = ($request->get('reward_stocks')[$key]) ?: 0;
+                        $rewardField->promo_id = $promotion->id;
+                        $rewardField->save();
+                    }
                 }
             }
         }
@@ -307,7 +311,8 @@ class PromotionsController extends AdminController
             'key' => ['required', Rule::unique('promo')->ignore($id),'alpha_dash', 'max:50'],
             'entry_point' => 'nullable|alpha_dash|max:100',
             'has_mgm' => 'nullable',
-            'legal' => 'nullable|url|max:100',
+            'legal' => 'nullable|max:100',
+            'legal_file' => 'nullable|file|mimes:pdf',
             'pack' => 'nullable|alpha_num|max:100',
             'pack_key' => 'nullable|alpha_dash|max:100',
             'pack_name' => 'nullable|max:100',
@@ -320,6 +325,11 @@ class PromotionsController extends AdminController
 
         $promotion = Promotion::find($id);
         $promotion->update($request->all());
+
+        if ($request->hasFile('legal_file')&&($request->file('legal_file')->isValid())) {
+            $promotion->legal = $request->legal_file->storeAs('legal', $request->file('legal_file')->getClientOriginalName(), 'public');
+            $promotion->update();
+        }
 
         switch ($promotion->type->code) {
             case PromoType::QRS_TYPE:
@@ -390,64 +400,66 @@ class PromotionsController extends AdminController
                 break;
         }
 
-
-        if ($extra_fields_keys = $request->get('extra_field_keys')) {
-            foreach ($promotion->extra_fields as $extra_field) {
-                if (!in_array($extra_field->key, $extra_fields_keys)) {
-                    Log::debug("Elimino extra field: ". $extra_field->key);
-                    ExtraFields::destroy($extra_field->key);
+        if (config('promotion.extra_fields_enabled')) {
+            if ($extra_fields_keys = $request->get('extra_field_keys')) {
+                foreach ($promotion->extra_fields as $extra_field) {
+                    if (!in_array($extra_field->key, $extra_fields_keys)) {
+                        Log::debug("Elimino extra field: " . $extra_field->key);
+                        ExtraFields::destroy($extra_field->key);
+                    }
                 }
-            }
 
-            foreach ($extra_fields_keys as $key => $extra_field) {
-                if ($extra_field != null) {
-                    if ($promotion->extra_fields->contains('key',$extra_field)) {
-                        Log::debug("Edit extra field: ". $extra_field);
-                        ExtraFields::where('key', $extra_field)
-                            ->update([
-                                'name' => $request->get('extra_field_names')[$key],
-                                'type' => $request->get('extra_field_types')[$key]
+                foreach ($extra_fields_keys as $key => $extra_field) {
+                    if ($extra_field != null) {
+                        if ($promotion->extra_fields->contains('key', $extra_field)) {
+                            Log::debug("Edit extra field: " . $extra_field);
+                            ExtraFields::where('key', $extra_field)
+                                ->update([
+                                    'name' => $request->get('extra_field_names')[$key],
+                                    'type' => $request->get('extra_field_types')[$key]
                                 ]);
-                    } else {
-                        Log::debug("New extra field: ". $extra_field);
+                        } else {
+                            Log::debug("New extra field: " . $extra_field);
 
-                        $extraField = new ExtraFields();
-                        $extraField->key = $extra_field;
-                        $extraField->name = $request->get('extra_field_names')[$key];
-                        $extraField->type = $request->get('extra_field_types')[$key];
-                        $extraField->promo_id = $promotion->id;
+                            $extraField = new ExtraFields();
+                            $extraField->key = $extra_field;
+                            $extraField->name = $request->get('extra_field_names')[$key];
+                            $extraField->type = $request->get('extra_field_types')[$key];
+                            $extraField->promo_id = $promotion->id;
 
-                        Log::debug("Extra field: type" .$extraField->type);
+                            Log::debug("Extra field: type" . $extraField->type);
 
-                        $extraField->save();
+                            $extraField->save();
+                        }
                     }
                 }
             }
         }
-
-        if ($rewards_keys = $request->get('reward_keys')) {
-            foreach ($promotion->rewards as $reward) {
-                if (!in_array($reward->key, $rewards_keys)) {
-                    Log::debug("Elimino reward field: ". $reward->key);
-                    Rewards::destroy($reward->key);
+        if (config('promotion.rewards_fields_enabled')) {
+            if ($rewards_keys = $request->get('reward_keys')) {
+                foreach ($promotion->rewards as $reward) {
+                    if (!in_array($reward->key, $rewards_keys)) {
+                        Log::debug("Elimino reward field: " . $reward->key);
+                        Rewards::destroy($reward->key);
+                    }
                 }
-            }
 
 
-            foreach ($rewards_keys as $key => $reward) {
-                if ($reward != null) {
-                    if ($promotion->rewards->contains('key',$reward)) {
-                        Log::debug("Edit reward: ". $reward);
-                        Rewards::where('key', $reward)
-                            ->update(['name' => $request->get('reward_names')[$key], 'stock'=>($request->get('reward_stocks')[$key]) ?: 0]);
-                    } else {
-                        Log::debug("New reward: ". $extra_field);
-                        $rewardField = new Rewards();
-                        $rewardField->key = $reward;
-                        $rewardField->name = $request->get('reward_names')[$key];
-                        $rewardField->stock = ($request->get('reward_stocks')[$key]) ?: 0;
-                        $rewardField->promo_id = $promotion->id;
-                        $rewardField->save();
+                foreach ($rewards_keys as $key => $reward) {
+                    if ($reward != null) {
+                        if ($promotion->rewards->contains('key', $reward)) {
+                            Log::debug("Edit reward: " . $reward);
+                            Rewards::where('key', $reward)
+                                ->update(['name' => $request->get('reward_names')[$key], 'stock' => ($request->get('reward_stocks')[$key]) ?: 0]);
+                        } else {
+                            Log::debug("New reward: " . $extra_field);
+                            $rewardField = new Rewards();
+                            $rewardField->key = $reward;
+                            $rewardField->name = $request->get('reward_names')[$key];
+                            $rewardField->stock = ($request->get('reward_stocks')[$key]) ?: 0;
+                            $rewardField->promo_id = $promotion->id;
+                            $rewardField->save();
+                        }
                     }
                 }
             }

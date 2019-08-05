@@ -133,20 +133,27 @@
             <div class="input-group">
                 <span class="input-group-addon"><i class="zmdi zmdi-calendar"></i></span>
                 <div class="form-group">
-                    <input type="text" class="form-control my-datetime-picker flatpickr-input" name="ends" id="ends" value="{{ old('ends', isset($promotion) ? $promotion->ends : null)  }}">
+                    <input type="text" class="form-control my-datetime-picker flatpickr-input" name="ends" id="ends" value="{{ old('ends', $promotion->ends ?? null)  }}">
                     <i class="form-group__bar"></i>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="col-md-6">
+    <div class="col-6">
         <div class="form-group">
             <label>Legal</label>
             <input type="file" class="form-control" name="legal_file" id="legal_file" accept=".pdf">
-            <input type="text" class="form-control" maxlength="100" placeholder="or link to file" name="legal" id="legal" value="{{ old('legal', isset($promotion) ? $promotion->legal : null) }}">
-            <i class="form-group__bar"></i>
+
+            <div class="input-group actions">
+                <span class="input-group-addon"><a href="{{\Str::startsWith($promotion->legal, 'http') ? $promotion->legal : Storage::disk('public')->url($promotion->legal)}}" class="actions__item zmdi zmdi-link" target="_blank"></a></span>
+                <div class="form-group">
+                    <input type="text" class="form-control" maxlength="100" placeholder="or link to file" name="legal" id="legal" value="{{ old('legal', $promotion->legal ?? null) }}">
+                    <i class="form-group__bar"></i>
+                </div>
+            </div>
         </div>
+
     </div>
 
 
