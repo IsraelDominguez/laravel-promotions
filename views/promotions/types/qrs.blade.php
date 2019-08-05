@@ -1,5 +1,5 @@
 
-<div class="card fields-types card-outline-info" style="display:{{(isset($promotion)&&($promotion->type->code == \Genetsis\Promotions\Models\PromoType::QRS_TYPE)) ? 'block' : 'none'}};" id="fields-type-4">
+<div class="col-12 card fields-types card-outline-info" style="display:{{(isset($promotion)&&($promotion->type->code == \Genetsis\Promotions\Models\PromoType::QRS_TYPE)) ? 'block' : 'none'}};" id="fields-type-4">
     <div class="card-header">
         <h2 class="card-title">Consumer Rewards Pack</h2>
         <small class="card-subtitle">If you need create a new Pack, left empty pack field</small>

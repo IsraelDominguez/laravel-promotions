@@ -31,7 +31,9 @@
 
     function fillEntrypoints(campaign_id) {
         $('#entry_points').empty();
-        $('#entry_points').html('<option selected="selected" value="">- Select -</option>');
+        $('#entry_points').html('<option selected="selected" value="">- Select -</option>\n' +
+            '<option value="simple">New Simple Fields</option>\n' +
+            '<option value="complete">New Complete Fields</option>');
 
         if (campaign_id != '') {
             $.ajax({

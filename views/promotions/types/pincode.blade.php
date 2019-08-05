@@ -1,4 +1,4 @@
-<div class="card fields-types card-outline-info" style="display:{{(isset($promotion)&&($promotion->type->code == \Genetsis\Promotions\Models\PromoType::PINCODE_TYPE)) ? 'block' : 'none'}};" id="fields-type-2">
+<div class="col-12 card fields-types card-outline-info" style="display:{{(isset($promotion)&&($promotion->type->code == \Genetsis\Promotions\Models\PromoType::PINCODE_TYPE)) ? 'block' : 'none'}};" id="fields-type-2">
     <div class="card-header">
         <h2 class="card-title">Pincode Data</h2>
     </div>

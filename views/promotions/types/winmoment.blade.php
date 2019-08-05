@@ -1,5 +1,5 @@
 
-<div class="card fields-types card-outline-info" style="display:{{(isset($promotion)&&($promotion->type->code == \Genetsis\Promotions\Models\PromoType::MOMENT_TYPE)) ? 'block' : 'none'}};" id="fields-type-3">
+<div class="col-12 card fields-types card-outline-info" style="display:{{(isset($promotion)&&($promotion->type->code == \Genetsis\Promotions\Models\PromoType::MOMENT_TYPE)) ? 'block' : 'none'}};" id="fields-type-3">
     <div class="card-header">
         <h2 class="card-title">Win Moment Data</h2>
     </div>

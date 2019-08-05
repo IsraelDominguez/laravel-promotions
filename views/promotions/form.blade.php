@@ -31,7 +31,7 @@
             </div>
         </div>
     @else
-        <input type="hidden" name="campaign_id" value="{{$promotion->campaign_id ?? $campaigns->pop()->id}}"/>
+        <input type="hidden" name="campaign_id" value="{{$promotion->campaign_id ?? $campaigns[0]->id}}"/>
     @endif
 
     <div class="col-xs-12 col-md-6">
