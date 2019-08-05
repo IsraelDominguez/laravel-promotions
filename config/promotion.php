@@ -1,7 +1,9 @@
 <?php
 
 return [
-    'front_templates' => true,
+    'front_templates_enabled' => true,
+    'extra_fields_enabled' => true,
+    'rewards_fields_enabled' => true,
 
     'consumer_rewards' => [
         'CONSUMER_REWARDS_API' => 'https://api-consumerrewards-test.pernod-ricard-espana.com',
