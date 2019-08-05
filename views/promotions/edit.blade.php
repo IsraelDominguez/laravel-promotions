@@ -14,10 +14,9 @@
         {{ method_field('PATCH') }}
 
         @include('promotion::promotions.form')
-
     </form>
 @endsection
 
 @push('custom-js')
-    @include('promotion::promotions.scripts')
+    @include('promotion::promotions.scripts', compact('promotion','campaigns'))
 @endpush

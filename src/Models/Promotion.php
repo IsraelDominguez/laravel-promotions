@@ -2,6 +2,7 @@
 
 namespace Genetsis\Promotions\Models;
 
+use App\Models\Entrypoint;
 use Illuminate\Database\Eloquent\Model;
 
 class Promotion extends Model
@@ -57,6 +58,10 @@ class Promotion extends Model
 
     public function qrspack() {
         return $this->hasOne(QrsPack::class, 'promo_id');
+    }
+
+    public function entrypoint() {
+        return $this->hasOne(Entrypoint::class, 'key', 'entrypoint_id');
     }
 
     /**

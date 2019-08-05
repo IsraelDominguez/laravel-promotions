@@ -1,5 +1,5 @@
 {
-    "name": "IsraelDominguez/laravel-promotions",
+    "name": "israeldominguez/laravel-promotions",
     "description": "Promotions library for Laravel on Admin Theme",
     "type": "library",
     "authors": [
@@ -11,7 +11,8 @@
     "require": {
         "php": "^7.0",
         "yajra/laravel-datatables-oracle": "^9.0@dev",
-        "israeldominguez/sdk-consumer-rewards": "dev-master"
+        "israeldominguez/sdk-consumer-rewards": "dev-master",
+        "israeldominguez/druid-rest-api": "dev-master"
     },
     "require-dev": {
         "illuminate/database": "~5.4.0",
@@ -21,6 +22,10 @@
         {
             "type": "vcs",
             "url": "https://github.com/israeldominguez/sdk-consumer-rewards"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/israeldominguez/druid-rest-api"
         }
     ],
     "autoload": {

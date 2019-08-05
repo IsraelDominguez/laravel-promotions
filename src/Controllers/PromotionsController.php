@@ -66,17 +66,20 @@ class PromotionsController extends AdminController
             'type_id' => 'required|integer',
             'max_user_participations' => 'nullable|integer|max:2',
             'max_user_participations_by_day' => 'nullable|integer|max:2',
+            'starts' => 'required',
             'ends' => 'nullable|after:starts',
             'key' => 'required|unique:promo|alpha_dash|max:50',
             'entry_point' => 'nullable|alpha_dash|max:100',
             'has_mgm' => 'nullable',
             'legal' => 'nullable|url|max:100',
+            'legal_file' => 'nullable',
             'pack' => 'nullable|alpha_num|max:100',
             'pack_key' => 'nullable|alpha_dash|max:100',
             'pack_name' => 'nullable|max:100',
             'pack_max' => 'nullable|integer',
             'win_moment_file' => 'nullable',
-            'pincodes_file' => 'nullable'
+            'pincodes_file' => 'nullable',
+            'title' => 'required'
         ]);
 
         $request->merge(array('has_mgm' => $request->has('has_mgm')));

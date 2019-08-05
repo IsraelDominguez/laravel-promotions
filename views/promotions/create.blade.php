@@ -9,6 +9,7 @@
 @endsection
 
 @section('section-content')
+
     <form action="{{ route('promotions.store') }}" id="form" method="POST" enctype="multipart/form-data">
         {{ csrf_field() }}
         @include('promotion::promotions.form')
@@ -16,5 +17,6 @@
 @endsection
 
 @push('custom-js')
-    @include('promotion::promotions.scripts')
+
+    @include('promotion::promotions.scripts', ['campaigns' => $campaigns])
 @endpush

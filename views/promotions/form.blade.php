@@ -14,31 +14,55 @@
         </div>
     </div>
 
-    <div class="col-md-6">
-        <div class="form-group">
-            <label>Campaign *</label>
-
-            <select class="select2" name="campaign_id">
-                <option value="">- Select -</option>
-                @foreach ($campaigns as $campaign)
-                    <option value="{{$campaign->id}}"
-                    @if ((old('campaign_id', $promotion->campaign->id ?? null) == $campaign->id))
-                        selected
-                    @endif
-                    >{{$campaign->name}}</option>
-                @endforeach
-            </select>
+    @if (count($campaigns) > 1)
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Campaign *</label>
+                <select class="select2" name="campaign_id">
+                    <option value="">- Select -</option>
+                    @foreach ($campaigns as $campaign)
+                        <option value="{{$campaign->id}}"
+                        @if ((old('campaign_id', $promotion->campaign->id ?? null) == $campaign->id))
+                            selected
+                        @endif
+                        >{{$campaign->name}}</option>
+                    @endforeach
+                </select>
+            </div>
         </div>
-    </div>
-    <div class="col-md-6">
+    @else
+        <input type="hidden" name="campaign_id" value="{{$promotion->campaign_id ?? $campaigns->pop()->id}}"/>
+    @endif
+
+    <div class="col-xs-12 col-md-6">
         <div class="form-group">
-            <label for="entry_point">Entry Point *</label>
-            <input type="text" class="form-control" name="entry_point" id="entry_point" value="{{ old('entry_point', isset($promotion) ? $promotion->entry_point : null) }}">
+            <label>Entry Point</label>
+            <select class="select2" name="entrypoint_id" id="entry_points">
+                <option value="">- Select -</option>
+                @isset($promotion)
+                    @foreach ($promotion->campaign->entrypoints as $entrypoint)
+                        <option value="{{$entrypoint->key}}"
+                                @if ((old('entrypoint_id', isset($promotion) ? $action->entrypoint_id : null) == $entrypoint->key))
+                                selected
+                            @endif
+                        >{{$entrypoint->key}}</option>
+                    @endforeach
+                @endisset
+            </select>
             <i class="form-group__bar"></i>
         </div>
     </div>
 
 
+{{--    <div class="col-md-6">--}}
+{{--        <div class="form-group">--}}
+{{--            <label for="entry_point">Entry Point *</label>--}}
+{{--            <input type="text" class="form-control" name="entry_point" id="entry_point" value="{{ old('entry_point', isset($promotion) ? $promotion->entry_point : null) }}">--}}
+{{--            <i class="form-group__bar"></i>--}}
+{{--        </div>--}}
+{{--    </div>--}}
+</div>
+<div class="row">
     <div class="col-md-6">
         <div class="form-group">
             <label>Promo Type *</label>
@@ -63,6 +87,8 @@
 
 @include("promotion::promotions.types.pincode")
 
+</div>
+<div class="row">
     <div class="col-6">
         <div class="form-group">
             <label>Max User Participations</label>
