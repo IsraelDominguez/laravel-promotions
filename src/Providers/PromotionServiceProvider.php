@@ -2,6 +2,7 @@
 
 use Genetsis\Promotions\Commands\InstallPromotions;
 use Genetsis\Promotions\Events\PromoUserSubscriber;
+use Genetsis\Promotions\Middleware\PromotionActive;
 use Illuminate\Http\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
@@ -33,6 +34,8 @@ class PromotionServiceProvider extends ServiceProvider
 
         Storage::disk('local')->putFileAs('samples', new File(__DIR__.'/../../config/winmoment_sample.csv'), 'winmoment_sample.csv');
         Storage::disk('local')->putFileAs('samples', new File(__DIR__.'/../../config/pincodes_sample.csv'), 'pincodes_sample.csv');
+
+        app('router')->aliasMiddleware('promotion-active', PromotionActive::class);
 
         if ($this->app->runningInConsole()) {
             $this->publishes([

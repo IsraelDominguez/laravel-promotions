@@ -1,9 +1,11 @@
 <?php namespace Genetsis\Promotions\Repositories;
 
 use Genetsis\Promotions\Contracts\PromotionParticipationInterface;
+use Genetsis\Promotions\Exceptions\PromotionNotActiveException;
 use Genetsis\Promotions\Models\Campaign;
 use Genetsis\Promotions\Models\Participation;
 use Genetsis\Promotions\Models\Promotion;
+use Genetsis\Promotions\Services\PromotionService;
 
 class PromotionRepository {
 
@@ -36,6 +38,29 @@ class PromotionRepository {
         try {
             $campaign = Campaign::findOrFail($campaign_id);
             return $this->getPromotionActiveByCampagin($campaign);
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+
+    /**
+     * Get promotion by KEY
+     *
+     * @param string $promotion_key
+     * @return Promotion
+     * @throws \Exception
+     */
+    public function getPromotionByKey(string $promotion_key) {
+        try {
+            $promotion_service = \App::make(PromotionService::class);
+
+            $promotion = Promotion::where('key', $promotion_key)->firstOrFail();
+
+            if ($promotion_service->isActive($promotion)) {
+                return $promotion;
+            } else {
+                throw new PromotionNotActiveException("Not Active");
+            }
         } catch (\Exception $e) {
             throw $e;
         }
