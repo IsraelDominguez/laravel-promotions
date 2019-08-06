@@ -64,6 +64,10 @@ class Promotion extends Model
         return $this->hasOne(Entrypoint::class, 'key', 'entrypoint_id');
     }
 
+    public function seo() {
+        return $this->hasOne(Seo::class, 'promo_id', 'id');
+    }
+
     /**
      * The "booting" method of the model.
      *
@@ -79,6 +83,7 @@ class Promotion extends Model
             $model->codes()->delete();
             $model->moment()->delete();
             $model->qrspack()->delete();
+            $model->seo()->delete();
             foreach ($model->participations as $participation) {
                 $participation->delete();
             }

@@ -1,6 +1,7 @@
 <?php namespace Genetsis\Promotions\Controllers;
 
 use ConsumerRewards\SDK\Exception\ConsumerRewardsException;
+use ConsumerRewards\SDK\Tools\ArrayAccessorTrait;
 use ConsumerRewards\SDK\Transfer\Configuration;
 use ConsumerRewards\SDK\Transfer\Pack;
 use Genetsis\Admin\Controllers\AdminController;
@@ -13,6 +14,7 @@ use Genetsis\Promotions\Models\Promotion;
 use Genetsis\Promotions\Models\PromoType;
 use Genetsis\Promotions\Models\QrsPack;
 use Genetsis\Promotions\Models\Rewards;
+use Genetsis\Promotions\Models\Seo;
 use Genetsis\Promotions\Services\ConsumerRewardsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -58,10 +60,11 @@ class PromotionsController extends AdminController
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Genetsis\Promotions\Exceptions\PromotionException
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $validations = [
             'name' => 'required|unique:promo|max:50',
             'campaign_id' => 'required|integer',
             'type_id' => 'required|integer',
@@ -73,19 +76,43 @@ class PromotionsController extends AdminController
             'entry_point' => 'nullable|alpha_dash|max:100',
             'has_mgm' => 'nullable',
             'legal' => 'nullable|url|max:100',
-            'legal_file' => 'nullable',
+            'legal_file' => 'nullable|file|mimes:pdf',
             'pack' => 'nullable|alpha_num|max:100',
             'pack_key' => 'nullable|alpha_dash|max:100',
             'pack_name' => 'nullable|max:100',
             'pack_max' => 'nullable|integer',
             'win_moment_file' => 'nullable',
-            'pincodes_file' => 'nullable',
-            'title' => 'required'
-        ]);
+            'pincodes_file' => 'nullable'
+        ];
+        if (config('promotion.front_templates_enabled')) {
+            $validations['title'] = 'required';
+
+            if ($request->has('has_mgm')) {
+                $validations['facebook'] = 'required';
+                $validations['twitter'] = 'required';
+                $validations['whatsapp'] = 'required';
+            }
+        }
+
+        $request->validate($validations);
 
         $request->merge(array('has_mgm' => $request->has('has_mgm')));
 
+        if ($request->hasFile('legal_file')&&($request->file('legal_file')->isValid())) {
+            $request->merge(array('legal' => $request->legal_file->storeAs('legal', $request->file('legal_file')->getClientOriginalName(), 'public')));
+        }
+
         $promotion = Promotion::create($request->all());
+
+        if (config('promotion.front_templates_enabled')) {
+            $promotion->seo()->create([
+                'promo_id' => $promotion->id,
+                'title' => $request->input('title'),
+                'facebook' => $request->input('facebook'),
+                'twitter' => $request->input('twitter'),
+                'whatsapp' => $request->input('whatsapp'),
+            ]);
+        }
 
         switch ($promotion->type->code) {
             case PromoType::QRS_TYPE:
@@ -298,11 +325,10 @@ class PromotionsController extends AdminController
      */
     public function update(Request $request, $id)
     {
-
-        $this->validate($request, [
+        $validations = [
             'name' => ['required',
-                        Rule::unique('promo')->ignore($id),
-                        'max:50'
+                Rule::unique('promo')->ignore($id),
+                'max:50'
             ],
             'campaign_id' => ['required','integer'],
             'type_id' => 'required|integer',
@@ -320,17 +346,40 @@ class PromotionsController extends AdminController
             'pack_max' => 'nullable|integer',
             'win_moment_file' => 'nullable',
             'pincodes_file' => 'nullable'
-        ]);
+        ];
+
+        if (config('promotion.front_templates_enabled')) {
+            $validations['title'] = 'required';
+
+            if ($request->has('has_mgm')) {
+                $validations['facebook'] = 'required';
+                $validations['twitter'] = 'required';
+                $validations['whatsapp'] = 'required';
+            }
+        }
+
+        $request->validate($validations);
+
+        $promotion = Promotion::findOrFail($id);
 
         $request->merge(array('has_mgm' => $request->has('has_mgm')));
 
-        $promotion = Promotion::find($id);
-        $promotion->update($request->all());
-
         if ($request->hasFile('legal_file')&&($request->file('legal_file')->isValid())) {
-            $promotion->legal = $request->legal_file->storeAs('legal', $request->file('legal_file')->getClientOriginalName(), 'public');
-            $promotion->update();
+            $request->merge(array('legal' => $request->legal_file->storeAs('legal', $request->file('legal_file')->getClientOriginalName(), 'public')));
         }
+
+        if (config('promotion.front_templates_enabled')) {
+            $promotion->seo()->updateOrCreate([
+                'promo_id' => $promotion->id
+            ],[
+                'title' => $request->input('title'),
+                'facebook' => $request->input('facebook'),
+                'twitter' => $request->input('twitter'),
+                'whatsapp' => $request->input('whatsapp'),
+            ]);
+        }
+
+        $promotion->update($request->all());
 
         switch ($promotion->type->code) {
             case PromoType::QRS_TYPE:
@@ -478,6 +527,8 @@ class PromotionsController extends AdminController
      */
     public function destroy($id)
     {
+        //TODO: delete all files asociated (images, legal,...)
+
         Promotion::find($id)->delete();
         return redirect()->route('promotions.home')
             ->with('success','Promotion deleted successfully');
