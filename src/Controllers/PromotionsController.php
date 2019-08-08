@@ -1,21 +1,20 @@
 <?php namespace Genetsis\Promotions\Controllers;
 
 use ConsumerRewards\SDK\Exception\ConsumerRewardsException;
-use ConsumerRewards\SDK\Tools\ArrayAccessorTrait;
 use ConsumerRewards\SDK\Transfer\Configuration;
 use ConsumerRewards\SDK\Transfer\Pack;
 use Genetsis\Admin\Controllers\AdminController;
 use Carbon\Carbon;
+
 use Genetsis\Promotions\Models\Campaign;
 use Genetsis\Promotions\Models\Entrypoint;
 use Genetsis\Promotions\Models\ExtraFields;
-use Genetsis\Promotions\Models\Participation;
 use Genetsis\Promotions\Models\Promotion;
 use Genetsis\Promotions\Models\PromoType;
-use Genetsis\Promotions\Models\QrsPack;
+
 use Genetsis\Promotions\Models\Rewards;
-use Genetsis\Promotions\Models\Seo;
-use Genetsis\Promotions\Services\ConsumerRewardsService;
+use Genetsis\Promotions\PromotionTypes\PromotionTypeFactory;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
@@ -64,37 +63,7 @@ class PromotionsController extends AdminController
      */
     public function store(Request $request)
     {
-        $validations = [
-            'name' => 'required|unique:promo|max:50',
-            'campaign_id' => 'required|integer',
-            'type_id' => 'required|integer',
-            'max_user_participations' => 'nullable|integer|max:2',
-            'max_user_participations_by_day' => 'nullable|integer|max:2',
-            'starts' => 'required',
-            'ends' => 'nullable|after:starts',
-            'key' => 'required|unique:promo|alpha_dash|max:50',
-            'entry_point' => 'nullable|alpha_dash|max:100',
-            'has_mgm' => 'nullable',
-            'legal' => 'nullable|url|max:100',
-            'legal_file' => 'nullable|file|mimes:pdf',
-            'pack' => 'nullable|alpha_num|max:100',
-            'pack_key' => 'nullable|alpha_dash|max:100',
-            'pack_name' => 'nullable|max:100',
-            'pack_max' => 'nullable|integer',
-            'win_moment_file' => 'nullable',
-            'pincodes_file' => 'nullable'
-        ];
-        if (config('promotion.front_templates_enabled')) {
-            $validations['title'] = 'required';
-
-            if ($request->has('has_mgm')) {
-                $validations['facebook'] = 'required';
-                $validations['twitter'] = 'required';
-                $validations['whatsapp'] = 'required';
-            }
-        }
-
-        $request->validate($validations);
+        $request->validate($this->getValidations($request, null));
 
         $request->merge(array('has_mgm' => $request->has('has_mgm')));
 
@@ -104,109 +73,11 @@ class PromotionsController extends AdminController
 
         $promotion = Promotion::create($request->all());
 
-        if (config('promotion.front_templates_enabled')) {
-            $promotion->seo()->create([
-                'promo_id' => $promotion->id,
-                'title' => $request->input('title'),
-                'facebook' => $request->input('facebook'),
-                'twitter' => $request->input('twitter'),
-                'whatsapp' => $request->input('whatsapp'),
-            ]);
-        }
-
-        switch ($promotion->type->code) {
-            case PromoType::QRS_TYPE:
-                try {
-                    if ($request->get('pack')!=null) {
-                        $pack_id = $request->get('pack');
-                    } else {
-                        $configurations[] = new Configuration("max", Configuration::CONFIGURATION_TYPE_INTEGER, $request->get('pack_max'));
-                        $pack = new Pack();
-                        $pack->setKey($request->get('pack_key'))->setDisplayName($request->get('pack_name'))->setConfigurations($configurations)->setType('consumer_rewards');
-
-                        $consumerRewardsService = new ConsumerRewardsService();
-                        $pack_created = $consumerRewardsService->getConsumerRewards()->getMarketing()->createPack($pack);
-                        $pack_id = $pack_created->getObjectId();
-                    }
-
-                    QrsPack::create([
-                        'promo_id' => $promotion->id,
-                        'pack' => $pack_id,
-                        'key' => $request->get('pack_key'),
-                        'name' => $request->get('pack_name'),
-                        'max' => $request->get('pack_max')
-                    ]);
-                } catch (ConsumerRewardsException $e) {
-
-                }
-
-                break;
-            case PromoType::MOMENT_TYPE:
-                if ($request->hasFile('win_moment_file')) {
-                    if ($request->has('remove_prev')) {
-                        $promotion->moment()->delete();
-                    }
-
-                    $moments = \Genetsis\Promotions\Seeds\PromotionSeedsHelper::csvToArray($request->file('win_moment_file')->getPathname());
-                    foreach ($moments as $moment) {
-                        $codes[] = [
-                            'promo_id' => $promotion->id,
-                            'code_to_send' => $moment[0],
-                            'date' => $moment[1]
-                        ];
-                    }
-                    if (!empty($codes)) {
-                        \Illuminate\Support\Facades\DB::table('promo_moments')->insert($codes);
-                    }
-                    break;
-                }
-
-            case PromoType::PINCODE_TYPE:
-                if ($request->hasFile('pincodes_file')) {
-                    $pincodes = \Genetsis\Promotions\Seeds\PromotionSeedsHelper::csvToArray($request->file('pincodes_file')->getPathname());
-                    foreach ($pincodes as $pincode) {
-                        $codes[] = [
-                            'promo_id' => $promotion->id,
-                            'code' => $pincode[0],
-                            'win_code' => $pincode[1],
-                            'expires' => $pincode[2]
-                        ];
-                    }
-                    if (!empty($codes)) {
-                        \Illuminate\Support\Facades\DB::table('promo_codes')->insert($codes);
-                    }
-                    break;
-                }
-        }
-
-        if (config('promotion.extra_fields_enabled')) {
-            if ($extra_fields_keys = $request->get('extra_field_keys')) {
-                foreach ($extra_fields_keys as $key => $extra_field) {
-                    if ($extra_field != null) {
-                        $extraField = new ExtraFields();
-                        $extraField->key = $extra_field;
-                        $extraField->name = $request->get('extra_field_names')[$key];
-                        $extraField->type = $request->get('extra_field_types')[$key];
-                        $extraField->promo_id = $promotion->id;
-                        $extraField->save();
-                    }
-                }
-            }
-        }
-
-        if (config('promotion.rewards_fields_enabled')) {
-            if ($rewards_keys = $request->get('reward_keys')) {
-                foreach ($rewards_keys as $key => $reward) {
-                    if ($reward != null) {
-                        $rewardField = new Rewards();
-                        $rewardField->key = $reward;
-                        $rewardField->name = $request->get('reward_names')[$key];
-                        $rewardField->stock = ($request->get('reward_stocks')[$key]) ?: 0;
-                        $rewardField->promo_id = $promotion->id;
-                        $rewardField->save();
-                    }
-                }
-            }
+        try {
+            $promotionType = PromotionTypeFactory::create($promotion);
+            $promotionType->save($request);
+        }catch (\Exception $e) {
+            Log::info('Nothing additional to save');
         }
 
         return redirect()->route('promotions.home')
@@ -325,40 +196,7 @@ class PromotionsController extends AdminController
      */
     public function update(Request $request, $id)
     {
-        $validations = [
-            'name' => ['required',
-                Rule::unique('promo')->ignore($id),
-                'max:50'
-            ],
-            'campaign_id' => ['required','integer'],
-            'type_id' => 'required|integer',
-            'max_user_participations' => 'nullable|digits_between:1,99',
-            'max_user_participations_by_day' => 'nullable|digits_between:1,99',
-            'ends' => 'nullable|after:starts',
-            'key' => ['required', Rule::unique('promo')->ignore($id),'alpha_dash', 'max:50'],
-            'entry_point' => 'nullable|alpha_dash|max:100',
-            'has_mgm' => 'nullable',
-            'legal' => 'nullable|max:100',
-            'legal_file' => 'nullable|file|mimes:pdf',
-            'pack' => 'nullable|alpha_num|max:100',
-            'pack_key' => 'nullable|alpha_dash|max:100',
-            'pack_name' => 'nullable|max:100',
-            'pack_max' => 'nullable|integer',
-            'win_moment_file' => 'nullable',
-            'pincodes_file' => 'nullable'
-        ];
-
-        if (config('promotion.front_templates_enabled')) {
-            $validations['title'] = 'required';
-
-            if ($request->has('has_mgm')) {
-                $validations['facebook'] = 'required';
-                $validations['twitter'] = 'required';
-                $validations['whatsapp'] = 'required';
-            }
-        }
-
-        $request->validate($validations);
+        $request->validate($this->getValidations($request, $id));
 
         $promotion = Promotion::findOrFail($id);
 
@@ -368,151 +206,13 @@ class PromotionsController extends AdminController
             $request->merge(array('legal' => $request->legal_file->storeAs('legal', $request->file('legal_file')->getClientOriginalName(), 'public')));
         }
 
-        if (config('promotion.front_templates_enabled')) {
-            $promotion->seo()->updateOrCreate([
-                'promo_id' => $promotion->id
-            ],[
-                'title' => $request->input('title'),
-                'facebook' => $request->input('facebook'),
-                'twitter' => $request->input('twitter'),
-                'whatsapp' => $request->input('whatsapp'),
-            ]);
-        }
-
         $promotion->update($request->all());
 
-        switch ($promotion->type->code) {
-            case PromoType::QRS_TYPE:
-                try {
-                    if ($request->get('pack')!=null) {
-                        $pack_id = $request->get('pack');
-                    } else {
-                        $configurations[] = new Configuration("max", Configuration::CONFIGURATION_TYPE_INTEGER, $request->get('pack_max'));
-                        $pack = new Pack();
-                        $pack->setKey($request->get('pack_key'))->setDisplayName($request->get('pack_name'))->setConfigurations($configurations)->setType('consumer_rewards');
-
-                        $consumerRewardsService = new ConsumerRewardsService();
-                        $pack_created = $consumerRewardsService->getConsumerRewards()->getMarketing()->createPack($pack);
-                        $pack_id = $pack_created->getObjectId();
-                    }
-
-                    QrsPack::updateOrCreate(
-                        ['promo_id' => $promotion->id],
-                        [
-                            'pack' => $pack_id,
-                            'key' => $request->get('pack_key'),
-                            'name' => $request->get('pack_name'),
-                            'max' => $request->get('pack_max')
-                        ]);
-                } catch (ConsumerRewardsException $e) {
-                    Log::error($e->getMessage());
-                }
-
-                break;
-            case PromoType::MOMENT_TYPE:
-                if ($request->hasFile('win_moment_file')) {
-                    if ($request->has('remove_prev')) {
-                        $promotion->moment()->delete();
-                    }
-                    $moments = \Genetsis\Promotions\Seeds\PromotionSeedsHelper::csvToArray($request->file('win_moment_file')->getPathname());
-                    foreach ($moments as $moment) {
-                        $codes[] = [
-                            'promo_id' => $promotion->id,
-                            'code_to_send' => $moment[0],
-                            'date' => $moment[1]
-                        ];
-                    }
-                    if (!empty($codes)) {
-                        \Illuminate\Support\Facades\DB::table('promo_moments')->insert($codes);
-                    }
-                }
-                break;
-
-            case PromoType::PINCODE_TYPE:
-                if ($request->hasFile('pincodes_file')) {
-                    if ($request->has('remove_prev')) {
-                        $promotion->codes()->delete();
-                    }
-
-                    $pincodes = \Genetsis\Promotions\Seeds\PromotionSeedsHelper::csvToArray($request->file('pincodes_file')->getPathname());
-                    foreach ($pincodes as $pincode) {
-                        $codes[] = [
-                            'promo_id' => $promotion->id,
-                            'code' => $pincode[0],
-                            'win_code' => $pincode[1],
-                            'expires' => $pincode[2]
-                        ];
-                    }
-                    if (!empty($codes)) {
-                        \Illuminate\Support\Facades\DB::table('promo_codes')->insert($codes);
-                    }
-                }
-                break;
-        }
-
-        if (config('promotion.extra_fields_enabled')) {
-            if ($extra_fields_keys = $request->get('extra_field_keys')) {
-                foreach ($promotion->extra_fields as $extra_field) {
-                    if (!in_array($extra_field->key, $extra_fields_keys)) {
-                        Log::debug("Elimino extra field: " . $extra_field->key);
-                        ExtraFields::destroy($extra_field->key);
-                    }
-                }
-
-                foreach ($extra_fields_keys as $key => $extra_field) {
-                    if ($extra_field != null) {
-                        if ($promotion->extra_fields->contains('key', $extra_field)) {
-                            Log::debug("Edit extra field: " . $extra_field);
-                            ExtraFields::where('key', $extra_field)
-                                ->update([
-                                    'name' => $request->get('extra_field_names')[$key],
-                                    'type' => $request->get('extra_field_types')[$key]
-                                ]);
-                        } else {
-                            Log::debug("New extra field: " . $extra_field);
-
-                            $extraField = new ExtraFields();
-                            $extraField->key = $extra_field;
-                            $extraField->name = $request->get('extra_field_names')[$key];
-                            $extraField->type = $request->get('extra_field_types')[$key];
-                            $extraField->promo_id = $promotion->id;
-
-                            Log::debug("Extra field: type" . $extraField->type);
-
-                            $extraField->save();
-                        }
-                    }
-                }
-            }
-        }
-        if (config('promotion.rewards_fields_enabled')) {
-            if ($rewards_keys = $request->get('reward_keys')) {
-                foreach ($promotion->rewards as $reward) {
-                    if (!in_array($reward->key, $rewards_keys)) {
-                        Log::debug("Elimino reward field: " . $reward->key);
-                        Rewards::destroy($reward->key);
-                    }
-                }
-
-
-                foreach ($rewards_keys as $key => $reward) {
-                    if ($reward != null) {
-                        if ($promotion->rewards->contains('key', $reward)) {
-                            Log::debug("Edit reward: " . $reward);
-                            Rewards::where('key', $reward)
-                                ->update(['name' => $request->get('reward_names')[$key], 'stock' => ($request->get('reward_stocks')[$key]) ?: 0]);
-                        } else {
-                            Log::debug("New reward: " . $extra_field);
-                            $rewardField = new Rewards();
-                            $rewardField->key = $reward;
-                            $rewardField->name = $request->get('reward_names')[$key];
-                            $rewardField->stock = ($request->get('reward_stocks')[$key]) ?: 0;
-                            $rewardField->promo_id = $promotion->id;
-                            $rewardField->save();
-                        }
-                    }
-                }
-            }
+        try {
+            $promotionType = PromotionTypeFactory::create($promotion);
+            $promotionType->save($request);
+        }catch (\Exception $e) {
+            Log::error($e->getMessage());
         }
 
         return redirect()->route('promotions.home')
@@ -547,5 +247,53 @@ class PromotionsController extends AdminController
         }
 
         return response()->json($entrypoints, 200);
+    }
+
+    /**
+     * Get Request Validation
+     *
+     * @param Request $request
+     * @param $id
+     * @return array all validations
+     */
+    private function getValidations(Request $request, $id) {
+        $validations = [
+            'name' => 'required|unique:promo|max:50',
+            'campaign_id' => ['required','integer'],
+            'type_id' => 'required|integer',
+            'max_user_participations' => 'nullable|digits_between:1,99',
+            'max_user_participations_by_day' => 'nullable|digits_between:1,99',
+            'starts' => 'required',
+            'ends' => 'nullable|after:starts',
+            'key' => 'required|unique:promo|alpha_dash|max:50',
+            'entry_point' => 'nullable|alpha_dash|max:100',
+            'has_mgm' => 'nullable',
+            'legal' => 'nullable|max:100',
+            'legal_file' => 'nullable|file|mimes:pdf',
+            'pack' => 'nullable|alpha_num|max:100',
+            'pack_key' => 'nullable|alpha_dash|max:100',
+            'pack_name' => 'nullable|max:100',
+            'pack_max' => 'nullable|integer',
+            'win_moment_file' => 'nullable',
+            'pincodes_file' => 'nullable'
+        ];
+
+        // Edit Promotion
+        if ($id != null) {
+            $validations['name'] = ['required', Rule::unique('promo')->ignore($id), 'max:50'];
+            $validations['key'] = ['required', Rule::unique('promo')->ignore($id),'alpha_dash', 'max:50'];
+        }
+
+        if (config('promotion.front_templates_enabled')) {
+            $validations['title'] = 'required';
+
+            if ($request->has('has_mgm')) {
+                $validations['facebook'] = 'required';
+                $validations['twitter'] = 'required';
+                $validations['whatsapp'] = 'required';
+            }
+        }
+
+        return $validations;
     }
 }
