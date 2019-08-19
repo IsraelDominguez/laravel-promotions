@@ -68,6 +68,14 @@ class Promotion extends Model
         return $this->hasOne(Seo::class, 'promo_id', 'id');
     }
 
+    public function design() {
+        return $this->hasOne(Design::class, 'promo_id', 'id');
+    }
+
+    public function templates() {
+        return $this->hasMany(Templates::class, 'promo_id');
+    }
+
     /**
      * The "booting" method of the model.
      *

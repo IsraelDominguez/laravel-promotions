@@ -3,7 +3,7 @@
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class Seo extends Model
+class Design  extends Model
 {
     use LogsActivity;
 
@@ -12,11 +12,11 @@ class Seo extends Model
      *
      * @var string
      */
-    protected $table = 'promo_seo';
+    protected $table = 'promo_design';
     protected $primaryKey = 'promo_id';
     public $incrementing = false;
 
-    protected $fillable = ['title', 'facebook', 'twitter', 'whatsapp'];
+    protected $fillable = ['background_image', 'background_color'];
 
     public $timestamps = false;
 

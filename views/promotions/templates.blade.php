@@ -5,6 +5,9 @@
                 <a class="nav-link active" data-toggle="tab" href="#seoshare" role="tab">Seo and Share</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#design" role="tab">Design</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" href="#initialpage" role="tab">Initial Page</a>
             </li>
             <li class="nav-item">
@@ -17,41 +20,54 @@
                 @include("promotion::promotions.templates.seoshare")
             </div>
 
+            <div class="tab-pane fade" id="design" role="tabpanel" aria-expanded="true">
+                @include("promotion::promotions.templates.design")
+            </div>
+
             <div class="tab-pane fade" id="initialpage" role="tabpanel" aria-expanded="true">
                 <input type="hidden" name="initial_page_data" id="initial_page_data" value=""/>
+
+                <?php
+                $initial_page = $promotion->templates()->page('initial_page')->first();
+                ?>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Template </label>
 
                         <select class="select2" name="initial_page_template" id="initial_page_template">
                             <option value="">- Select -</option>
-                            <option value="left">Image Left</option>
-                            <option value="right">Image Right</option>
+                            <option value="{{\Genetsis\Promotions\Models\Templates::TEMPLATE_LEFT}}" {{isset($initial_page)&&($initial_page->template == \Genetsis\Promotions\Models\Templates::TEMPLATE_LEFT) ? 'selected' : ''}}>Image Left</option>
+                            <option value="{{\Genetsis\Promotions\Models\Templates::TEMPLATE_RIGHT}}" {{isset($initial_page)&&($initial_page->template == \Genetsis\Promotions\Models\Templates::TEMPLATE_RIGHT) ? 'selected' : ''}}>Image Right</option>
                         </select>
                     </div>
                 </div>
 
-                <div id="initial_page_template_left" style="display: none" class="initial_page_template_type"></div>
-                <div id="initial_page_template_right" style="display: none" class="initial_page_template_type"></div>
+                <div id="initial_page_template_left" style="display: {{isset($initial_page)&&($initial_page->template == \Genetsis\Promotions\Models\Templates::TEMPLATE_LEFT) ? 'block' : 'none'}}" class="initial_page_template_type"></div>
+                <div id="initial_page_template_right" style="display: {{isset($initial_page)&&($initial_page->template == \Genetsis\Promotions\Models\Templates::TEMPLATE_RIGHT) ? 'block' : 'none'}}" class="initial_page_template_type"></div>
             </div>
 
 
             <div class="tab-pane fade" id="resultpage" role="tabpanel" aria-expanded="true">
                 <input type="hidden" name="result_page_data" id="result_page_data" value=""/>
+
+                <?php
+                $result_page = $promotion->templates()->page('result_page')->first();
+                ?>
+
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Template </label>
 
                         <select class="select2" name="result_page_template" id="result_page_template">
                             <option value="">- Select -</option>
-                            <option value="left">Image Left</option>
-                            <option value="right">Image Right</option>
+                            <option value="{{\Genetsis\Promotions\Models\Templates::TEMPLATE_LEFT}}" {{isset($result_page)&&($result_page->template == \Genetsis\Promotions\Models\Templates::TEMPLATE_LEFT) ? 'selected' : ''}}>Image Left</option>
+                            <option value="{{\Genetsis\Promotions\Models\Templates::TEMPLATE_RIGHT}}" {{isset($result_page)&&($result_page->template == \Genetsis\Promotions\Models\Templates::TEMPLATE_RIGHT) ? 'selected' : ''}}>Image Right</option>
                         </select>
                     </div>
                 </div>
 
-                <div id="result_page_template_left" style="display: none" class="result_page_template_type"></div>
-                <div id="result_page_template_right" style="display: none" class="result_page_template_type"></div>
+                <div id="result_page_template_left" style="display: {{isset($result_page)&&($result_page->template == \Genetsis\Promotions\Models\Templates::TEMPLATE_LEFT) ? 'block' : 'none'}}" class="result_page_template_type"></div>
+                <div id="result_page_template_right" style="display: {{isset($result_page)&&($result_page->template == \Genetsis\Promotions\Models\Templates::TEMPLATE_RIGHT) ? 'block' : 'none'}}" class="result_page_template_type"></div>
             </div>
         </div>
     </div>
@@ -78,32 +94,6 @@
                 }
             }
         };
-        var postRenderCallbackLeft = function(control) {
-            var id = "LeftImageInfo-" + control.id;
-            $('#promo_image').attr('name', "promo_image_"+$(control.domEl).attr("id"));
-
-            control.getFieldEl().append("<div id='"+id+"' style='display:none'><table><tr><td nowrap='nowrap' class='imagePreview' style='width: 220px'> </td></tr></table></div>");
-        };
-        var options_left = {
-            "fields": {
-                "promo_text": {
-                    "type": "tinymce"
-                },
-                "promo_image": {
-                    "type": "file",
-                    "id": "promo_image",
-                    "fieldClass": "input-file",
-                    "selectionHandler": function(files, data) {
-                        var id = "#LeftImageInfo-" + this.parent.id;
-                        var img = $(id+" .imagePreview").html("").append("<img style='max-width: 200px; max-height: 200px' src='" + data[0] + "'>");
-                        $(id).css({
-                            "display": "block"
-                        });
-
-                    }
-                }
-            }
-        };
 
         var schema_right = {
             "properties": {
@@ -120,24 +110,37 @@
                 }
             }
         };
-        var postRenderCallbackRight = function(control) {
-            //var shareField = control.childrenByPropertyId["promo_image"];
-            var id = "RightImageInfo-" + control.id;
+
+        var postRenderCallback = function(control) {
+            var id = "img-"+$(control.domEl).attr("id");
+            $('#'+$(control.domEl).attr("id")+' #promo_image').attr('name', "promo_image_"+$(control.domEl).attr("id"));
+
+            console.log(id);
             control.getFieldEl().append("<div id='"+id+"' style='display:none'><table><tr><td nowrap='nowrap' class='imagePreview' style='width: 220px'> </td></tr></table></div>");
+
+            if (control.data.promo_image != '') {
+                var img = $("#"+id+" .imagePreview").html("").append("<img style='max-width: 200px; max-height: 200px' src='<?php echo Storage::disk('public')->url('/') ?>"+control.data.promo_image+"'>");
+                $("#"+id).css({
+                    "display": "block"
+                });
+            }
         };
-        var options_right = {
-            "fields":{
+        var options = {
+            "fields": {
                 "promo_text": {
                     "type": "tinymce"
                 },
                 "promo_image": {
                     "type": "file",
+                    "id": "promo_image",
+                    "fieldClass": "input-file",
                     "selectionHandler": function(files, data) {
-                        var id = "#RightImageInfo-" + this.parent.id;
-                        var img = $(id+" .imagePreview").html("").append("<img style='max-width: 200px; max-height: 200px' src='" + data[0] + "'>");
-                        $(id).css({
+                        var id = "img-"+$(this.parent.domEl).attr("id");
+                        $("#"+id+" .imagePreview").html("").append("<img style='max-width: 200px; max-height: 200px' src='" + data[0] + "'>");
+                        $("#"+id).css({
                             "display": "block"
                         });
+
                     }
                 }
             }
@@ -156,50 +159,52 @@
                 $("#initial_page_template_"+$(this).val()).show();
             });
 
-            $(".input-file input").change(function (e) {
-                console.log(e);
-            });
-
-            var data_left = {
+            var initial_data = {
                 "promo_title": "",
                 "promo_text": "",
                 "promo_image": ""
             };
 
+            @isset($initial_page)
+            initial_data = {!! $promotion->templates()->page('initial_page')->first()->content !!};
+            @endisset
 
-            var data_right = {
+            var result_data = {
                 "promo_title": "",
                 "promo_text": "",
                 "promo_image": ""
             };
 
+            @isset($result_page)
+            result_data = {!! $result_page->content !!};
+            @endisset
 
             $("#result_page_template_left").alpaca({
                 "schema": schema_left,
-                "data": data_left,
-                "options": options_left,
-                "postRender": postRenderCallbackLeft
+                "data": result_data,
+                "options": options,
+                "postRender": postRenderCallback
             });
-            //
-            // $("#result_page_template_right").alpaca({
-            //     "schema": schema_right,
-            //     "data": data_right,
-            //     "options": options_right,
-            //     "postRender": postRenderCallbackRight,
-            // });
-            //
-            // $("#initial_page_template_right").alpaca({
-            //     "schema": schema_right,
-            //     "data": data_right,
-            //     "options": options_right,
-            //     "postRender": postRenderCallbackRight,
-            // });
+
+            $("#result_page_template_right").alpaca({
+                "schema": schema_right,
+                "data": result_data,
+                "options": options,
+                "postRender": postRenderCallback,
+            });
+
+            $("#initial_page_template_right").alpaca({
+                "schema": schema_right,
+                "data": initial_data,
+                "options": options,
+                "postRender": postRenderCallback,
+            });
 
             $("#initial_page_template_left").alpaca({
                 "schema": schema_left,
-                "data": data_left,
-                "options": options_left,
-                "postRender": postRenderCallbackLeft,
+                "data": initial_data,
+                "options": options,
+                "postRender": postRenderCallback,
             });
         });
     </script>

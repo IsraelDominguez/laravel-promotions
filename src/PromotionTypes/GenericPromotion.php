@@ -4,8 +4,10 @@ use Genetsis\Promotions\Contracts\PromotionTypeInterface;
 use Genetsis\Promotions\Models\ExtraFields;
 use Genetsis\Promotions\Models\Promotion;
 use Genetsis\Promotions\Models\Rewards;
+use Genetsis\Promotions\Models\Templates;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Metadata\Tests\Fixtures\TestParent;
 
 class GenericPromotion implements PromotionTypeInterface
 {
@@ -23,8 +25,11 @@ class GenericPromotion implements PromotionTypeInterface
 
     public function save(Request $request)
     {
-        if (config('promotion.front_templates_enabled'))
+        if (config('promotion.front_templates_enabled')) {
             $this->saveSeo($request);
+            $this->saveDesign($request);
+            $this->savePages($request);
+        }
 
         if (config('promotion.extra_fields_enabled'))
             $this->saveExtraFields($request);
@@ -42,7 +47,7 @@ class GenericPromotion implements PromotionTypeInterface
         if ($rewards_keys = $request->get('reward_keys')) {
             foreach ($this->promotion->rewards as $reward) {
                 if (!in_array($reward->key, $rewards_keys)) {
-                    Log::debug("Elimino reward field: " . $reward->key);
+                    Log::debug("Delete reward field: " . $reward->key);
                     Rewards::destroy($reward->key);
                 }
             }
@@ -75,7 +80,7 @@ class GenericPromotion implements PromotionTypeInterface
         if ($extra_fields_keys = $request->get('extra_field_keys')) {
             foreach ($this->promotion->extra_fields as $extra_field) {
                 if (!in_array($extra_field->key, $extra_fields_keys)) {
-                    Log::debug("Elimino extra field: " . $extra_field->key);
+                    Log::debug("Delete extra field: " . $extra_field->key);
                     ExtraFields::destroy($extra_field->key);
                 }
             }
@@ -120,5 +125,48 @@ class GenericPromotion implements PromotionTypeInterface
             'twitter' => $request->input('twitter'),
             'whatsapp' => $request->input('whatsapp'),
         ]);
+    }
+
+    private function saveDesign(Request $request) {
+
+        if ($request->hasFile('background_image')) {
+            $log_file = $request->file('background_image');
+            $log_content = $log_file->openFile()->fread($log_file->getSize());
+            $background_image  = base64_encode($log_content);
+        } elseif ($request->has('remove_background')) {
+            $background_image = null;
+        }
+
+
+        $this->promotion->design()->updateOrCreate([
+            'promo_id' => $this->promotion->id
+        ], [
+            'background_image' => $background_image ?? $this->promotion->design->background_image,
+            'background_color' => $request->input('background_color'),
+
+        ]);
+    }
+
+    private function savePages(Request $request) {
+        $this->saveTemplates('initial_page', $request->input('initial_page_data'), $request->input('initial_page_template'), $request);
+
+        $this->saveTemplates('result_page', $request->input('result_page_data'), $request->input('result_page_template'), $request);
+    }
+
+    private function saveTemplates(string $page, string $content, string $template, Request $request) {
+
+        if ($request->hasFile('promo_image_'.$page.'_template_'.$template)&&($request->file('promo_image_'.$page.'_template_'.$template)->isValid())) {
+            $promo_image = $request->file('promo_image_'.$page.'_template_'.$template)->storeAs('promoimg', $this->promotion->key . '-'.$page.'.jpg', 'public');
+            $content = json_encode(array_merge(['promo_image' => $promo_image], json_decode($content, true)));
+        }
+
+        $this->promotion->templates()->updateOrCreate([
+            'promo_id' => $this->promotion->id,
+            'page' => $page,
+        ], [
+            'template' => $template,
+            'content' => $content
+        ]);
+
     }
 }
