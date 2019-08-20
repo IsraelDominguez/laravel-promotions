@@ -11,10 +11,7 @@
     @endcomponent
 @endsection
 
-
-
 @section('section-content')
-
     <div class="table-responsive">
         <table id="data-promotions" class="table table-bordered table-striped">
             <thead class="thead-inverse">
@@ -31,8 +28,6 @@
             </thead>
         </table>
     </div>
-
-
 @endsection
 
 @push('custom-js')
