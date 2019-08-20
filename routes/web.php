@@ -14,11 +14,12 @@ Route::group(['middleware' => ['web']], function () {
             ]);
             Route::get('campaigns/{id}/refresh', 'CampaignsController@refresh')->name('campaign.refresh');
 
+            Route::get('promotions/get', 'PromotionsController@get')->name('promotions.api');
+
             Route::resource('promotions', 'PromotionsController', [
                 'only' => ['index', 'show', 'edit', 'create', 'store', 'update', 'destroy'],
                 'names' => ['index' => 'promotions.home']
             ]);
-
         });
     });
 });

@@ -1,8 +1,5 @@
 <?php namespace Genetsis\Promotions\Controllers;
 
-use ConsumerRewards\SDK\Exception\ConsumerRewardsException;
-use ConsumerRewards\SDK\Transfer\Configuration;
-use ConsumerRewards\SDK\Transfer\Pack;
 use Genetsis\Admin\Controllers\AdminController;
 use Carbon\Carbon;
 
@@ -37,6 +34,43 @@ class PromotionsController extends AdminController
         $promotions = Promotion::latest()->paginate(10);
         return view('promotion::promotions.index',compact('promotions'))
             ->with('i', (request()->input('page', 1) - 1) * 10);
+    }
+
+
+    /**
+     * Api for DataTables
+     *
+     * @param Request $request
+     * @return mixed
+     * @throws \Exception
+     */
+    public function get(Request $request)
+    {
+        if ($request->ajax()) {
+            $promotions = Promotion::latest()->with('campaign','type');
+
+            return DataTables::of($promotions)
+                ->addColumn('participations', function($promotion) {
+                    return count($promotion->participations);
+                })
+                ->addColumn('options', function ($promotion) {
+                    return '
+                        <div class="actions" style="width:64px">
+                        <a class="actions__item zmdi zmdi-eye" href="' . route('promotions.show', $promotion->id) . '"></a>
+                        <a class="actions__item zmdi zmdi-edit" href="' . route('promotions.edit', $promotion->id) . '"></a>
+                        </div>                        
+                        ';
+                })
+                ->addColumn('delete', function ($promotion) {
+                    return '
+                        <div class="actions">                                                
+                        <a class="actions__item zmdi zmdi-delete del" data-id="' . $promotion->id . '"></a>
+                        </div>                        
+                        ';
+                })
+                ->rawColumns(['options', 'delete'])
+                ->make(true);
+        }
     }
 
 

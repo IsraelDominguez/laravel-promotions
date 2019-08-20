@@ -16,53 +16,56 @@
 @section('section-content')
 
     <div class="table-responsive">
-        <table class="table table-sm  table-striped mb-3">
+        <table id="data-promotions" class="table table-bordered table-striped">
             <thead class="thead-inverse">
                 <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Starts</th>
-                    <th>Ends</th>
-                    <th>Campaign</th>
-                    <th width="280px">Action</th>
+                    <td>#</td>
+                    <td>Name</td>
+                    <td>Starts</td>
+                    <td>Ends</td>
+                    <td>Campaign</td>
+                    <td>Type</td>
+                    <td>Entrypoint</td>
+                    <td>Participations</td>
                 </tr>
             </thead>
-            <tbody>
-            @foreach ($promotions as $promotion)
-                <tr>
-                    <th scope="row">{{ ++$i }}</th>
-                    <td>{{ $promotion->name}}</td>
-                    <td>{{ $promotion->starts }}</td>
-                    <td>{{ $promotion->ends }}</td>
-                    <td>{{ $promotion->campaign->name }}</td>
-                    <td>
-                        <div class="actions">
-                            <a class="actions__item zmdi zmdi-eye" href="{{ route('promotions.show',$promotion->id) }}"></a>
-                            <a class="actions__item zmdi zmdi-edit" href="{{ route('promotions.edit',$promotion->id) }}"></a>
-                            <a class="actions__item zmdi zmdi-delete del" data-id="{{$promotion->id}}"></a>
-                        </div>
-                        <form action="{{ route('promotions.destroy', $promotion->id) }}" method="POST" id="form-{{$promotion->id}}">
-                            {{ csrf_field() }}
-                            {{ method_field('DELETE') }}
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-            </tbody>
         </table>
     </div>
-    {{ $promotions->links('genetsis-admin::partials.pagination.bootstrap-4') }}
+
+
 @endsection
 
 @push('custom-js')
     <script>
         $(document).ready(function() {
-            $('.del').click(function(){
-                console.log('uno');
-                clicked = this.dataset.id;
+
+            var table = $('#data-promotions').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{{route('promotions.api')}}',
+                columns: [
+                    {data: 'id', orderable: false, searchable: false},
+                    {data: 'name'},
+                    {data: 'starts'},
+                    {data: 'ends'},
+                    {data: 'campaign.name'},
+                    {data: 'type.name'},
+                    {data: 'entrypoint_id', orderable: false},
+                    {data: 'participations', searchable: false},
+                    {data: 'options', name: 'options', orderable: false, searchable: false, className: 'options-actions'},
+                    {data: 'delete', name: 'delete', orderable: false, searchable: false, className: 'options-delete'},
+                ],
+                order: [[2,'desc']]
+            });
+
+            $('#data-promotions tbody').on('click', 'td.options-delete', function () {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+                var id = row.data().id;
+
                 swal({
                     title: 'Are you sure?',
-                    text: 'You will not be able to recover this promotion!',
+                    text: 'You will not be able to recover this Promotion!',
                     type: 'warning',
                     showCancelButton: true,
                     buttonsStyling: false,
@@ -70,7 +73,23 @@
                     confirmButtonText: 'Yes, delete it!',
                     cancelButtonClass: 'btn btn-secondary'
                 }).then(function(){
-                    $('#form-'+clicked).submit()
+                    delete_url = '{{route('promotions.destroy', ':id')}}';
+                    delete_url = delete_url.replace(':id', id);
+
+                    $.ajax({
+                        url: delete_url,
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function (response) {
+                            notify(response.message);
+                            table.ajax.reload();
+                        },
+                        error: function(response) {
+                            notify('An error has ocurred','top','right','','danger');
+                        }
+                    });
                 }).catch(swal.noop);
             });
 
