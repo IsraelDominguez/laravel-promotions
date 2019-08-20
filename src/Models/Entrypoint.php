@@ -11,7 +11,6 @@ use Spatie\Activitylog\Traits\LogsActivity;
  */
 class Entrypoint extends Model
 {
-    use LogsActivity;
     use SoftDeletes;
 
     /**

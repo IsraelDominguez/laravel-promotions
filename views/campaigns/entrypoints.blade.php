@@ -3,7 +3,7 @@
         <h2 class="card-title">Entry Points</h2>
         <small class="card-subtitle">If you need, you can refresh from Dru-ID.</small>
         <div class="actions">
-            <a href="{{route('campaign.refresh', $campaign->client_id)}}" id="refresh" class="actions__item zmdi zmdi-refresh"></a>
+            <a href="{{route('campaign.refresh', $campaign->id)}}" id="refresh" class="actions__item zmdi zmdi-refresh"></a>
         </div>
     </div>
 

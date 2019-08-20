@@ -1,9 +1,8 @@
 <?php namespace Genetsis\Promotions\Controllers;
 
-use App\Models\DruidApp;
-use App\Models\Entrypoint;
 use Genetsis\Admin\Controllers\AdminController;
 use Genetsis\Promotions\Models\Campaign;
+use Genetsis\Promotions\Models\Entrypoint;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -127,7 +126,7 @@ class CampaignsController extends AdminController
     {
         $campaign = Campaign::findOrFail($id);
 
-        $druid_entrypoints = \RestApi::searchEntrypointsBy(['app'=>$id]);
+        $druid_entrypoints = \RestApi::searchEntrypointsBy(['app'=>$campaign->client_id]);
 
         $entrypoints = [];
 
@@ -169,7 +168,7 @@ class CampaignsController extends AdminController
         });
 
 
-        return redirect()->route('apps.edit', $id)
+        return redirect()->route('campaigns.edit', $id)
             ->with('success','Entrypoints refresh successfully');
     }
 }
