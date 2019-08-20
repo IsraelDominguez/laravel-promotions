@@ -34,15 +34,15 @@
         <input type="hidden" name="campaign_id" value="{{$promotion->campaign_id ?? $campaigns[0]->id}}"/>
     @endif
 
-    <div class="col-xs-12 col-md-6">
+    <div class="col-md-6">
         <div class="form-group">
-            <label>Entry Point</label>
+            <label>Entry Point {{$promotion->entrypoint_id}}</label>
             <select class="select2" name="entrypoint_id" id="entry_points">
                 <option value="">- Select -</option>
                 @isset($promotion)
                     @foreach ($promotion->campaign->entrypoints as $entrypoint)
                         <option value="{{$entrypoint->key}}"
-                                @if ((old('entrypoint_id', isset($promotion) ? $action->entrypoint_id : null) == $entrypoint->key))
+                                @if ((old('entrypoint_id', isset($promotion) ? $promotion->entrypoint_id : null) == $entrypoint->key))
                                 selected
                             @endif
                         >{{$entrypoint->key}}</option>

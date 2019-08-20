@@ -17,7 +17,7 @@ class UpdatePromoEntrypoint extends Migration
 
         Schema::table('promo', function (Blueprint $table) {
             $table->string('entrypoint_id', 200)->nullable();
-            $table->foreign('entrypoint_id')->references('key')->on('entrypoints');
+            $table->foreign('entrypoint_id')->references('key')->on('promo_entrypoints');
         });
     }
 

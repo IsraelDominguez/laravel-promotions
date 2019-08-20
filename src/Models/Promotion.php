@@ -2,7 +2,6 @@
 
 namespace Genetsis\Promotions\Models;
 
-use App\Models\Entrypoint;
 use Illuminate\Database\Eloquent\Model;
 
 class Promotion extends Model
@@ -15,7 +14,7 @@ class Promotion extends Model
      */
     protected $table = 'promo';
 
-    protected $fillable = ['name', 'starts', 'ends', 'campaign_id', 'type_id', 'max_user_participations', 'max_user_participations_by_day', 'key', 'has_mgm', 'entry_point', 'legal'];
+    protected $fillable = ['name', 'starts', 'ends', 'campaign_id', 'type_id', 'max_user_participations', 'max_user_participations_by_day', 'key', 'has_mgm', 'entrypoint_id', 'legal'];
 
 //    protected $dateFormat = 'Y-m-d H:i';
 //

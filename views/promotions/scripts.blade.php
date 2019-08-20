@@ -65,6 +65,10 @@
         }
     };
 
+    @if (!empty($promotion))
+        var entrypoint_selected = '{{$promotion->entrypoint_id}}';
+    @endif
+
     $(document).ready(function() {
         $('#name').blur(function() {
             $("#key").val(slugify($('#name').val()));
@@ -91,9 +95,6 @@
                 $('#result_page_data').val(JSON.stringify($("#result_page_template_" + result_template).alpaca("get").getValue()));
             }
 
-            console.log($('#initial_page_data').val());
-            console.log($('#result_page_data').val());
-
             $("#form").submit();
         });
 
@@ -112,8 +113,8 @@
     function fillEntrypoints(campaign_id) {
         $('#entry_points').empty();
         $('#entry_points').html('<option selected="selected" value="">- Select -</option>\n' +
-            '<option value="simple">New Simple Fields</option>\n' +
-            '<option value="complete">New Complete Fields</option>');
+            '<option value="simple" '+(("simple" == entrypoint_selected) ? 'selected' : '')+'>New Simple Fields</option>\n' +
+            '<option value="complete" '+(("complete" == entrypoint_selected) ? 'selected' : '')+'>New Complete Fields</option>');
 
         if (campaign_id != '') {
             $.ajax({
@@ -126,7 +127,8 @@
                 },
                 success: function (response) {
                     $.each(response.data, function(key, value) {
-                        $('#entry_points').append('<option value="'+value.key+'">'+value.name+'</option>');
+                        selected = (value.key == entrypoint_selected) ? 'selected' : '';
+                        $('#entry_points').append('<option value="'+value.key+'" '+selected+'>'+value.name+'</option>');
                     });
                 }
             });

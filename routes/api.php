@@ -15,7 +15,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('promotion/{id}/pincodes', 'Genetsis\Promotions\Controllers\PromotionsController@pincodes');
 
         Route::prefix('entrypoint')->group(function () {
-            Route::get('list/{campaign_id}', 'Genetsis\Promotions\Controllers\PromotionsController@getEntrypoints')->name('campaign.entrypoints');
+            Route::get('list/{campaign_id}', 'Genetsis\Promotions\Controllers\Api\EntrypointController@get')->name('campaign.entrypoints');
         });
     });
 

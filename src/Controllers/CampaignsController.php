@@ -171,4 +171,5 @@ class CampaignsController extends AdminController
         return redirect()->route('campaigns.edit', $id)
             ->with('success','Entrypoints refresh successfully');
     }
+
 }

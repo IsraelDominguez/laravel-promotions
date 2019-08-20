@@ -88,37 +88,6 @@ class PromotionsController extends AdminController
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Genetsis\Promotions\Exceptions\PromotionException
-     * @throws \Illuminate\Validation\ValidationException
-     */
-    public function store(Request $request)
-    {
-        $request->validate($this->getValidations($request, null));
-
-        $request->merge(array('has_mgm' => $request->has('has_mgm')));
-
-        if ($request->hasFile('legal_file')&&($request->file('legal_file')->isValid())) {
-            $request->merge(array('legal' => $request->legal_file->storeAs('legal', $request->file('legal_file')->getClientOriginalName(), 'public')));
-        }
-
-        $promotion = Promotion::create($request->all());
-
-        try {
-            $promotionType = PromotionTypeFactory::create($promotion);
-            $promotionType->save($request);
-        }catch (\Exception $e) {
-            Log::info('Nothing additional to save');
-        }
-
-        return redirect()->route('promotions.home')
-            ->with('success','Promotion created successfully');
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -221,6 +190,22 @@ class PromotionsController extends AdminController
     }
 
     /**
+     * Store a newly created resource in storage.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Genetsis\Promotions\Exceptions\PromotionException
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function store(Request $request)
+    {
+        $this->save($request, null);
+
+        return redirect()->route('promotions.home')
+            ->with('success','Promotion created successfully');
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -230,27 +215,11 @@ class PromotionsController extends AdminController
      */
     public function update(Request $request, $id)
     {
-        $request->validate($this->getValidations($request, $id));
-
-        $promotion = Promotion::findOrFail($id);
-
-        $request->merge(array('has_mgm' => $request->has('has_mgm')));
-
-        if ($request->hasFile('legal_file')&&($request->file('legal_file')->isValid())) {
-            $request->merge(array('legal' => $request->legal_file->storeAs('legal', $request->file('legal_file')->getClientOriginalName(), 'public')));
-        }
-
-        $promotion->update($request->all());
-
-        try {
-            $promotionType = PromotionTypeFactory::create($promotion);
-            $promotionType->save($request);
-        }catch (\Exception $e) {
-            Log::error($e->getMessage());
-        }
+        $this->save($request, $id);
 
         return redirect()->route('promotions.home')
             ->with('success','Promotion updated successfully');
+
     }
 
     /**
@@ -266,21 +235,6 @@ class PromotionsController extends AdminController
         Promotion::find($id)->delete();
         return redirect()->route('promotions.home')
             ->with('success','Promotion deleted successfully');
-    }
-
-    /**
-     * Get all Entry Points for a Campaign
-     * @param $id int campaign_id
-     * @return \Illuminate\Http\Response
-     */
-    public function getEntrypoints($id) {
-        try {
-            $entrypoints = Entrypoint::where('campaign_id', $id)->get();
-        } catch (\Exception $e) {
-            return $this->sendError('Error', $e->getMessage());
-        }
-
-        return response()->json($entrypoints, 200);
     }
 
     /**
@@ -300,7 +254,7 @@ class PromotionsController extends AdminController
             'starts' => 'required',
             'ends' => 'nullable|after:starts',
             'key' => 'required|unique:promo|alpha_dash|max:50',
-            'entry_point' => 'nullable|alpha_dash|max:100',
+            'entrypoint_id' => 'nullable|alpha_dash|max:200',
             'has_mgm' => 'nullable',
             'legal' => 'nullable|max:100',
             'legal_file' => 'nullable|file|mimes:pdf',
@@ -329,5 +283,35 @@ class PromotionsController extends AdminController
         }
 
         return $validations;
+    }
+
+    /**
+     * Save or Update Promotion from Request
+     *
+     * @param Request $request
+     * @param $id
+     */
+    private function save(Request $request, $id) : void {
+        $request->validate($this->getValidations($request, $id));
+
+        $request->merge(array('has_mgm' => $request->has('has_mgm')));
+
+        if ($request->hasFile('legal_file')&&($request->file('legal_file')->isValid())) {
+            $request->merge(array('legal' => $request->legal_file->storeAs('legal', $request->file('legal_file')->getClientOriginalName(), 'public')));
+        }
+
+        if ($id != null) {
+            $promotion = Promotion::findOrFail($id);
+            $promotion->update($request->all());
+        } else {
+            $promotion = Promotion::create($request->all());
+        }
+
+        try {
+            $promotionType = PromotionTypeFactory::create($promotion);
+            $promotionType->save($request);
+        }catch (\Exception $e) {
+            Log::info('Nothing additional to save');
+        }
     }
 }
