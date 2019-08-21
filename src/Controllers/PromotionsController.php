@@ -315,7 +315,7 @@ class PromotionsController extends AdminController
                 config(['druid_entrypoints.default.app' => $promotion->campaign->selflink]);
                 config(['druid_entrypoints.default.key' => $promotion->campaign->client_id.'-'.$promotion->key]);
                 config(['druid_entrypoints.default.description' => 'Promotion ' . $promotion->name]);
-                config(['druid_entrypoints.default.url' => env('APP_URL').'/'.$promotion->key]);
+                config(['druid_entrypoints.default.url' => url($promotion->key)]);
 
                 $entrypoint_link = \RestApi::createEntrypoints(array_merge(config('druid_entrypoints.default'), config('druid_entrypoints.'.$promotion->entrypoint_id)));
 
