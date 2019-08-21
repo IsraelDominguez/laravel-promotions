@@ -5,6 +5,7 @@ use Genetsis\Promotions\Models\Campaign;
 use Genetsis\Promotions\Models\Entrypoint;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use JMS\Serializer\Tests\Fixtures\Log;
 
 class CampaignsController extends AdminController
 {
@@ -39,8 +40,9 @@ class CampaignsController extends AdminController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request)
     {
@@ -51,7 +53,18 @@ class CampaignsController extends AdminController
             'ends' => 'nullable|after:starts'
         ]);
 
-        Campaign::create($request->all());
+        $campaign = Campaign::create($request->all());
+
+        try {
+            $druid_app = \RestApi::searchAppsBy(['key'=>$campaign->client_id]);
+            $campaign->selflink = $druid_app->getUri();
+            $campaign->update();
+        } catch (\Exception $e) {
+            \Log::debug('Error: ' . $e->getMessage());
+        }
+
+        $this->getDruidEntrypoints($campaign);
+
         return redirect()->route('campaigns.home')
             ->with('success','Campaign created successfully');
     }
@@ -77,15 +90,17 @@ class CampaignsController extends AdminController
     public function edit($id)
     {
         $campaign = Campaign::find($id);
+
         return view('promotion::campaigns.edit',compact('campaign'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function update(Request $request, $id)
     {
@@ -98,7 +113,19 @@ class CampaignsController extends AdminController
             'ends' => 'nullable|after:starts'
         ]);
 
-        Campaign::find($id)->update($request->all());
+        $campaign = Campaign::find($id);
+
+        try {
+            $druid_app = \RestApi::searchAppsBy(['key'=>$campaign->client_id]);
+            $campaign->selflink = $druid_app->getUri();
+        } catch (\Exception $e) {
+            \Log::debug('Error: ' . $e->getMessage());
+        }
+
+        $campaign->update($request->all());
+
+        $this->getDruidEntrypoints($campaign);
+
         return redirect()->route('campaigns.home')
             ->with('success','Campaign updated successfully');
     }
@@ -126,7 +153,20 @@ class CampaignsController extends AdminController
     {
         $campaign = Campaign::findOrFail($id);
 
-        $druid_entrypoints = \RestApi::searchEntrypointsBy(['app'=>$campaign->client_id]);
+        $this->getDruidEntrypoints($campaign);
+
+        return redirect()->route('campaigns.edit', $id)
+            ->with('success','Entrypoints refresh successfully');
+    }
+
+    /**
+     * Get Druid Entrypoints for a Campaign
+     *
+     * @param Campaign $campaign
+     */
+    private function getDruidEntrypoints(Campaign $campaign)
+    {
+        $druid_entrypoints = \RestApi::searchEntrypointsBy(['app' => $campaign->client_id]);
 
         $entrypoints = [];
 
@@ -150,13 +190,13 @@ class CampaignsController extends AdminController
         }
 
 
-        $campaign->entrypoints()->each(function($relation) use ($entrypoints){
+        $campaign->entrypoints()->each(function ($relation) use ($entrypoints) {
             if (!collect($entrypoints)->contains('key', $relation->key)) {
                 return $relation->delete();
             }
         });
 
-        collect($entrypoints)->map(function($entrypoint) use ($campaign) {
+        collect($entrypoints)->map(function ($entrypoint) use ($campaign) {
             $campaign->entrypoints()->updateOrCreate(
                 ['key' => $entrypoint->key],
                 [
@@ -166,10 +206,7 @@ class CampaignsController extends AdminController
                 ]
             );
         });
-
-
-        return redirect()->route('campaigns.edit', $id)
-            ->with('success','Entrypoints refresh successfully');
     }
+
 
 }

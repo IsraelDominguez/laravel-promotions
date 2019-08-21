@@ -15,7 +15,7 @@ class Campaign extends Model
      */
     protected $table = 'promo_campaign';
 
-    protected $fillable = ['name', 'starts', 'ends', 'key', 'entry_point', 'client_id', 'secret'];
+    protected $fillable = ['name', 'starts', 'ends', 'key', 'entry_point', 'client_id', 'secret', 'selflink'];
 
     protected $encryptable = ['secret'];
 
