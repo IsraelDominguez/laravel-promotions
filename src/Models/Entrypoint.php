@@ -19,7 +19,7 @@ class Entrypoint extends Model
      */
     protected $table = 'promo_entrypoints';
 
-    protected $fillable = ['key', 'campaign_id', 'name', 'ids', 'fields'];
+    protected $fillable = ['key', 'campaign_id', 'name', 'ids', 'fields', 'selflink'];
     protected $hidden = ['deleted_at'];
 
     protected $primaryKey = 'key';
@@ -37,6 +37,10 @@ class Entrypoint extends Model
     public function campaign()
     {
         return $this->hasOne(Campaign::class, 'id', 'campaign_id');
+    }
+
+    public function Promotion(){
+        return $this->belongsTo(Promotion::class, 'entrypoint_id', 'key');
     }
 
     public function getFieldsAttribute($value) {

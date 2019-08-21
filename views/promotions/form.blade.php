@@ -36,7 +36,7 @@
 
     <div class="col-md-6">
         <div class="form-group">
-            <label>Entry Point {{$promotion->entrypoint_id}}</label>
+            <label>Entry Point</label>
             <select class="select2" name="entrypoint_id" id="entry_points">
                 <option value="">- Select -</option>
                 @isset($promotion)

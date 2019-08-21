@@ -3,6 +3,8 @@
 use Genetsis\Admin\Controllers\AdminController;
 use Carbon\Carbon;
 
+use Genetsis\Druid\Rest\Exceptions\RestApiException;
+use Genetsis\Druid\Rest\Facades\RestApi;
 use Genetsis\Promotions\Models\Campaign;
 use Genetsis\Promotions\Models\Entrypoint;
 use Genetsis\Promotions\Models\ExtraFields;
@@ -305,6 +307,33 @@ class PromotionsController extends AdminController
             $promotion->update($request->all());
         } else {
             $promotion = Promotion::create($request->all());
+        }
+
+        if (($promotion->entrypoint_id === 'simple')||($promotion->entrypoint_id === 'complete')) {
+            try {
+                config(['druid_entrypoints.default.app' => $promotion->campaign->selflink]);
+                config(['druid_entrypoints.default.key' => $promotion->campaign->client_id.'-'.$promotion->key]);
+                config(['druid_entrypoints.default.description' => 'Promotion ' . $promotion->name]);
+                config(['druid_entrypoints.default.url' => env('APP_URL').'/'.$promotion->key]);
+
+                $entrypoint_link = \RestApi::createEntrypoints(array_merge(config('druid_entrypoints.default'), config('druid_entrypoints.'.$promotion->entrypoint_id)));
+
+                $entrypoint = new Entrypoint();
+                $entrypoint->key = $promotion->campaign->client_id.'-'.$promotion->key;
+                $entrypoint->name = config('druid_entrypoints.default.description');
+                $entrypoint->campaign_id = $promotion->campaign->id;
+                $entrypoint->ids = json_encode(config('druid_entrypoints.simple.config_id'));
+                $entrypoint->fields = json_encode(config('druid_entrypoints.simple.config_field'));
+                $entrypoint->selflink = $entrypoint_link;
+
+                $promotion->entrypoint_id = $entrypoint->key;
+                $promotion->save();
+
+                $promotion->entrypoint()->save($entrypoint);
+
+            } catch (RestApiException $e) {
+                Log::error($e->getMessage());
+            }
         }
 
         try {
