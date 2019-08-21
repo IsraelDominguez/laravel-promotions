@@ -57,9 +57,10 @@ class PromotionsController extends AdminController
                 })
                 ->addColumn('options', function ($promotion) {
                     return '
-                        <div class="actions" style="width:64px">
+                        <div class="actions" style="width:100px">
                         <a class="actions__item zmdi zmdi-eye" href="' . route('promotions.show', $promotion->id) . '"></a>
                         <a class="actions__item zmdi zmdi-edit" href="' . route('promotions.edit', $promotion->id) . '"></a>
+                        <a class="actions__item zmdi zmdi-link" href="' . url($promotion->key) . '" target="_blank"></a>
                         </div>                        
                         ';
                 })
