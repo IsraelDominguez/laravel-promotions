@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Participation extends Model
 {
 
+    const IS_WINNER = 'winner';
+    const IS_RESERVE = 'reserve';
+
     /**
      * The table associated with the model.
      *
@@ -14,7 +17,7 @@ class Participation extends Model
      */
     protected $table = 'promo_participations';
 
-    protected $fillable = ['user_id', 'promo_id', 'sponsor', 'origin', 'status'];
+    protected $fillable = ['user_id', 'promo_id', 'sponsor', 'origin', 'status', 'winner'];
 
 
     //protected $primaryKey = ['oid', 'promocode_id'];
@@ -59,6 +62,15 @@ class Participation extends Model
         })->first();
     }
 
+    /**
+     * Scope a query to only include winner or reserve participations
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWinner($query, string $winner) {
+        return $query->where('winner', $winner);
+    }
 
     /**
      * The "booting" method of the model.

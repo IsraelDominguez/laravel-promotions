@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddLegalLinkCampaignTable extends Migration
+class AddWinParticipation extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,10 @@ class AddLegalLinkCampaignTable extends Migration
      */
     public function up()
     {
-        Schema::disableForeignKeyConstraints();
-
-        Schema::table('promo_campaign', function (Blueprint $table) {
-            $table->string('legal',100)->nullable();
+        Schema::table('promo_participations', function (Blueprint $table) {
+            $table->string('winner',10)->nullable();
         });
     }
-
 
     /**
      * Reverse the migrations.
@@ -28,8 +25,8 @@ class AddLegalLinkCampaignTable extends Migration
      */
     public function down()
     {
-        Schema::table('promo_campaign', function (Blueprint $table) {
-            $table->dropColumn(['legal']);
+        Schema::table('promo_participations', function($table) {
+            $table->dropColumn('winner');
         });
     }
 }

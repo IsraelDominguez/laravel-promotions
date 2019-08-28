@@ -65,9 +65,7 @@
         }
     };
 
-    @if (!empty($promotion))
-        var entrypoint_selected = '{{$promotion->entrypoint_id}}';
-    @endif
+    var entrypoint_selected = '{{$promotion->entrypoint_id ?? ''}}';
 
     $(document).ready(function() {
         $('#name').blur(function() {

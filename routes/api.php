@@ -11,11 +11,15 @@ Route::group(['middleware' => ['web']], function () {
             Route::put('participation/{id}', 'ParticipationsController@update');
         });
 
-        Route::get('promotion/{id}/moments', 'Genetsis\Promotions\Controllers\PromotionsController@moments');
-        Route::get('promotion/{id}/pincodes', 'Genetsis\Promotions\Controllers\PromotionsController@pincodes');
+
 
         Route::prefix('entrypoint')->group(function () {
             Route::get('list/{campaign_id}', 'Genetsis\Promotions\Controllers\Api\EntrypointController@get')->name('campaign.entrypoints');
+        });
+        Route::prefix('promotion')->group(function () {
+            Route::get('{id}/moments', 'Genetsis\Promotions\Controllers\PromotionsController@moments');
+            Route::get('{id}/pincodes', 'Genetsis\Promotions\Controllers\PromotionsController@pincodes');
+            Route::get('{id}/winners', 'Genetsis\Promotions\Controllers\Api\PromotionsController@winners')->name('promotion.winners');
         });
     });
 

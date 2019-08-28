@@ -71,10 +71,7 @@ class PromotionService
      * @throws UserExceedParticipationsException
      * @throws UserExceedTodayParticipationsException
      */
-    public function userCanParticipate($user_id, \Genetsis\Promotions\Models\Promotion $promotion) {
-        if ($user_id == null) {
-            return false;
-        }
+    public function userCanParticipate(string $user_id, \Genetsis\Promotions\Models\Promotion $promotion) {
 
         if ($promotion->max_user_participations != null) {
             if ($promotion->max_user_participations > 0) {

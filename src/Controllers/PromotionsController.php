@@ -8,10 +8,12 @@ use Genetsis\Druid\Rest\Facades\RestApi;
 use Genetsis\Promotions\Models\Campaign;
 use Genetsis\Promotions\Models\Entrypoint;
 use Genetsis\Promotions\Models\ExtraFields;
+use Genetsis\Promotions\Models\Participation;
 use Genetsis\Promotions\Models\Promotion;
 use Genetsis\Promotions\Models\PromoType;
 
 use Genetsis\Promotions\Models\Rewards;
+use Genetsis\Promotions\Models\User;
 use Genetsis\Promotions\PromotionTypes\PromotionTypeFactory;
 
 use Illuminate\Http\Request;
@@ -33,6 +35,9 @@ class PromotionsController extends AdminController
      * @return \Illuminate\Http\Response
      */
     public function index() {
+
+        //factory(User::class, 10)->create();
+        //factory(Participation::class, 50)->create();
         $promotions = Promotion::latest()->paginate(10);
         return view('promotion::promotions.index',compact('promotions'))
             ->with('i', (request()->input('page', 1) - 1) * 10);
@@ -100,6 +105,10 @@ class PromotionsController extends AdminController
     {
         $promotion = Promotion::findOrFail($id);
 
+        $mgm = $promotion->participations->filter(function($participation){
+            return ($participation->sponsorcode);
+        })->count();
+
         $unique_users = ($promotion->participations->map(function($participation){
             return $participation->user_id;
         })->unique()->count());
@@ -140,7 +149,7 @@ class PromotionsController extends AdminController
             })->count();
         }
 
-        return view('promotion::promotions.show',compact('promotion','unique_users', 'participations', 'days', 'hours', 'pincodes', 'moments'));
+        return view('promotion::promotions.show',compact('promotion','unique_users', 'participations', 'days', 'hours', 'pincodes', 'moments', 'mgm'));
     }
 
     /**

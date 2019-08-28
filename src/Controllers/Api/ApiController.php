@@ -33,11 +33,10 @@ class ApiController extends Controller
             'message' => $error,
         ];
 
-
         if(!empty($errorMessages)){
             $response['data'] = $errorMessages;
         }
 
-        return response()->json($response, $code);
+        return response()->json($response,  $code);
     }
 }

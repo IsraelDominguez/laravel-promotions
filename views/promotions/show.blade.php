@@ -27,6 +27,11 @@
                     <a class="nav-link" data-toggle="tab" href="#moments" role="tab">Win Moments</a>
                 </li>
             @endif
+            @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::SORTEO_TYPE)
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#lottery" role="tab">Lottery</a>
+                </li>
+            @endif
             <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" href="#statistics" role="tab">Statistics</a>
             </li>
@@ -48,6 +53,9 @@
             <div class="tab-pane fade" id="statistics" role="tabpanel">
                 @include('promotion::promotions.dashboard.statistics')
             </div>
+            <div class="tab-pane fade" id="lottery" role="tabpanel">
+                @includeWhen(($promotion->type->code == \Genetsis\Promotions\Models\PromoType::SORTEO_TYPE), 'promotion::promotions.dashboard.lottery')
+            </div>
         </div>
     </div>
 
@@ -57,4 +65,23 @@
         </li>
     </ul>
 @endsection
+
+
+
+@push('custom-js')
+    <script>
+        $(document).ready(function() {
+
+            var url = document.location.toString();
+            if (url.match('#')) {
+                $('.nav-tabs a[href="#'+url.split('#')[1]+'"]').tab('show') ;
+            }
+
+            // // Change hash for page-reload
+            // $('.nav-tabs a').on('shown.bs.tab', function (e) {
+            //     window.location.hash = e.target.hash;
+            // })
+        });
+    </script>
+@endpush
 

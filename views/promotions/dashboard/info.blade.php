@@ -9,7 +9,7 @@
 
 @if($promotion->has_mgm)
     <div class="price-table__price color-green">
-        {{$unique_users}} | <small>Members Get Members</small>
+        {{$mgm}} | <small>Members Get Members</small>
     </div>
 @endif
 

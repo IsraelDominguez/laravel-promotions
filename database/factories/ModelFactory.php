@@ -12,6 +12,9 @@
 */
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
+
+use Genetsis\Promotions\Models\User;
+
 $factory->define(\Genetsis\Promotions\Models\Moment::class, function (Faker\Generator $faker) {
     return [
         'promo_id' => 1,
@@ -28,9 +31,15 @@ $factory->define(\Genetsis\Promotions\Models\Codes::class, function (Faker\Gener
 });
 
 
+$factory->define(\Genetsis\Promotions\Models\User::class, function (Faker\Generator $faker) {
+    return [
+        'id' => $faker->sha1(),
+        'sponsor_code' => $faker->ean8()
+    ];
+});
 $factory->define(\Genetsis\Promotions\Models\Participation::class, function (Faker\Generator $faker) {
     return [
-        'user_id' => 'my-id-user',
+        'user_id' => User::all()->random()->id,
         'promo_id' => 1,
         'date' =>  $faker->dateTimeBetween($startDate = '-5 days', $endDate = 'now'),
     ];
