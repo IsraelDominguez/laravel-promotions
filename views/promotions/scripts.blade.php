@@ -36,8 +36,7 @@
         var id = "img-"+$(control.domEl).attr("id");
         $('#'+$(control.domEl).attr("id")+' #promo_image').attr('name', "promo_image_"+$(control.domEl).attr("id"));
         control.getFieldEl().append("<div id='"+id+"' style='display:none'><table><tr><td nowrap='nowrap' class='imagePreview' style='width: 220px'> </td></tr></table></div>");
-
-        if (control.data.promo_image != '') {
+        if ((control.data.promo_image != undefined) && (control.data.promo_image != '')) {
             var img = $("#"+id+" .imagePreview").html("").append("<img style='max-width: 200px; max-height: 200px' src='<?php echo Storage::disk('public')->url('/') ?>"+control.data.promo_image+"'>");
             $("#"+id).css({
                 "display": "block"
@@ -68,6 +67,10 @@
     var entrypoint_selected = '{{$promotion->entrypoint_id ?? ''}}';
 
     $(document).ready(function() {
+        @if ($message = Session::get('success'))
+        notify('{{ $message }}');
+        @endif
+
         $('#name').blur(function() {
             $("#key").val(slugify($('#name').val()));
         });

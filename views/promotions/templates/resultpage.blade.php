@@ -1,15 +1,21 @@
 <input type="hidden" name="result_page_data" id="result_page_data" value=""/>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Template </label>
 
-<div class="col-md-6">
-    <div class="form-group">
-        <label>Template </label>
-
-        <select class="select2" name="result_page_template" id="result_page_template">
-            <option value="">- Select -</option>
-            <option value="{{\Genetsis\Promotions\Models\Templates::TEMPLATE_LEFT}}" {{isset($result_page)&&($result_page->template == \Genetsis\Promotions\Models\Templates::TEMPLATE_LEFT) ? 'selected' : ''}}>Image Left</option>
-            <option value="{{\Genetsis\Promotions\Models\Templates::TEMPLATE_RIGHT}}" {{isset($result_page)&&($result_page->template == \Genetsis\Promotions\Models\Templates::TEMPLATE_RIGHT) ? 'selected' : ''}}>Image Right</option>
-        </select>
+            <select class="select2" name="result_page_template" id="result_page_template">
+                <option value="">- Select -</option>
+                <option value="{{\Genetsis\Promotions\Models\Templates::TEMPLATE_LEFT}}" {{isset($result_page)&&($result_page->template == \Genetsis\Promotions\Models\Templates::TEMPLATE_LEFT) ? 'selected' : ''}}>Image Left</option>
+                <option value="{{\Genetsis\Promotions\Models\Templates::TEMPLATE_RIGHT}}" {{isset($result_page)&&($result_page->template == \Genetsis\Promotions\Models\Templates::TEMPLATE_RIGHT) ? 'selected' : ''}}>Image Right</option>
+            </select>
+        </div>
     </div>
+    @isset($promotion)
+        <div class="col-md-6">
+            <a class="btn btn-sm btn-info btn--icon-text waves-effect" href="{{route('promotions.preview', ['id' => $promotion->id, 'page' => 'result_page'])}}" target="_blank"><i class="zmdi zmdi-eye"></i> Preview</a>
+        </div>
+    @endisset
 </div>
 
 <div id="result_page_template_left" style="display: {{isset($result_page)&&($result_page->template == \Genetsis\Promotions\Models\Templates::TEMPLATE_LEFT) ? 'block' : 'none'}}" class="result_page_template_type"></div>

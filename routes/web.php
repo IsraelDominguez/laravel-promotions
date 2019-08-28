@@ -20,8 +20,12 @@ Route::group(['middleware' => ['web']], function () {
                 'only' => ['index', 'show', 'edit', 'create', 'store', 'update', 'destroy'],
                 'names' => ['index' => 'promotions.home']
             ]);
+
+
         });
     });
+    Route::get('/preview/{id}/{page}', 'Genetsis\Promotions\Controllers\PromotionsController@preview')->name('promotions.preview');
+
 });
 
 

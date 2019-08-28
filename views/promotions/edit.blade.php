@@ -26,4 +26,5 @@
     <script src="https://cdn.tiny.cloud/1/9gr97pwjo4y6zq0v4ef9wq1td85291mbhcgh45mfvgowdvfb/tinymce/5/tinymce.min.js"></script>
 
     @include('promotion::promotions.scripts', compact('promotion','campaigns'))
+
 @endpush

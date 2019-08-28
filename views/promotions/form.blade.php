@@ -155,22 +155,17 @@
         </div>
 
     </div>
-
-
 @includeWhen(config('promotion.front_templates_enabled'), 'promotion::promotions.templates')
-
 @includeWhen(config('promotion.extra_fields_enabled'), 'promotion::promotions.partials.extrafields')
 @includeWhen(config('promotion.rewards_fields_enabled'), 'promotion::promotions.partials.rewards')
-
 </div>
 
-
-<ul class="nav justify-content-center">
-    <li class="nav-item">
-        <a class="btn btn-danger btn--icon-text waves-effect pull-2" href="{{ route('promotions.home') }}"><i class="zmdi zmdi-arrow-back"></i> Back</a>
-    </li>
-    <li class="nav-item">
+<div class="row justify-content-center">
+    <div>
+    @if (config('promotion.front_templates_enabled') && isset($promotion) && !$promotion->isActive())
+        <a class="btn btn-sm btn-info btn--icon-text waves-effect" href="{{route('promotions.preview', ['id' => $promotion->id, 'page' => 'initial_page'])}}" target="_blank"><i class="zmdi zmdi-eye"></i> Preview</a>
+    @endif
+        <a class="btn btn-danger btn--icon-text waves-effect" href="{{ route('promotions.home') }}"><i class="zmdi zmdi-arrow-back"></i> Back</a>
         <a class="btn btn-success btn--icon-text waves-effect" id="submit" href="#"><i class="zmdi zmdi-check"></i> Submit</a>
-    </li>
-</ul>
-
+    </div>
+</div>

@@ -14,10 +14,12 @@ use Genetsis\Promotions\Models\PromoType;
 
 use Genetsis\Promotions\Models\Rewards;
 use Genetsis\Promotions\Models\User;
+use Genetsis\Promotions\ParticipationTypes\PromotionParticipationFactory;
 use Genetsis\Promotions\PromotionTypes\PromotionTypeFactory;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\View;
 use Illuminate\Validation\Rule;
 use Yajra\DataTables\DataTables;
 
@@ -59,6 +61,9 @@ class PromotionsController extends AdminController
             return DataTables::of($promotions)
                 ->addColumn('participations', function($promotion) {
                     return count($promotion->participations);
+                })
+                ->addColumn('active', function($promotion){
+                    return $promotion->isActive() ? 'Yes' : 'No';
                 })
                 ->addColumn('options', function ($promotion) {
                     return '
@@ -105,8 +110,9 @@ class PromotionsController extends AdminController
     {
         $promotion = Promotion::findOrFail($id);
 
-        $mgm = $promotion->participations->filter(function($participation){
-            return ($participation->sponsorcode);
+
+        $mgm = $promotion->participations->filter(function($p){
+            return $p->sponsor;
         })->count();
 
         $unique_users = ($promotion->participations->map(function($participation){
@@ -211,9 +217,9 @@ class PromotionsController extends AdminController
      */
     public function store(Request $request)
     {
-        $this->save($request, null);
+        $promotion = $this->save($request, null);
 
-        return redirect()->route('promotions.home')
+        return redirect()->route('promotions.edit', $promotion->id)
             ->with('success','Promotion created successfully');
     }
 
@@ -229,7 +235,7 @@ class PromotionsController extends AdminController
     {
         $this->save($request, $id);
 
-        return redirect()->route('promotions.home')
+        return redirect()->route('promotions.edit', $id)
             ->with('success','Promotion updated successfully');
 
     }
@@ -350,7 +356,29 @@ class PromotionsController extends AdminController
             $promotionType = PromotionTypeFactory::create($promotion);
             $promotionType->save($request);
         }catch (\Exception $e) {
-            Log::info('Nothing additional to save');
+            Log::error('Nothing additional to save: ' . $e->getMessage());
         }
+    }
+
+    public function preview($id, $page) {
+        $promotion = Promotion::findOrFail($id);
+        $view = ($page == 'initial_page') ? 'promotion' : 'participar';
+
+        $sponsorcode = '';
+        $content = '';
+        if ($tmp = $promotion->templates()->page($page)->first()){
+            if (View::exists('templates.'.$tmp->template)) {
+                $content = view('templates.'.$tmp->template, json_decode($tmp->content, true))->render();
+            }
+        }
+
+        // Mock Participation Info
+        $participation = new Participation();
+        $user = new User();
+        $user->setSponsorCode('345763');
+        $participation->user = $user;
+
+
+        return view($view, compact('promotion', 'sponsorcode', 'content', 'participation'));
     }
 }

@@ -20,7 +20,8 @@
                     <td>Name</td>
                     <td>Starts</td>
                     <td>Ends</td>
-                    <td>Campaign</td>
+                    <td>Active</td>
+{{--                    <td>Campaign</td>--}}
                     <td>Type</td>
                     <td>Entrypoint</td>
                     <td>Participations</td>
@@ -43,7 +44,8 @@
                     {data: 'name'},
                     {data: 'starts'},
                     {data: 'ends'},
-                    {data: 'campaign.name'},
+                    {data: 'active'},
+                    // {data: 'campaign.name'},
                     {data: 'type.name'},
                     {data: 'entrypoint_id', orderable: false},
                     {data: 'participations', searchable: false},

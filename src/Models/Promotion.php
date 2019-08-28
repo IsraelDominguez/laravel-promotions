@@ -2,6 +2,7 @@
 
 namespace Genetsis\Promotions\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Promotion extends Model
@@ -82,6 +83,10 @@ class Promotion extends Model
 
     public function reserves() {
         return $this->hasMany(Participation::class, 'promo_id')->winner(Participation::IS_RESERVE);
+    }
+
+    public function scopeIsActive() {
+        return Carbon::now()->between(Carbon::createFromFormat('Y-m-d H:i:s',$this->starts), Carbon::createFromFormat('Y-m-d H:i:s',$this->ends));
     }
 
     /**

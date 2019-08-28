@@ -140,30 +140,31 @@ class GenericPromotion implements PromotionTypeInterface
         $this->promotion->design()->updateOrCreate([
             'promo_id' => $this->promotion->id
         ], [
-            'background_image' => $background_image ?? $this->promotion->design->background_image,
+            'background_image' => $background_image ?? $this->promotion->design->background_image ?? '',
             'background_color' => $request->input('background_color'),
         ]);
     }
 
     private function savePages(Request $request) {
-        $this->saveTemplates('initial_page', $request->input('initial_page_data'), $request->input('initial_page_template'), $request);
+        $this->saveTemplates('initial_page', $request->input('initial_page_data', ''), $request->input('initial_page_template',''), $request);
 
-        $this->saveTemplates('result_page', $request->input('result_page_data'), $request->input('result_page_template'), $request);
+        $this->saveTemplates('result_page', $request->input('result_page_data', ''), $request->input('result_page_template',''), $request);
     }
 
-    private function saveTemplates(string $page, string $content, string $template, Request $request) {
-        if ($request->hasFile('promo_image_'.$page.'_template_'.$template)&&($request->file('promo_image_'.$page.'_template_'.$template)->isValid())) {
-            $promo_image = $request->file('promo_image_'.$page.'_template_'.$template)->storeAs('promoimg', $this->promotion->key . '-'.$page.'.jpg', 'public');
-            $content = json_encode(array_merge(['promo_image' => $promo_image], json_decode($content, true)));
+    private function saveTemplates(string $page, $content, $template, Request $request) {
+        if (!empty($content)) {
+            if ($request->hasFile('promo_image_' . $page . '_template_' . $template) && ($request->file('promo_image_' . $page . '_template_' . $template)->isValid())) {
+                $promo_image = $request->file('promo_image_' . $page . '_template_' . $template)->storeAs('promoimg', $this->promotion->key . '-' . $page . '.jpg', 'public');
+                $content = json_encode(array_merge(['promo_image' => $promo_image], json_decode($content, true)));
+            }
+
+            $this->promotion->templates()->updateOrCreate([
+                'promo_id' => $this->promotion->id,
+                'page' => $page,
+            ], [
+                'template' => $template,
+                'content' => $content
+            ]);
         }
-
-        $this->promotion->templates()->updateOrCreate([
-            'promo_id' => $this->promotion->id,
-            'page' => $page,
-        ], [
-            'template' => $template,
-            'content' => $content
-        ]);
-
     }
 }
