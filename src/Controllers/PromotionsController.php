@@ -133,6 +133,8 @@ class PromotionsController extends AdminController
 
         $participations = $promotion->participations->groupBy(function($participation) {
             return strtotime(Carbon::createFromFormat('Y-m-d H:i:s', $participation->date)->format('Y-m-d'))*1000;
+        })->sortBy(function($item, $key) {
+            return $key;
         })->map(function($item, $key) {
             return count($item);
         })->all();
