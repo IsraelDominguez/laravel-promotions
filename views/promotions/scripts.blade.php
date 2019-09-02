@@ -85,16 +85,18 @@
         @endif
 
         $("#submit").click(function () {
-            initial_template = $("#initial_page_template").val();
-            result_template = $("#result_page_template").val();
+            @if (config('promotion.front_templates_enabled'))
+                initial_template = $("#initial_page_template").val();
+                result_template = $("#result_page_template").val();
 
-            if (initial_template != '') {
-                $('#initial_page_data').val(JSON.stringify($("#initial_page_template_" + initial_template).alpaca("get").getValue()));
-            }
+                if (initial_template != '') {
+                    $('#initial_page_data').val(JSON.stringify($("#initial_page_template_" + initial_template).alpaca("get").getValue()));
+                }
 
-            if (result_template != '') {
-                $('#result_page_data').val(JSON.stringify($("#result_page_template_" + result_template).alpaca("get").getValue()));
-            }
+                if (result_template != '') {
+                    $('#result_page_data').val(JSON.stringify($("#result_page_template_" + result_template).alpaca("get").getValue()));
+                }
+            @endif
 
             $("#form").submit();
         });
