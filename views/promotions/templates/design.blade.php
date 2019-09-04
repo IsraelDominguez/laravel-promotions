@@ -23,8 +23,8 @@
                 <span class="input-group-addon"><i class="zmdi zmdi-invert-colors"></i></span>
 
                 <div class="form-group color-picker">
-                    <input type="text" name="background_color" class="form-control color-picker__value" value="{{ old('background_color', isset($promotion->design) ? $promotion->design->background_color : '#cccccc') }}">
-                    <i class="color-picker__preview" style="background-color: {{ old('background_color', isset($promotion->design) ? $promotion->design->background_color : '#cccccc') }}"></i>
+                    <input type="text" name="background_color" class="form-control color-picker__value" value="{{ old('background_color', isset($promotion->design) ? $promotion->design->background_color : '#CD0A33') }}">
+                    <i class="color-picker__preview" style="background-color: {{ old('background_color', isset($promotion->design) ? $promotion->design->background_color : '#CD0A33') }}"></i>
                     <i class="form-group__bar"></i>
                 </div>
             </div>
