@@ -26,9 +26,12 @@ class GenericPromotion implements PromotionTypeInterface
     public function save(Request $request)
     {
         if (config('promotion.front_templates_enabled')) {
-            $this->saveSeo($request);
-            $this->saveDesign($request);
-            $this->savePages($request);
+            if (config('promotion.front_share_enabled'))
+                $this->saveSeo($request);
+            if (config('promotion.front_design_enabled'))
+                $this->saveDesign($request);
+            if (config('promotion.front_pages_enabled'))
+                $this->savePages($request);
         }
 
         if (config('promotion.extra_fields_enabled'))
@@ -117,6 +120,14 @@ class GenericPromotion implements PromotionTypeInterface
      */
     private function saveSeo(Request $request): void
     {
+        if ($request->hasFile('image')&&($request->file('image')->isValid())) {
+            $image = $request->image->storeAs('promoimg', $this->promotion->key.'.'.$request->file('image')->getClientOriginalExtension(), 'public');
+        } elseif ($request->has('remove_image')) {
+            $image = null;
+        } else {
+            $image = $this->promotion->seo->image;
+        }
+
         $this->promotion->seo()->updateOrCreate([
             'promo_id' => $this->promotion->id
         ], [
@@ -124,6 +135,8 @@ class GenericPromotion implements PromotionTypeInterface
             'facebook' => $request->input('facebook'),
             'twitter' => $request->input('twitter'),
             'whatsapp' => $request->input('whatsapp'),
+            'text_share' => $request->input('text_share'),
+            'image' => $image
         ]);
     }
 

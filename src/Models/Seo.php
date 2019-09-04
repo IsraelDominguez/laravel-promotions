@@ -16,7 +16,7 @@ class Seo extends Model
     protected $primaryKey = 'promo_id';
     public $incrementing = false;
 
-    protected $fillable = ['title', 'facebook', 'twitter', 'whatsapp'];
+    protected $fillable = ['title', 'facebook', 'twitter', 'whatsapp', 'text_share', 'image'];
 
     public $timestamps = false;
 

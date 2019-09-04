@@ -2,6 +2,9 @@
 
 return [
     'front_templates_enabled' => true,
+    'front_share_enabled' => true,
+    'front_design_enabled' => true,
+    'front_pages_enabled' => true,
     'extra_fields_enabled' => true,
     'rewards_fields_enabled' => true,
 

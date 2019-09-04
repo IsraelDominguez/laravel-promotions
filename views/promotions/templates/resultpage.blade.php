@@ -1,3 +1,9 @@
+<div class="tab-pane fade" id="resultpage" role="tabpanel" aria-expanded="true">
+<?php
+if (!empty($promotion)) {
+    $result_page = $promotion->templates()->page('result_page')->first();
+}
+?>
 <input type="hidden" name="result_page_data" id="result_page_data" value=""/>
 <div class="row">
     <div class="col-md-6">
@@ -20,7 +26,7 @@
 
 <div id="result_page_template_left" style="display: {{isset($result_page)&&($result_page->template == \Genetsis\Promotions\Models\Templates::TEMPLATE_LEFT) ? 'block' : 'none'}}" class="result_page_template_type"></div>
 <div id="result_page_template_right" style="display: {{isset($result_page)&&($result_page->template == \Genetsis\Promotions\Models\Templates::TEMPLATE_RIGHT) ? 'block' : 'none'}}" class="result_page_template_type"></div>
-
+</div>
 
 @push('custom-js')
     <script type="text/javascript">

@@ -1,3 +1,9 @@
+<div class="tab-pane fade" id="initialpage" role="tabpanel" aria-expanded="true">
+<?php
+if (!empty($promotion)) {
+    $initial_page = $promotion->templates()->page('initial_page')->first();
+}
+?>
 <input type="hidden" name="initial_page_data" id="initial_page_data" value=""/>
 <div class="row">
     <div class="col-md-6">
@@ -21,6 +27,7 @@
 <div id="initial_page_template_left" style="display: {{isset($initial_page)&&($initial_page->template == \Genetsis\Promotions\Models\Templates::TEMPLATE_LEFT) ? 'block' : 'none'}}" class="initial_page_template_type"></div>
 <div id="initial_page_template_right" style="display: {{isset($initial_page)&&($initial_page->template == \Genetsis\Promotions\Models\Templates::TEMPLATE_RIGHT) ? 'block' : 'none'}}" class="initial_page_template_type"></div>
 
+</div>
 
 
 @push('custom-js')

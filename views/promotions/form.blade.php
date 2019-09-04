@@ -101,7 +101,7 @@
             <label>Has MGM</label>
             <br>
             <div class="toggle-switch">
-                <input type="checkbox" name="has_mgm" class="toggle-switch__checkbox" {{ old('has_mgm', isset($promotion) ? (($promotion->has_mgm) ? 'checked' : '') : '' )}}>
+                <input type="checkbox" name="has_mgm" class="toggle-switch__checkbox" @if (((old('has_mgm') == 'on')||(isset($promotion) && ($promotion->has_mgm)))) checked @endif>
                 <i class="toggle-switch__helper"></i>
             </div>
         </div>
@@ -162,9 +162,6 @@
 
 <div class="row justify-content-center">
     <div>
-    @if (config('promotion.front_templates_enabled') && isset($promotion) && !$promotion->isActive())
-        <a class="btn btn-sm btn-info btn--icon-text waves-effect" href="{{route('promotions.preview', ['id' => $promotion->id, 'page' => 'initial_page'])}}" target="_blank"><i class="zmdi zmdi-eye"></i> Preview</a>
-    @endif
         <a class="btn btn-danger btn--icon-text waves-effect" href="{{ route('promotions.home') }}"><i class="zmdi zmdi-arrow-back"></i> Back</a>
         <a class="btn btn-success btn--icon-text waves-effect" id="submit" href="#"><i class="zmdi zmdi-check"></i> Submit</a>
     </div>
