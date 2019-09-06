@@ -367,19 +367,21 @@ class PromotionsController extends AdminController
         $promotion = Promotion::findOrFail($id);
         $view = ($page == 'initial_page') ? 'promotion' : 'participar';
 
-        $sponsorcode = '';
-        $content = '';
-        if ($tmp = $promotion->templates()->page($page)->first()){
-            if (View::exists('templates.'.$tmp->template)) {
-                $content = view('templates.'.$tmp->template, json_decode($tmp->content, true))->render();
-            }
-        }
 
         // Mock Participation Info
         $participation = new Participation();
         $user = new User();
         $user->setSponsorCode('345763');
         $participation->user = $user;
+
+        $sponsorcode = '';
+        $content = '';
+        if ($tmp = $promotion->templates()->page($page)->first()){
+            if (View::exists('templates.'.$tmp->template)) {
+                $content = view('templates.'.$tmp->template, array_merge(json_decode($tmp->content, true), compact('promotion', 'sponsorcode', 'page', 'participation')))->render();
+            }
+        }
+
 
 
         return view($view, compact('promotion', 'sponsorcode', 'content', 'participation'));
