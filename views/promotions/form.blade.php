@@ -9,7 +9,7 @@
     <div class="col-md-6">
         <div class="form-group">
             <label for="key">Key *</label>
-            <input type="text" class="form-control" name="key" id="key" value="{{ old('key', $promotion->key ?? null) }}">
+            <input type="text" class="form-control" name="key" id="key" value="{{ old('key', $promotion->key ?? null) }}" required>
             <i class="form-group__bar"></i>
         </div>
     </div>

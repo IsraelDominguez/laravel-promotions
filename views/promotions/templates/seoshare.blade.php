@@ -3,21 +3,21 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label>Title *</label>
-                <input type="text" class="form-control" name="title" id="title" value="{{ old('title', $promotion->seo->title ?? null) }}">
+                <input type="text" class="form-control" name="title" id="title" value="{{ old('title', $promotion->seo->title ?? null) }}" required>
                 <i class="form-group__bar"></i>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label>Share Text *</label>
-                <input type="text" class="form-control" name="text_share" id="text_share" value="{{ old('text_share', $promotion->seo->text_share ?? null) }}">
+                <input type="text" class="form-control" name="text_share" id="text_share" value="{{ old('text_share', $promotion->seo->text_share ?? null) }}" required>
                 <i class="form-group__bar"></i>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label>Image (max 100Kb) *</label>
-                <input type="file" class="form-control" name="image" id="image" accept=".jpg, .png">
+                <input type="file" class="form-control" name="image" id="image" accept="image/*" @if(empty($promotion->seo->image)) required @endif">
                 <i class="form-group__bar"></i>
                 @if(!empty($promotion->seo->image))
                     <img src="{{Storage::disk('public')->url($promotion->seo->image)}}" width="250px"/>

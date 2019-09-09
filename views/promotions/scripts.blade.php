@@ -81,25 +81,27 @@
             fillEntrypoints(campaign_id);
         });
         @else
-            fillEntrypoints({{$campaigns[0]->id}});
+        fillEntrypoints({{$campaigns[0]->id}});
         @endif
 
         $("#submit").click(function () {
             @if (config('promotion.front_templates_enabled'))
                 initial_template = $("#initial_page_template").val();
-                result_template = $("#result_page_template").val();
+            result_template = $("#result_page_template").val();
 
-                if (initial_template != '') {
-                    $('#initial_page_data').val(JSON.stringify($("#initial_page_template_" + initial_template).alpaca("get").getValue()));
-                }
+            if (initial_template != '') {
+                $('#initial_page_data').val(JSON.stringify($("#initial_page_template_" + initial_template).alpaca("get").getValue()));
+            }
 
-                if (result_template != '') {
-                    $('#result_page_data').val(JSON.stringify($("#result_page_template_" + result_template).alpaca("get").getValue()));
-                }
+            if (result_template != '') {
+                $('#result_page_data').val(JSON.stringify($("#result_page_template_" + result_template).alpaca("get").getValue()));
+            }
             @endif
 
             $("#form").submit();
         });
+
+        $("#form").validate({});
 
         $("#promo_type").change(function (e) {
             $(".fields-types").hide();
@@ -107,9 +109,9 @@
         });
 
         @if (empty($promotion))
-            @if (!empty(old('type_id')))
-                $("#fields-type-{{old('type_id')}}").show();
-            @endif
+        @if (!empty(old('type_id')))
+        $("#fields-type-{{old('type_id')}}").show();
+        @endif
         @endif
     });
 
