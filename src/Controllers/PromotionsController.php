@@ -57,7 +57,6 @@ class PromotionsController extends AdminController
     {
         if ($request->ajax()) {
             $promotions = Promotion::with('campaign','type')->get();
-
             return DataTables::of($promotions)
                 ->addColumn('participations', function($promotion) {
                     return count($promotion->participations);
@@ -109,7 +108,6 @@ class PromotionsController extends AdminController
     public function show($id)
     {
         $promotion = Promotion::findOrFail($id);
-
 
         $mgm = $promotion->participations->filter(function($p){
             return $p->sponsor;
@@ -235,9 +233,9 @@ class PromotionsController extends AdminController
      */
     public function update(Request $request, $id)
     {
-        $this->save($request, $id);
+        $promotion = $this->save($request, $id);
 
-        return redirect()->route('promotions.edit', $id)
+        return redirect()->route('promotions.edit', $promotion->id)
             ->with('success','Promotion updated successfully');
 
     }
@@ -248,13 +246,18 @@ class PromotionsController extends AdminController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
         //TODO: delete all files asociated (images, legal,...)
+        if ($request->ajax()) {
+            try {
+                Promotion::find($id)->delete();
 
-        Promotion::find($id)->delete();
-        return redirect()->route('promotions.home')
-            ->with('success','Promotion deleted successfully');
+                return response()->json(['Status' => 'Ok', 'message'=>'Promotion Deleted']);
+            } catch (\Exception $e) {
+                return response()->json('Error:'.$e->getMessage(), 500);
+            }
+        }
     }
 
     /**
@@ -311,14 +314,21 @@ class PromotionsController extends AdminController
      *
      * @param Request $request
      * @param $id
+     * @return Promotion
      */
-    private function save(Request $request, $id) : void {
+    private function save(Request $request, $id) : Promotion {
         $request->validate($this->getValidations($request, $id));
 
-        $request->merge(array('has_mgm' => $request->has('has_mgm')));
+        $request->merge(['has_mgm' => $request->has('has_mgm')]);
 
         if ($request->hasFile('legal_file')&&($request->file('legal_file')->isValid())) {
-            $request->merge(array('legal' => $request->legal_file->storeAs('legal', $request->file('legal_file')->getClientOriginalName(), 'public')));
+            $request->merge(['legal' => $request->legal_file->storeAs('legal', $request->file('legal_file')->getClientOriginalName(), 'public')]);
+        }
+
+        $campaign = Campaign::find($request->input('campaign_id'));
+        if (!empty($campaign->entry_point)) {
+            $request->merge(['entry_point' => $request->input('entrypoint_id')]);
+            $request->merge(['entrypoint_id' => null]);
         }
 
         if ($id != null) {
@@ -328,17 +338,17 @@ class PromotionsController extends AdminController
             $promotion = Promotion::create($request->all());
         }
 
-        if (($promotion->entrypoint_id === 'simple')||($promotion->entrypoint_id === 'complete')) {
+        if (($promotion->entrypoint_id === 'simple') || ($promotion->entrypoint_id === 'complete')) {
             try {
                 config(['druid_entrypoints.default.app' => $promotion->campaign->selflink]);
-                config(['druid_entrypoints.default.key' => $promotion->campaign->client_id.'-'.$promotion->key]);
+                config(['druid_entrypoints.default.key' => $promotion->campaign->client_id . '-' . $promotion->key]);
                 config(['druid_entrypoints.default.description' => 'Promotion ' . $promotion->name]);
                 config(['druid_entrypoints.default.url' => url($promotion->key)]);
 
-                $entrypoint_link = \RestApi::createEntrypoints(array_merge(config('druid_entrypoints.default'), config('druid_entrypoints.'.$promotion->entrypoint_id)));
+                $entrypoint_link = \RestApi::createEntrypoints(array_merge(config('druid_entrypoints.default'), config('druid_entrypoints.' . $promotion->entrypoint_id)));
 
                 $entrypoint = new Entrypoint();
-                $entrypoint->key = $promotion->campaign->client_id.'-'.$promotion->key;
+                $entrypoint->key = $promotion->campaign->client_id . '-' . $promotion->key;
                 $entrypoint->name = config('druid_entrypoints.default.description');
                 $entrypoint->campaign_id = $promotion->campaign->id;
                 $entrypoint->ids = json_encode(config('druid_entrypoints.simple.config_id'));
@@ -361,6 +371,8 @@ class PromotionsController extends AdminController
         }catch (\Exception $e) {
             Log::error('Nothing additional to save: ' . $e->getMessage());
         }
+
+        return $promotion;
     }
 
     public function preview($id, $page) {
