@@ -47,7 +47,7 @@ class CampaignsController extends AdminController
     public function store(Request $request)
     {
         $this->validate($request, [
-            'key' => 'required|alpha_dash|max:50',
+            'key' => 'required|unique:promo_campaign|alpha_dash|max:250',
             'entry_point' => 'nullable|alpha_dash|max:100',
             'name' => 'unique:promo_campaign|required',
             'ends' => 'nullable|after:starts'
@@ -55,15 +55,17 @@ class CampaignsController extends AdminController
 
         $campaign = Campaign::create($request->all());
 
-        try {
-            $druid_app = \RestApi::searchAppsBy(['key'=>$campaign->client_id]);
-            $campaign->selflink = $druid_app->getUri();
-            $campaign->update();
-        } catch (\Exception $e) {
-            \Log::debug('Error: ' . $e->getMessage());
-        }
+        if (($campaign->client_id)&&($campaign->secret)) {
+            try {
+                $druid_app = \RestApi::searchAppsBy(['key' => $campaign->client_id]);
+                $campaign->selflink = $druid_app->getUri();
+                $campaign->update();
 
-        $this->getDruidEntrypoints($campaign);
+                $this->getDruidEntrypoints($campaign);
+            } catch (\Exception $e) {
+                \Log::debug('Error: ' . $e->getMessage());
+            }
+        }
 
         return redirect()->route('campaigns.home')
             ->with('success','Campaign created successfully');
@@ -105,8 +107,9 @@ class CampaignsController extends AdminController
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'key' => 'required|alpha_dash|max:50',
-            'entry_point' => 'nullable|alpha_dash|max:100',
+            'key' => ['required', 'alpha_dash', 'max:250',
+                Rule::unique('promo_campaign')->ignore($id)],
+            'entry_point' => 'nullable|alpha_dash|max:200',
             'name' => ['required',
                         Rule::unique('promo_campaign')->ignore($id)
             ],
@@ -115,16 +118,19 @@ class CampaignsController extends AdminController
 
         $campaign = Campaign::find($id);
 
-        try {
-            $druid_app = \RestApi::searchAppsBy(['key'=>$campaign->client_id]);
-            $campaign->selflink = $druid_app->getUri();
-        } catch (\Exception $e) {
-            \Log::debug('Error: ' . $e->getMessage());
+        if (($campaign->client_id)&&($campaign->secret)) {
+            try {
+                $druid_app = \RestApi::searchAppsBy(['key' => $campaign->client_id]);
+                $campaign->selflink = $druid_app->getUri();
+
+                $this->getDruidEntrypoints($campaign);
+
+            } catch (\Exception $e) {
+                \Log::debug('Error: ' . $e->getMessage());
+            }
         }
 
         $campaign->update($request->all());
-
-        $this->getDruidEntrypoints($campaign);
 
         return redirect()->route('campaigns.home')
             ->with('success','Campaign updated successfully');
