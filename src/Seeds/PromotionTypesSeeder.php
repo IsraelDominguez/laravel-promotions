@@ -14,10 +14,10 @@ class PromotionTypesSeeder extends Seeder
     public function run()
     {
         DB::table('promo_type')->insert([
-            [ 'id' => 1, 'name' => 'Sorteo', 'code' => 'sorteo' ],
-            [ 'id' => 2, 'name' => 'Pincode', 'code' => 'pincode' ],
-            [ 'id' => 3, 'name' => 'Win Moment', 'code' => 'win-moment' ],
-            [ 'id' => 4, 'name' => 'Qrs', 'code' => 'qrs' ]
+            [ 'id' => 1, 'name' => 'Sorteo', 'code' => 'sorteo', 'enabled' => true ],
+            [ 'id' => 2, 'name' => 'Pincode', 'code' => 'pincode', 'enabled' => true ],
+            [ 'id' => 3, 'name' => 'Win Moment', 'code' => 'win-moment', 'enabled' => true ],
+            [ 'id' => 4, 'name' => 'Qrs', 'code' => 'qrs', 'enabled' => true ]
         ]);
 
     }
