@@ -86,7 +86,11 @@ class Promotion extends Model
     }
 
     public function scopeIsActive() {
-        return Carbon::now()->between(Carbon::createFromFormat('Y-m-d H:i:s',$this->starts), Carbon::createFromFormat('Y-m-d H:i:s',$this->ends));
+        if ($this->ends) {
+            return Carbon::now()->between(Carbon::createFromFormat('Y-m-d H:i:s', $this->starts), Carbon::createFromFormat('Y-m-d H:i:s', $this->ends));
+        } else {
+            return Carbon::now()->greaterThan(Carbon::createFromFormat('Y-m-d H:i:s', $this->starts));
+        }
     }
 
     /**
@@ -105,6 +109,9 @@ class Promotion extends Model
             $model->moment()->delete();
             $model->qrspack()->delete();
             $model->seo()->delete();
+            $model->design()->delete();
+            $model->templates()->delete();
+
             foreach ($model->participations as $participation) {
                 $participation->delete();
             }
