@@ -31,7 +31,11 @@
             </div>
         </div>
     @else
-        <input type="hidden" name="campaign_id" value="{{$promotion->campaign_id ?? $campaigns[0]->id}}"/>
+        @if (count($campaigns) == 0)
+            <input type="hidden" name="campaign_id" value=""/>
+        @else
+            <input type="hidden" name="campaign_id" value="{{$promotion->campaign_id ?? $campaigns[0]->id}}"/>
+        @endif
     @endif
 
     <div class="col-md-6">
@@ -67,7 +71,7 @@
         <div class="form-group">
             <label>Promo Type *</label>
 
-            <select class="select2" name="type_id" id="promo_type">
+            <select class="select2 required" name="type_id" id="promo_type">
                 <option value="">- Select -</option>
                 @foreach ($promo_types as $type)
                     <option value="{{$type->id}}"
@@ -92,7 +96,7 @@
     <div class="col-6">
         <div class="form-group">
             <label>Max User Participations</label>
-            <input type="text" class="form-control" maxlength="2" name="max_user_participations" id="max_user_participations" value="{{ old('max_user_participations', isset($promotion) ? $promotion->max_user_participations : "1") }}">
+            <input type="text" class="form-control number" maxlength="2" name="max_user_participations" id="max_user_participations" value="{{ old('max_user_participations', isset($promotion) ? $promotion->max_user_participations : "1") }}">
             <i class="form-group__bar"></i>
         </div>
     </div>
@@ -120,7 +124,7 @@
             <div class="input-group">
                 <span class="input-group-addon"><i class="zmdi zmdi-calendar"></i></span>
                 <div class="form-group">
-                    <input type="text" class="form-control my-datetime-picker flatpickr-input" name="starts" id="starts" value="{{ old('starts', isset($promotion) ? $promotion->starts : null) }}">
+                    <input type="text" class="form-control my-datetime-picker flatpickr-input" name="starts" id="starts" value="{{ old('starts', isset($promotion) ? $promotion->starts : null) }}" required>
                     <i class="form-group__bar"></i>
                 </div>
             </div>

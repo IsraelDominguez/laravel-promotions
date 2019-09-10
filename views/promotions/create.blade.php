@@ -3,7 +3,7 @@
 @section('section-card-header')
     @component('genetsis-admin::partials.card-header')
         @slot('card_title')
-            New {{ title_case($section) }}
+            New {{ \Str::title($section) }}
         @endslot
     @endcomponent
 @endsection
