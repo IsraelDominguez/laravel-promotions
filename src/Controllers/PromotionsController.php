@@ -56,14 +56,14 @@ class PromotionsController extends AdminController
     public function get(Request $request)
     {
         if ($request->ajax()) {
-            $promotions = Promotion::latest()->with('campaign','type');
+            $promotions = Promotion::with('campaign','type')->get();
 
             return DataTables::of($promotions)
                 ->addColumn('participations', function($promotion) {
                     return count($promotion->participations);
                 })
                 ->addColumn('active', function($promotion){
-                    return $promotion->isActive() ? 'Yes' : 'No';
+                    return $promotion->isActive() ? '<label class="badge badge-success">Yes</label>' : 'No';
                 })
                 ->addColumn('options', function ($promotion) {
                     return '
@@ -81,7 +81,7 @@ class PromotionsController extends AdminController
                         </div>                        
                         ';
                 })
-                ->rawColumns(['options', 'delete'])
+                ->rawColumns(['active', 'options', 'delete'])
                 ->make(true);
         }
     }
