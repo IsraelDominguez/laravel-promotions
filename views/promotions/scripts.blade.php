@@ -74,8 +74,11 @@
                             var t = $(n.control)[0].id;
                             tinyMCE.init({
                                 selector: "#" + t,
-                                toolbar: n.options.toolbar,
-                                plugins: ["link"]
+                                menubar: false,
+                                //toolbar: n.options.toolbar,
+                                toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
+                                plugins: ["link autolink wordcount paste"],
+                                paste_as_test: true
                             })
                         }
                     }), callback()
