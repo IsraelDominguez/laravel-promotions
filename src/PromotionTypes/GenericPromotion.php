@@ -166,9 +166,15 @@ class GenericPromotion implements PromotionTypeInterface
 
     private function saveTemplates(string $page, $content, $template, Request $request) {
         if (!empty($content)) {
+            $arr_content = json_decode($content, true);
+
             if ($request->hasFile('promo_image_' . $page . '_template_' . $template) && ($request->file('promo_image_' . $page . '_template_' . $template)->isValid())) {
                 $promo_image = $request->file('promo_image_' . $page . '_template_' . $template)->storeAs('promoimg', $this->promotion->key . '-' . $page . '.jpg', 'public');
-                $content = json_encode(array_merge(['promo_image' => $promo_image], json_decode($content, true)));
+                $arr_content = array_merge(['promo_image' => $promo_image], $arr_content);
+            } elseif ($request->has('delete_image_'.$page.'_template_'.$template)) {
+                if (array_key_exists('promo_image', $arr_content)) {
+                    $arr_content['promo_image'] = '';
+                }
             }
 
             $this->promotion->templates()->updateOrCreate([
@@ -176,7 +182,7 @@ class GenericPromotion implements PromotionTypeInterface
                 'page' => $page,
             ], [
                 'template' => $template,
-                'content' => $content
+                'content' => (count($arr_content) == 0) ? null : json_encode($arr_content)
             ]);
         }
     }

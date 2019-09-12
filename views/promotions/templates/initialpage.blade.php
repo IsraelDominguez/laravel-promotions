@@ -46,9 +46,9 @@ if (!empty($promotion)) {
                 "promo_image": ""
             };
 
-            @isset($initial_page)
-                initial_data = {!! $promotion->templates()->page('initial_page')->first()->content !!};
-            @endisset
+            @if (isset($initial_page) && !empty($initial_page->content))
+                initial_data = {!! $initial_page->content !!};
+            @endif
 
             $("#initial_page_template_right").alpaca({
                 "schema": schema_right,

@@ -42,9 +42,9 @@ if (!empty($promotion)) {
                     "promo_image": ""
                 };
 
-            @isset($result_page)
+            @if (isset($result_page) && !empty($result_page->content))
                 result_data = {!! $result_page->content !!};
-            @endisset
+            @endif
 
             $("#result_page_template_left").alpaca({
                 "schema": schema_left,
