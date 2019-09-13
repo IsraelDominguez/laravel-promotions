@@ -186,8 +186,10 @@
                                             self.initTinyMCEEvents();
                                         },
                                         selector: "#" + rteFieldID,
-                                        toolbar: self.options.toolbar,
-                                        menubar: false,
+                                        toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
+                                        plugins: ["link autolink wordcount paste"],
+                                        paste_as_test: true,
+                                        menubar: false
                                     });
 
                                 }
