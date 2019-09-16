@@ -14,7 +14,7 @@ class Moment extends Model
      */
     protected $table = 'promo_moments';
 
-    protected $fillable = ['used', 'code_send', 'participation_id'];
+    protected $fillable = ['promo_id', 'date', 'code_to_send', 'used', 'code_send', 'participation_id'];
 
     public $timestamps = false;
 

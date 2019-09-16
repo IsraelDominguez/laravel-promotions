@@ -13,7 +13,7 @@ class Codes extends Model
      */
     protected $table = 'promo_codes';
 
-    protected $fillable = ['used', 'participation_id', 'win_code', 'win_code_send'];
+    protected $fillable = ['promo_id', 'used', 'participation_id','code', 'expires', 'win_code', 'win_code_send'];
 
     public $timestamps = false;
 

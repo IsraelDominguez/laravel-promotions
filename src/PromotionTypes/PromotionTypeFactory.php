@@ -12,7 +12,7 @@ class PromotionTypeFactory
      */
     public static function create(Promotion $promotion)
     {
-        $class = sprintf("%s\%sPromotionType", __NAMESPACE__, $promotion->type->name);
+        $class = sprintf("%s\%sPromotionType", __NAMESPACE__, str_replace(' ','',$promotion->type->name));
 
         if (!class_exists($class)) {
             throw new \Exception('Promotion Type Not Defined: '.$class);
