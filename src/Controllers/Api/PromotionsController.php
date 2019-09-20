@@ -14,15 +14,13 @@ class PromotionsController extends ApiController
 
             $winners = Participation::where('promo_id', $promotion_id)->inRandomOrder()->limit($request->input('winners'))->get();
             $winners->each(function($user) {
-                $user->winner = Participation::IS_WINNER;
-                $user->save();
+                $user->update(['winner' => Participation::IS_WINNER]);
             });
 
-            $reserves = Participation::where('promo_id', $promotion_id)->inRandomOrder()->limit($request->input('reserves'))->get();
+            $reserves = Participation::where('promo_id', $promotion_id)->whereNull('winner')->inRandomOrder()->limit($request->input('reserves'))->get();
             $reserves->each(function($user) {
                 $user->update(['winner' => Participation::IS_RESERVE]);
             });
-
         } catch (\InvalidArgumentException $e) {
             return $this->sendError($e->getMessage(), 'Winners Error', 200);
         } catch (\Exception $e) {
