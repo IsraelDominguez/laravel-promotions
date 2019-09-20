@@ -12,8 +12,7 @@
         "php": "^7.0",
         "yajra/laravel-datatables-oracle": "^9.0@dev",
         "israeldominguez/sdk-consumer-rewards": "dev-master",
-        "israeldominguez/druid-rest-api": "dev-master",
-        "doctrine/dbal": "2.9.2"
+        "israeldominguez/druid-rest-api": "dev-master"
     },
     "require-dev": {
         "illuminate/database": "~5.4.0",

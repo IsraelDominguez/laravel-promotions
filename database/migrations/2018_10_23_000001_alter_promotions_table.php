@@ -16,8 +16,8 @@ class AlterPromotionsTable extends Migration
         Schema::disableForeignKeyConstraints();
 
         Schema::table('promo', function (Blueprint $table) {
-            $table->string('key',50)->unique()->nullable();
-            $table->string('entry_point', 100)->nullable();
+            $table->string('key',250)->unique()->nullable();
+            $table->string('entry_point', 200)->nullable();
             $table->boolean('has_mgm')->nullable();
         });
     }

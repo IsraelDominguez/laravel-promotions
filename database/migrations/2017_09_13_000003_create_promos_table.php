@@ -24,7 +24,7 @@ class CreatePromosTable extends Migration
         Schema::create('promo', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('campaign_id');
-            $table->string('name', 50)->unique();
+            $table->string('name', 250)->unique();
             $table->string('description', 1000)->nullable();
             $table->timestamp('starts')->nullable();
             $table->timestamp('ends')->nullable();
