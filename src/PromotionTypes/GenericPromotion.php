@@ -165,6 +165,7 @@ class GenericPromotion implements PromotionTypeInterface
     }
 
     private function saveTemplates(string $page, $content, $template, Request $request) {
+        $arr_content = [];
         if (!empty($content)) {
             $arr_content = json_decode($content, true);
 
@@ -176,14 +177,13 @@ class GenericPromotion implements PromotionTypeInterface
                     $arr_content['promo_image'] = '';
                 }
             }
-
-            $this->promotion->templates()->updateOrCreate([
-                'promo_id' => $this->promotion->id,
-                'page' => $page,
-            ], [
-                'template' => $template,
-                'content' => (count($arr_content) == 0) ? null : json_encode($arr_content)
-            ]);
         }
+        $this->promotion->templates()->updateOrCreate([
+            'promo_id' => $this->promotion->id,
+            'page' => $page,
+        ], [
+            'template' => $template,
+            'content' => (count($arr_content) == 0) ? null : json_encode($arr_content)
+        ]);
     }
 }

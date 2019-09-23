@@ -22,9 +22,9 @@
 
 @push('custom-js')
     @if (config('promotion.front_templates_enabled'))
-        <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.js"></script>
-        <script type="text/javascript" src="http://cdn.jsdelivr.net/npm/alpaca@1.5.27/dist/alpaca/bootstrap/alpaca.min.js"></script>
-        <script src="https://cdn.tiny.cloud/1/9gr97pwjo4y6zq0v4ef9wq1td85291mbhcgh45mfvgowdvfb/tinymce/5/tinymce.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.js"></script>
+        <script type="text/javascript" src="//cdn.jsdelivr.net/npm/alpaca@1.5.27/dist/alpaca/bootstrap/alpaca.min.js"></script>
+        <script src="//cdn.tiny.cloud/1/9gr97pwjo4y6zq0v4ef9wq1td85291mbhcgh45mfvgowdvfb/tinymce/5/tinymce.min.js"></script>
 
         @include('promotion::promotions.templates.scripts', compact('promotion','campaigns'))
     @endif
