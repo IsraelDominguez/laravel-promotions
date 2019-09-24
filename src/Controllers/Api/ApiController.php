@@ -1,9 +1,14 @@
 <?php namespace Genetsis\Promotions\Controllers\Api;
 
-use App\Http\Controllers\Controller as Controller;
+use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 
-class ApiController extends Controller
+class ApiController extends BaseController
 {
+    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
     /**
      * success response method.
      *
