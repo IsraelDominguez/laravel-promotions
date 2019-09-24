@@ -140,6 +140,9 @@ class GenericPromotion implements PromotionTypeInterface
         ]);
     }
 
+    /**
+     * @param Request $request
+     */
     private function saveDesign(Request $request) {
 
         if ($request->hasFile('background_image')) {
@@ -158,17 +161,25 @@ class GenericPromotion implements PromotionTypeInterface
         ]);
     }
 
+    /**
+     * @param Request $request
+     */
     private function savePages(Request $request) {
         $this->saveTemplates('initial_page', $request->input('initial_page_data', ''), $request->input('initial_page_template',''), $request);
 
         $this->saveTemplates('result_page', $request->input('result_page_data', ''), $request->input('result_page_template',''), $request);
     }
 
-    private function saveTemplates(string $page, $content, $template, Request $request) {
-        $arr_content = [];
-        if (!empty($content)) {
-            $arr_content = json_decode($content, true);
+    /**
+     * @param string $page
+     * @param $content
+     * @param string $template
+     * @param Request $request
+     */
+    private function saveTemplates(string $page, $content, $template = 'left', Request $request) {
+        $arr_content = json_decode($content, true);
 
+        if (!empty($content)) {
             if ($request->hasFile('promo_image_' . $page . '_template_' . $template) && ($request->file('promo_image_' . $page . '_template_' . $template)->isValid())) {
                 $promo_image = $request->file('promo_image_' . $page . '_template_' . $template)->storeAs('promoimg', $this->promotion->key . '-' . $page . '.jpg', 'public');
                 $arr_content = array_merge(['promo_image' => $promo_image], $arr_content);
@@ -182,8 +193,8 @@ class GenericPromotion implements PromotionTypeInterface
             'promo_id' => $this->promotion->id,
             'page' => $page,
         ], [
-            'template' => $template,
-            'content' => (count($arr_content) == 0) ? null : json_encode($arr_content)
+            'template' => $template ?? 'left',
+            'content' => (count($arr_content??[]) == 0) ? '' : json_encode($arr_content)
         ]);
     }
 }
