@@ -15,10 +15,10 @@ class IncrementPromoName extends Migration
     {
         Schema::disableForeignKeyConstraints();
 
-//        Schema::table('promo', function (Blueprint $table) {
-//            $table->string('name',250)->change();
-//            $table->string('key', 250)->change();
-//        });
+        Schema::table('promo', function (Blueprint $table) {
+            $table->string('name',250)->change();
+            $table->string('key', 250)->change();
+        });
     }
 
 

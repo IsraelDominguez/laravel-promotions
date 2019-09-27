@@ -2,14 +2,14 @@
     <div class="col-md-6">
         <div class="form-group">
             <label>Name *</label>
-            <input type="text" class="form-control" name="name" id="name" value="{{ old('name', $promotion->name ?? null) }}" required>
+            <input type="text" class="form-control" name="name" id="name" value="{{ old('name', $promotion->name ?? null) }}" required maxlength="250">
             <i class="form-group__bar"></i>
         </div>
     </div>
     <div class="col-md-6">
         <div class="form-group">
             <label for="key">Key *</label>
-            <input type="text" class="form-control" name="key" id="key" value="{{ old('key', $promotion->key ?? null) }}" required>
+            <input type="text" class="form-control" name="key" id="key" value="{{ old('key', $promotion->key ?? null) }}" required maxlength="250">
             <i class="form-group__bar"></i>
         </div>
     </div>
@@ -147,7 +147,7 @@
     <div class="col-6">
         <div class="form-group">
             <label>Legal</label>
-            <input type="file" class="form-control" name="legal_file" id="legal_file" accept=".pdf">
+            <input type="file" class="form-control" name="legal_file" id="legal_file" accept="pdf">
 
             <div class="input-group actions">
                 <span class="input-group-addon"><a href="{{ isset($promotion) ? (\Str::startsWith($promotion->legal, 'http') ? $promotion->legal : Storage::disk('public')->url($promotion->legal))  : '#'}}" class="actions__item zmdi zmdi-link" target="_blank"></a></span>
