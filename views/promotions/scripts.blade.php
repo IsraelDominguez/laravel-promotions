@@ -6,9 +6,11 @@
         notify('{{ $message }}');
         @endif
 
+        @empty($promotion->id)
         $('#name').blur(function() {
             $("#key").val(slugify($('#name').val()));
         });
+        @endempty
 
         @if (count($campaigns) > 0)
             @if (count($campaigns) > 1)
