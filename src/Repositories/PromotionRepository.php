@@ -28,7 +28,7 @@ class PromotionRepository {
     public function getPromotionActiveByCampaignKey($campaign_key) {
         try {
             $campaign = Campaign::where('key', $campaign_key)->firstOrFail();
-            return $this->getPromotionActiveByCampagin($campaign);
+            return $this->getPromotionActiveByCampaign($campaign);
         } catch (\Exception $e) {
             throw $e;
         }
@@ -37,7 +37,7 @@ class PromotionRepository {
     public function getPromotionActiveByCampaignId($campaign_id) {
         try {
             $campaign = Campaign::findOrFail($campaign_id);
-            return $this->getPromotionActiveByCampagin($campaign);
+            return $this->getPromotionActiveByCampaign($campaign);
         } catch (\Exception $e) {
             throw $e;
         }
@@ -75,9 +75,25 @@ class PromotionRepository {
     }
 
 
-    private function getPromotionActiveByCampagin(Campaign $campagin) {
+    private function getPromotionActiveByCampaign(Campaign $campaign) {
         try {
-            return $campagin->promotions()->where('starts','<=',now())->where('ends','>=',now())->firstOrFail();
+            return $campaign->promotions()->where('starts','<=',now())->where('ends','>=',now())->firstOrFail();
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+
+
+    /**
+     * Get all Active Promotions
+     *
+     * @param Campaign $campaign
+     * @return \Illuminate\Database\Eloquent\Collection $promotions
+     * @throws \Exception
+     */
+    public function getPromotionsActiveByCampaign(Campaign $campaign) {
+        try {
+            return $campaign->promotions()->where('starts','<=',now())->where('ends','>=',now())->get();
         } catch (\Exception $e) {
             throw $e;
         }
