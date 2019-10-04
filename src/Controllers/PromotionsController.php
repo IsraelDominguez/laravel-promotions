@@ -279,6 +279,7 @@ class PromotionsController extends AdminController
             'key' => 'required|unique:promo|alpha_dash|max:50',
             'entrypoint_id' => 'nullable|alpha_dash|max:200',
             'has_mgm' => 'nullable',
+            'is_public' => 'nullable',
             'legal' => 'nullable|max:100',
             'legal_file' => 'nullable|file|mimes:pdf',
             'pack' => 'nullable|alpha_num|max:100',
@@ -320,6 +321,7 @@ class PromotionsController extends AdminController
         $request->validate($this->getValidations($request, $id));
 
         $request->merge(['has_mgm' => $request->has('has_mgm')]);
+        $request->merge(['is_public' => $request->has('is_public')]);
 
         if ($request->hasFile('legal_file')&&($request->file('legal_file')->isValid())) {
             $request->merge(['legal' => $request->legal_file->storeAs('legal', $request->file('legal_file')->getClientOriginalName(), 'public')]);

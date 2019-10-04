@@ -93,11 +93,14 @@
 
 </div>
 <div class="row">
-    <div class="col-6">
+    <div class="col-md-6">
         <div class="form-group">
-            <label>Max User Participations</label>
-            <input type="text" class="form-control number" maxlength="2" name="max_user_participations" id="max_user_participations" value="{{ old('max_user_participations', isset($promotion) ? $promotion->max_user_participations : "1") }}">
-            <i class="form-group__bar"></i>
+            <label>Is Public</label>
+            <br>
+            <div class="toggle-switch">
+                <input type="checkbox" name="is_public" class="toggle-switch__checkbox" @if (((old('is_public') == 'on')||(isset($promotion) && ($promotion->is_public))||(!isset($promotion)))) checked @endif>
+                <i class="toggle-switch__helper"></i>
+            </div>
         </div>
     </div>
     <div class="col-md-6">
@@ -108,6 +111,13 @@
                 <input type="checkbox" name="has_mgm" class="toggle-switch__checkbox" @if (((old('has_mgm') == 'on')||(isset($promotion) && ($promotion->has_mgm)))) checked @endif>
                 <i class="toggle-switch__helper"></i>
             </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="form-group">
+            <label>Max User Participations</label>
+            <input type="text" class="form-control number" maxlength="2" name="max_user_participations" id="max_user_participations" value="{{ old('max_user_participations', isset($promotion) ? $promotion->max_user_participations : "1") }}">
+            <i class="form-group__bar"></i>
         </div>
     </div>
 {{--    <div class="col-6">--}}
