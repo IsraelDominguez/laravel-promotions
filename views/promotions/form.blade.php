@@ -41,7 +41,7 @@
     <div class="col-md-6">
         <div class="form-group">
             <label>Entry Point</label>
-            <select class="select2" name="entrypoint_id" id="entry_points">
+            <select class="select2 required" name="entrypoint_id" id="entry_points">
                 <option value="">- Select -</option>
                 @isset($promotion)
                     @foreach ($promotion->campaign->entrypoints as $entrypoint)

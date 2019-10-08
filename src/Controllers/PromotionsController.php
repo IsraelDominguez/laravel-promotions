@@ -320,8 +320,10 @@ class PromotionsController extends AdminController
     private function save(Request $request, $id) : Promotion {
         $request->validate($this->getValidations($request, $id));
 
-        $request->merge(['has_mgm' => $request->has('has_mgm')]);
-        $request->merge(['is_public' => $request->has('is_public')]);
+        $request->merge([
+            'has_mgm' => $request->has('has_mgm'),
+            'is_public' => $request->has('is_public')
+        ]);
 
         if ($request->hasFile('legal_file')&&($request->file('legal_file')->isValid())) {
             $request->merge(['legal' => $request->legal_file->storeAs('legal', $request->file('legal_file')->getClientOriginalName(), 'public')]);
@@ -335,19 +337,21 @@ class PromotionsController extends AdminController
 
         if ($id != null) {
             $promotion = Promotion::findOrFail($id);
-            $promotion->update($request->all());
+            $promotion->update($request->except('entrypoint_id'));
         } else {
-            $promotion = Promotion::create($request->all());
+            $promotion = Promotion::create($request->except('entrypoint_id'));
         }
 
-        if (($promotion->entrypoint_id === 'simple') || ($promotion->entrypoint_id === 'complete')) {
+        $entrypoint_selected = $request->input('entrypoint_id');
+
+        if (($entrypoint_selected === 'simple') || ($entrypoint_selected === 'complete')) {
             try {
                 config(['druid_entrypoints.default.app' => $promotion->campaign->selflink]);
                 config(['druid_entrypoints.default.key' => $promotion->campaign->client_id . '-' . $promotion->key]);
                 config(['druid_entrypoints.default.description' => 'Promotion ' . $promotion->name]);
                 config(['druid_entrypoints.default.url' => url($promotion->key)]);
 
-                $entrypoint_link = \RestApi::createEntrypoints(array_merge(config('druid_entrypoints.default'), config('druid_entrypoints.' . $promotion->entrypoint_id)));
+                $entrypoint_link = \RestApi::createEntrypoints(array_merge(config('druid_entrypoints.default'), config('druid_entrypoints.' . $entrypoint_selected)));
 
                 $entrypoint = new Entrypoint();
                 $entrypoint->key = $promotion->campaign->client_id . '-' . $promotion->key;
@@ -365,6 +369,9 @@ class PromotionsController extends AdminController
             } catch (RestApiException $e) {
                 Log::error($e->getMessage());
             }
+        } else {
+            $promotion->entrypoint_id = $entrypoint_selected;
+            $promotion->save();
         }
 
         try {
