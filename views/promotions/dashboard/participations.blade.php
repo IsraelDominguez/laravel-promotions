@@ -138,7 +138,7 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function (response) {
-                        table.ajax.reload();
+                        table_participations.ajax.reload();
                         $('#modal-edition').modal('toggle');
                         notify(response.message);
                     },
@@ -151,7 +151,7 @@
 
             $('#data-participations tbody').on('click', 'td.delete', function () {
                 var tr = $(this).closest('tr');
-                var row = table.row(tr);
+                var row = table_participations.row(tr);
                 var id = row.data().id;
 
                 swal({
@@ -172,7 +172,7 @@
                         },
                         success: function (response) {
                             notify(response.message);
-                            table.ajax.reload();
+                            table_participations.ajax.reload();
                         },
                         error: function(response) {
                             notify('An error has ocurred','top','right','','danger');

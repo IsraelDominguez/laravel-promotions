@@ -19,9 +19,8 @@ class Participation extends Model
 
     protected $fillable = ['user_id', 'promo_id', 'sponsor', 'origin', 'status', 'winner'];
 
+    protected $dates = ['date'];
 
-    //protected $primaryKey = ['oid', 'promocode_id'];
-    //public $incrementing = false;
     public $timestamps = false;
 
     public function promo() {
@@ -50,6 +49,18 @@ class Participation extends Model
 
     public function qr() {
         return $this->hasOne(Qrs::class, 'participation_id', 'id');
+    }
+
+
+    /**
+     * Show Date participation in promotion TimeZone
+     *
+     * @param $value
+     * @return string
+     */
+    public function getDateAttribute($value)
+    {
+        return $this->asDateTime($value)->timezone(config('promotion.timezone'))->toDateTimeString();
     }
 
     public function getExtraFieldByKey($key) {

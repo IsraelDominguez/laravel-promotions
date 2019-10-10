@@ -342,36 +342,40 @@ class PromotionsController extends AdminController
             $promotion = Promotion::create($request->except('entrypoint_id'));
         }
 
+
         $entrypoint_selected = $request->input('entrypoint_id');
 
         if (($entrypoint_selected === 'simple') || ($entrypoint_selected === 'complete')) {
             try {
-                config(['druid_entrypoints.default.app' => $promotion->campaign->selflink]);
-                config(['druid_entrypoints.default.key' => $promotion->campaign->client_id . '-' . $promotion->key]);
-                config(['druid_entrypoints.default.description' => 'Promotion ' . $promotion->name]);
-                config(['druid_entrypoints.default.url' => url($promotion->key)]);
+                config(['druid_entrypoints.default.app' => $campaign->selflink]);
+                config(['druid_entrypoints.default.key' => $campaign->client_id . '-' . $request->input('key')]);
+                config(['druid_entrypoints.default.description' => 'Promotion ' . $request->input('name')]);
+                config(['druid_entrypoints.default.url' => url($request->input('key'))]);
 
                 $entrypoint_link = \RestApi::createEntrypoints(array_merge(config('druid_entrypoints.default'), config('druid_entrypoints.' . $entrypoint_selected)));
 
                 $entrypoint = new Entrypoint();
-                $entrypoint->key = $promotion->campaign->client_id . '-' . $promotion->key;
+                $entrypoint->key = $campaign->client_id . '-' . $request->input('key');
                 $entrypoint->name = config('druid_entrypoints.default.description');
-                $entrypoint->campaign_id = $promotion->campaign->id;
+                $entrypoint->campaign_id = $campaign->id;
                 $entrypoint->ids = json_encode(config('druid_entrypoints.simple.config_id'));
                 $entrypoint->fields = json_encode(config('druid_entrypoints.simple.config_field'));
                 $entrypoint->selflink = $entrypoint_link;
 
-                $promotion->entrypoint_id = $entrypoint->key;
-                $promotion->save();
-
-                $promotion->entrypoint()->save($entrypoint);
-
+                $entrypoint->save();
+                $entrypoint_selected = $entrypoint->key;
             } catch (RestApiException $e) {
                 Log::error($e->getMessage());
             }
+        }
+
+        $request->merge(['entrypoint_id' => $entrypoint_selected]);
+
+        if ($id != null) {
+            $promotion = Promotion::findOrFail($id);
+            $promotion->update($request->all());
         } else {
-            $promotion->entrypoint_id = $entrypoint_selected;
-            $promotion->save();
+            $promotion = Promotion::create($request->all());
         }
 
         try {

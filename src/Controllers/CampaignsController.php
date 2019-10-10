@@ -178,11 +178,15 @@ class CampaignsController extends AdminController
 
         foreach ($druid_entrypoints->getResources('entrypoints') as $druid_entrypoint) {
 
-            $fields = collect($druid_entrypoint->getConfigField())->map(function ($field) {
+            $fields = collect($druid_entrypoint->getConfigField())->filter(function($field) {
+                return $field->getField() != null;
+            })->map(function ($field) {
                 return $field->getField()->getKey();
             })->toJson();
 
-            $ids = collect($druid_entrypoint->getConfigId())->map(function ($idfield) {
+            $ids = collect($druid_entrypoint->getConfigId())->filter(function($field) {
+                return $field->getField() != null;
+            })->map(function ($idfield) {
                 return $idfield->getField()->getName();
             })->toJson();
 

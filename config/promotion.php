@@ -8,6 +8,8 @@ return [
     'extra_fields_enabled' => true,
     'rewards_fields_enabled' => true,
 
+    'timezone' => 'Europe/Madrid',
+
     'consumer_rewards' => [
         'CONSUMER_REWARDS_API' => 'https://api-consumerrewards-test.pernod-ricard-espana.com',
         'CONSUMER_REWARDS_WEB' => 'https://consumerrewards-test.pernod-ricard-espana.com',

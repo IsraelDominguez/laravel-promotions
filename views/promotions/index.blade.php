@@ -35,7 +35,7 @@
     <script>
         $(document).ready(function() {
 
-            var table = $('#data-promotions').DataTable({
+            var table_promotions = $('#data-promotions').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: '{{route('promotions.api')}}',
@@ -57,7 +57,7 @@
 
             $('#data-promotions tbody').on('click', 'td.options-delete', function () {
                 var tr = $(this).closest('tr');
-                var row = table.row(tr);
+                var row = table_promotions.row(tr);
                 var id = row.data().id;
 
                 swal({
@@ -81,7 +81,7 @@
                         },
                         success: function (response) {
                             notify(response.message);
-                            table.ajax.reload();
+                            table_promotions.ajax.reload();
                         },
                         error: function(response) {
                             notify('An error has ocurred','top','right','','danger');
