@@ -16,7 +16,7 @@
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label>Image (max 100Kb) *</label>
+                <label>Image (recomended 1200x900) *</label>
                 <input type="file" class="form-control" name="image" id="image" accept="image/*" @if(empty($promotion->seo->image)) required @endif">
                 <i class="form-group__bar"></i>
                 @if(!empty($promotion->seo->image))
