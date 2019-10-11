@@ -17,8 +17,8 @@ class CreatePromosTable extends Migration
 
         Schema::create('promo_type', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name', 50)->unique();
-            $table->string('code', 50)->unique();
+            $table->string('name', 250)->unique();
+            $table->string('code', 250)->unique();
         });
 
         Schema::create('promo', function (Blueprint $table) {
