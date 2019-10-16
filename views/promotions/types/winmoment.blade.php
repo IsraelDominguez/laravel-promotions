@@ -7,7 +7,7 @@
         <div class="col-xs-12 col-md-6">
             <div class="form-group">
                 <label>Import File (csv) <a href="{{route('download-sample', ['file' => 'winmoment_sample'])}}" target="_blank">download sample</a></label>
-                <input type="file" class="form-control" name="win_moment_file" id="win_moment_file" accept=".csv">
+                <input type="file" class="form-control" name="win_moment_file" id="win_moment_file" accept="csv">
                 <i class="form-group__bar"></i>
             </div>
         </div>
