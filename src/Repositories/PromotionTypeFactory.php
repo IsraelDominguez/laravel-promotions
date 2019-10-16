@@ -1,4 +1,4 @@
-<?php namespace Genetsis\Promotions\PromotionTypes;
+<?php namespace Genetsis\Promotions\Repositories;
 
 use Genetsis\Promotions\Contracts\PromotionTypeInterface;
 use Genetsis\Promotions\Models\Promotion;

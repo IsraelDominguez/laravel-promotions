@@ -1,16 +1,16 @@
-<?php namespace Genetsis\Promotions\PromotionTypes;
+<?php namespace Genetsis\Promotions\Repositories;
 
 use ConsumerRewards\SDK\Exception\ConsumerRewardsException;
 use ConsumerRewards\SDK\Transfer\Configuration;
 use ConsumerRewards\SDK\Transfer\Pack;
-use Genetsis\Promotions\Contracts\PromotionTypeInterface;
+use Genetsis\Promotions\Contracts\PromotionRepositoryInterface;
 use Genetsis\Promotions\Models\Promotion;
 use Genetsis\Promotions\Models\QrsPack;
 use Genetsis\Promotions\Services\ConsumerRewardsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-class QrsPromotionType extends GenericPromotion implements PromotionTypeInterface {
+class QrsPromotionType extends GenericPromotion implements PromotionRepositoryInterface {
 
     public function __construct(Promotion $promotion, Request $request) {
         parent::__construct($promotion, $request);

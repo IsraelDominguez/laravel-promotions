@@ -1,11 +1,11 @@
-<?php namespace Genetsis\Promotions\PromotionTypes;
+<?php namespace Genetsis\Promotions\Repositories;
 
-use Genetsis\Promotions\Contracts\PromotionTypeInterface;
+use Genetsis\Promotions\Contracts\PromotionRepositoryInterface;
 use Genetsis\Promotions\Models\Moment;
 use Genetsis\Promotions\Models\Promotion;
 use Illuminate\Http\Request;
 
-class WinMomentPromotionType extends GenericPromotion implements PromotionTypeInterface {
+class WinMomentPromotionType extends GenericPromotion implements PromotionRepositoryInterface {
 
     public function __construct(Promotion $promotion) {
         parent::__construct($promotion);

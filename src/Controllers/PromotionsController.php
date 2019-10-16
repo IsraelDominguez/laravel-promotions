@@ -4,18 +4,13 @@ use Genetsis\Admin\Controllers\AdminController;
 use Carbon\Carbon;
 
 use Genetsis\Druid\Rest\Exceptions\RestApiException;
-use Genetsis\Druid\Rest\Facades\RestApi;
 use Genetsis\Promotions\Models\Campaign;
 use Genetsis\Promotions\Models\Entrypoint;
-use Genetsis\Promotions\Models\ExtraFields;
 use Genetsis\Promotions\Models\Participation;
 use Genetsis\Promotions\Models\Promotion;
 use Genetsis\Promotions\Models\PromoType;
 
-use Genetsis\Promotions\Models\Rewards;
 use Genetsis\Promotions\Models\User;
-use Genetsis\Promotions\ParticipationTypes\PromotionParticipationFactory;
-use Genetsis\Promotions\PromotionTypes\PromotionTypeFactory;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -335,14 +330,6 @@ class PromotionsController extends AdminController
             $request->merge(['entrypoint_id' => null]);
         }
 
-        if ($id != null) {
-            $promotion = Promotion::findOrFail($id);
-            $promotion->update($request->except('entrypoint_id'));
-        } else {
-            $promotion = Promotion::create($request->except('entrypoint_id'));
-        }
-
-
         $entrypoint_selected = $request->input('entrypoint_id');
 
         if (($entrypoint_selected === 'simple') || ($entrypoint_selected === 'complete')) {
@@ -379,7 +366,7 @@ class PromotionsController extends AdminController
         }
 
         try {
-            $promotionType = PromotionTypeFactory::create($promotion);
+            $promotionType = \Genetsis\Promotions\Repositories\PromotionTypeFactory::create($promotion);
             $promotionType->save($request);
         }catch (\Exception $e) {
             Log::error('Nothing additional to save: ' . $e->getMessage());

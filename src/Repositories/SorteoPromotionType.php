@@ -1,10 +1,10 @@
-<?php namespace Genetsis\Promotions\PromotionTypes;
+<?php namespace Genetsis\Promotions\Repositories;
 
+use Genetsis\Promotions\Contracts\PromotionRepositoryInterface;
 use Genetsis\Promotions\Contracts\PromotionTypeInterface;
-use Genetsis\Promotions\Models\Promotion;
 use Illuminate\Http\Request;
 
-class SorteoPromotionType extends GenericPromotion implements PromotionTypeInterface {
+class SorteoPromotionType extends GenericPromotion implements PromotionRepositoryInterface {
 
     public function __construct() {
     }

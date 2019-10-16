@@ -1,15 +1,13 @@
-<?php namespace Genetsis\Promotions\PromotionTypes;
+<?php namespace Genetsis\Promotions\Repositories;
 
-use Genetsis\Promotions\Contracts\PromotionTypeInterface;
+use Genetsis\Promotions\Contracts\PromotionRepositoryInterface;
 use Genetsis\Promotions\Models\ExtraFields;
 use Genetsis\Promotions\Models\Promotion;
 use Genetsis\Promotions\Models\Rewards;
-use Genetsis\Promotions\Models\Templates;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Metadata\Tests\Fixtures\TestParent;
 
-class GenericPromotion implements PromotionTypeInterface
+class GenericPromotion implements PromotionRepositoryInterface
 {
     /* @var Promotion $promotion
      */

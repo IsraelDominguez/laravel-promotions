@@ -1,11 +1,12 @@
-<?php namespace Genetsis\Promotions\PromotionTypes;
+<?php namespace Genetsis\Promotions\Repositories;
 
+use Genetsis\Promotions\Contracts\PromotionRepositoryInterface;
 use Genetsis\Promotions\Contracts\PromotionTypeInterface;
 use Genetsis\Promotions\Models\Codes;
 use Genetsis\Promotions\Models\Promotion;
 use Illuminate\Http\Request;
 
-class PincodePromotionType extends GenericPromotion implements PromotionTypeInterface {
+class PincodePromotionType extends GenericPromotion implements PromotionRepositoryInterface {
 
     public function __construct(Promotion $promotion) {
         parent::__construct($promotion);

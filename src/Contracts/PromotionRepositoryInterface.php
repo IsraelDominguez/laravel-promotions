@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 
-interface PromotionTypeInterface {
+interface PromotionRepositoryInterface {
 
     public function save(Request $request);
 }
