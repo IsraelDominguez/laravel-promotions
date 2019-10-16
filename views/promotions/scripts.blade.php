@@ -24,7 +24,7 @@
         @endif
 
         $("#submit").click(function () {
-            @if (config('promotion.front_templates_enabled'))
+            @if (config('promotion.front_pages_enabled'))
                 initial_template = $("#initial_page_template").val();
                 result_template = $("#result_page_template").val();
 

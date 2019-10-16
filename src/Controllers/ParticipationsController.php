@@ -69,7 +69,8 @@ class ParticipationsController extends AdminController
                                 $text .= $extra_field_participation->key . ": " . $extra_field_participation->value . '<br/>';
                                 break;
                             case ExtraFields::TYPE_IMAGE:
-                                $text .= '<a href="/test-show-image/'.$extra_field_participation->value.'" target="_blank">'.$extra_field_participation->key.'</a><br/>';
+                                //$text .= '<a href="/test-show-image?img='.$extra_field_participation->value.'" target="_blank">'.$extra_field_participation->key.'</a><br/>';
+                                $text .= '<img src="'.$extra_field_participation->value.'" width="100px">';
                                 break;
                             case ExtraFields::TYPE_LINK:
                                 $text .= '<a href="'.$extra_field_participation->value.'" target="_blank">'.$extra_field_participation->value.'</a><br/>';

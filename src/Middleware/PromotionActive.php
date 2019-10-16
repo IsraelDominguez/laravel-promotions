@@ -23,22 +23,27 @@ class PromotionActive
      *
      * @param $request
      * @param Closure $next
+     * @param $promotion key promotion Optional
      * @return mixed (404|500|route('not-active')
      *  404 eror if not exist
      *  500 if server error
      *  'not-active' named route if is not active
      */
-    public function handle($request, Closure $next)
+    public function handle($request, Closure $next, $promotion)
     {
         try {
-            $promotion_active = $this->promotion_repository->getPromotionByKey($request->promokey);
+            if (($request->promokey)||!empty($promotion)) {
+                $promotion_active = $this->promotion_repository->getPromotionByKey($request->promokey ?? $promotion);
 
-            $request->attributes->add(['promotion_active' => $promotion_active]);
+                $request->attributes->add(['promotion_active' => $promotion_active]);
 
-            return $next($request);
+                return $next($request);
+            } else {
+                throw new PromotionNotActiveException('Not Data');
+            }
         } catch (PromotionNotActiveException $e) {
             \Log::info('Promotion not Active');
-            return redirect(route('not-active', $request->promokey));
+            return redirect(route('not-active', $request->promokey ?? $promotion ?? ''));
         } catch (ModelNotFoundException $e) {
             \Log::error($e->getMessage());
             abort(404);

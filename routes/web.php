@@ -1,7 +1,8 @@
 <?php
 
 Route::group(['middleware' => ['web']], function () {
-    Route::get('/test-show-image/{path}/{image}.{type}', 'Genetsis\Promotions\Controllers\ShowImage@index');
+
+    Route::get('/test-show-image', 'Genetsis\Promotions\Controllers\ShowImage@index');
     Route::get('/download-sample/{file}', 'Genetsis\Promotions\Controllers\DownloadSample@index')->name('download-sample');
 
     Route::prefix('admin')->group(function () {

@@ -1,11 +1,12 @@
 <?php namespace Genetsis\Promotions\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 
 class ShowImage extends BaseController
 {
-    public function index($path, $image, $type) {
-        $img_path =  $path . '/'.$image.'.'.$type;
+    public function index(Request $request) {
+        $img_path = $request->input('img');
 
         if (\Storage::exists($img_path)) {
 
@@ -14,7 +15,7 @@ class ShowImage extends BaseController
 
             echo \Storage::get($img_path);
         } else {
-            abort(404);
+            echo '<img src="'.$img_path.'">';
         }
     }
 
