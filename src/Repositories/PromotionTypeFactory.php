@@ -1,6 +1,6 @@
 <?php namespace Genetsis\Promotions\Repositories;
 
-use Genetsis\Promotions\Contracts\PromotionTypeInterface;
+use Genetsis\Promotions\Contracts\PromotionRepositoryInterface;
 use Genetsis\Promotions\Models\Promotion;
 
 class PromotionTypeFactory
@@ -19,7 +19,7 @@ class PromotionTypeFactory
         }
 
         $temp = class_implements($class);
-        if (!is_array($temp) || !in_array( PromotionTypeInterface::class, $temp)) {
+        if (!is_array($temp) || !in_array( PromotionRepositoryInterface::class, $temp)) {
             throw new \Exception('Promotion Type Not Implement correct Interface: '.$class);
         }
 
