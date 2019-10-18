@@ -29,7 +29,7 @@ class PromotionActive
      *  500 if server error
      *  'not-active' named route if is not active
      */
-    public function handle($request, Closure $next, $promotion)
+    public function handle($request, Closure $next, $promotion = null)
     {
         try {
             if (($request->promokey)||!empty($promotion)) {

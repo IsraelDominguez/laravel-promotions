@@ -26,9 +26,9 @@ class PincodeFilterParticipation extends GenericFilterParticipation implements F
             Assert::notNull($participation->getPincode(), 'Pincode is required');
             Assert::notEmpty($participation->getPincode(), 'Pincode is required');
 
-            Codes::where('code', $participation->getPincode())
+            Codes::where('code', strtoupper($participation->getPincode()))
                     ->where('used', null)
-                    ->where('promo_id', $participation->promo)
+                    ->where('promo_id', $participation->getPromoId())
                     ->where(function($q) {
                         $q->whereNull('expires')->orWhereDate('expires', '>=', Carbon::today()->toDateString());
                     })
