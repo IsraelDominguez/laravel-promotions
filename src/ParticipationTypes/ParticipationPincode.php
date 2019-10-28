@@ -37,7 +37,7 @@ class ParticipationPincode extends PromotionParticipation implements PromotionPa
                 $code = Codes::where('code', $this->getPincode())
                     ->where('promo_id', $this->getPromoId())
                     ->where(function ($q) {
-                        $q->whereNull('expires')->orWhereDate('expires', '>=', Carbon::today()->toDateString());
+                        $q->whereNull('expires')->orWhereDate('expires', '>=', Carbon::today(new \DateTimeZone(config('promotion.timezone', config('app.timezone'))))->toDateString());
                     })
                     ->first();
 
@@ -47,7 +47,7 @@ class ParticipationPincode extends PromotionParticipation implements PromotionPa
                     $this->save();
 
                     $code->participation()->associate($this);
-                    $code->used = Carbon::now();
+                    $code->used = Carbon::now(new \DateTimeZone(config('promotion.timezone', config('app.timezone'))));
                     $code->save();
 
                     if ($code->win_code) {

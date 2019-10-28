@@ -30,8 +30,8 @@ class ParticipationWinMoment extends PromotionParticipation implements Promotion
                 //Save Participation user Win or Not Win
                 $this->save();
 
-                if ($moment = Moment::where('used', null)->where('promo_id', $this->promo->id)->where('date', '<=', Carbon::now())->lockForUpdate()->first()) {
-                    $moment->used = Carbon::now();
+                if ($moment = Moment::where('used', null)->where('promo_id', $this->promo->id)->where('date', '<=', Carbon::now(new \DateTimeZone(config('promotion.timezone', config('app.timezone')))))->lockForUpdate()->first()) {
+                    $moment->used = Carbon::now(new \DateTimeZone(config('promotion.timezone', config('app.timezone'))));
                     $moment->participation()->associate($this);
 
                     $moment->save();

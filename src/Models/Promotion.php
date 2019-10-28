@@ -87,9 +87,9 @@ class Promotion extends Model
 
     public function scopeIsActive() {
         if ($this->ends) {
-            return Carbon::now()->between(Carbon::createFromFormat('Y-m-d H:i:s', $this->starts), Carbon::createFromFormat('Y-m-d H:i:s', $this->ends));
+            return Carbon::now(new \DateTimeZone(config('promotion.timezone', config('app.timezone'))))->between(Carbon::createFromFormat('Y-m-d H:i:s', $this->starts, new \DateTimeZone(config('promotion.timezone', config('app.timezone')))), Carbon::createFromFormat('Y-m-d H:i:s', $this->ends, new \DateTimeZone(config('promotion.timezone', config('app.timezone')))));
         } else {
-            return Carbon::now()->greaterThan(Carbon::createFromFormat('Y-m-d H:i:s', $this->starts));
+            return Carbon::now(new \DateTimeZone(config('promotion.timezone', config('app.timezone'))))->greaterThan(Carbon::createFromFormat('Y-m-d H:i:s', $this->starts, new \DateTimeZone(config('promotion.timezone', config('app.timezone')))));
         }
     }
 
