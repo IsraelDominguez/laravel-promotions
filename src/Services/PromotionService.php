@@ -25,7 +25,7 @@ class PromotionService
      */
     public function isActive(\Genetsis\Promotions\Models\Promotion $promotion) {
         if (($promotion->starts != null)&&($promotion->ends != null)) {
-            return Carbon::now()->between(Carbon::createFromFormat('Y-m-d H:i:s',$promotion->starts), Carbon::createFromFormat('Y-m-d H:i:s',$promotion->ends));
+            return Carbon::now(new \DateTimeZone(config('promotion.timezone', config('app.timezone'))))->between(Carbon::createFromFormat('Y-m-d H:i:s',$promotion->starts, new \DateTimeZone(config('promotion.timezone', config('app.timezone')))), Carbon::createFromFormat('Y-m-d H:i:s',$promotion->ends, new \DateTimeZone(config('promotion.timezone', config('app.timezone')))));
         } else {
             if ($promotion->ends != null)
                 return $this->isFinished($promotion);
@@ -44,7 +44,7 @@ class PromotionService
      */
     public function isStarted(\Genetsis\Promotions\Models\Promotion $promotion) {
         if ($promotion->starts != null) {
-            return !Carbon::now()->lessThan(Carbon::createFromFormat('Y-m-d H:i:s',$promotion->starts));
+            return !Carbon::now(new \DateTimeZone(config('promotion.timezone', config('app.timezone'))))->lessThan(Carbon::createFromFormat('Y-m-d H:i:s',$promotion->starts,new \DateTimeZone(config('promotion.timezone', config('app.timezone')))));
         }
         return true;
     }
@@ -57,7 +57,7 @@ class PromotionService
      */
     public function isFinished(\Genetsis\Promotions\Models\Promotion $promotion) {
         if ($promotion->ends != null) {
-            return !Carbon::now()->greaterThan(Carbon::createFromFormat('Y-m-d H:i:s',$promotion->ends));
+            return !Carbon::now(new \DateTimeZone(config('promotion.timezone', config('app.timezone'))))->greaterThan(Carbon::createFromFormat('Y-m-d H:i:s',$promotion->ends, new \DateTimeZone(config('promotion.timezone', config('app.timezone')))));
         }
         return true;
     }
