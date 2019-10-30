@@ -12,4 +12,12 @@ class RewardsParticipations extends Model
     public $incrementing = false;
     public $timestamps = false;
 
+    public function reward() {
+        return $this->hasOne(Rewards::class, 'key', 'key');
+    }
+
+    public function participation() {
+        return $this->belongsTo(Participation::class, 'id', 'participation_id');
+    }
+
 }

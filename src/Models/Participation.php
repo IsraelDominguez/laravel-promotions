@@ -32,11 +32,11 @@ class Participation extends Model
     }
 
     public function extraFields() {
-        return $this->hasMany(ExtraFieldsParticipations::class);
+        return $this->hasMany(ExtraFieldsParticipations::class, 'participation_id', 'id');
     }
 
     public function rewards() {
-        return $this->hasMany(RewardsParticipations::class);
+        return $this->hasMany(RewardsParticipations::class, 'participation_id', 'id');
     }
 
     public function code() {

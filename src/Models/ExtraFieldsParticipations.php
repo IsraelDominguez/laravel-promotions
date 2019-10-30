@@ -19,6 +19,10 @@ class ExtraFieldsParticipations extends Model
         return $this->hasOne(ExtraFields::class, 'key', 'key');
     }
 
+    public function participation() {
+        return $this->belongsTo(Participation::class, 'id', 'participation_id');
+    }
+
     /**
      * Set the keys for a save update query.
      *
