@@ -15,14 +15,7 @@ class Promotion extends Model
      */
     protected $table = 'promo';
 
-    protected $fillable = ['name', 'starts', 'ends', 'campaign_id', 'type_id', 'max_user_participations', 'max_user_participations_by_day', 'key', 'has_mgm', 'entrypoint_id', 'legal', 'is_public'];
-
-//    protected $dateFormat = 'Y-m-d H:i';
-//
-//    protected $dates = [
-//        'starts',
-//        'ends'
-//    ];
+    protected $fillable = ['name', 'starts', 'ends', 'campaign_id', 'type_id', 'max_user_participations', 'max_user_participations_by_day', 'key', 'has_mgm', 'entrypoint_id', 'legal', 'is_public', 'entry_point'];
 
     /**
      * Get the Campaign record associated with the Promotion
