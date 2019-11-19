@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEntrypointsTable extends Migration
+class CreatePromoEntrypointsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -35,6 +35,6 @@ class CreateEntrypointsTable extends Migration
     public function down()
     {
         Schema::disableForeignKeyConstraints();
-        Schema::dropIfExists('entrypoints');
+        Schema::dropIfExists('promo_entrypoints');
     }
 }
