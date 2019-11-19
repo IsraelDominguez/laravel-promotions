@@ -19,6 +19,7 @@
                     <th>Title</th>
                     <th>Starts</th>
                     <th>Ends</th>
+                    @if (config('genetsis_admin.manage_druid_apps'))<th>Druid App</th>@endif
                     <th width="280px">Action</th>
                 </tr>
             </thead>
@@ -29,6 +30,7 @@
                     <td>{{ $campaign->name}}</td>
                     <td>{{ $campaign->starts }}</td>
                     <td>{{ $campaign->ends }}</td>
+                    @if (config('genetsis_admin.manage_druid_apps'))<td>{{$campaign->druid_app->client_id. ' - ' .$campaign->druid_app->name}}</td>@endif
                     <td>
                         <div class="actions">
                             <a class="actions__item zmdi zmdi-eye" href="{{ route('campaigns.show',$campaign->id) }}"></a>

@@ -3,6 +3,7 @@
 namespace Genetsis\Promotions\Models;
 
 use Carbon\Carbon;
+use Genetsis\Admin\Models\Entrypoint;
 use Illuminate\Database\Eloquent\Model;
 
 class Promotion extends Model

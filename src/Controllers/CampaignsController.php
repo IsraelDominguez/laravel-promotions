@@ -1,6 +1,7 @@
 <?php namespace Genetsis\Promotions\Controllers;
 
 use Genetsis\Admin\Controllers\AdminController;
+use Genetsis\Admin\Models\DruidApp;
 use Genetsis\Promotions\Models\Campaign;
 use Genetsis\Promotions\Models\Entrypoint;
 use Illuminate\Http\Request;
@@ -34,7 +35,9 @@ class CampaignsController extends AdminController
      */
     public function create()
     {
-        return view('promotion::campaigns.create');
+        $druid_apps = DruidApp::all();
+
+        return view('promotion::campaigns.create', compact('druid_apps'));
     }
 
     /**
@@ -50,22 +53,11 @@ class CampaignsController extends AdminController
             'key' => 'required|unique:promo_campaign|alpha_dash|max:250',
             'entry_point' => 'nullable|alpha_dash|max:100',
             'name' => 'unique:promo_campaign|required',
-            'ends' => 'nullable|after:starts'
+            'ends' => 'nullable|after:starts',
+            'client_id' => 'nullable|exists:druid_apps,client_id'
         ]);
 
         $campaign = Campaign::create($request->all());
-
-        if (($campaign->client_id)&&($campaign->secret)) {
-            try {
-                $druid_app = \RestApi::searchAppsBy(['key' => $campaign->client_id]);
-                $campaign->selflink = $druid_app->getUri();
-                $campaign->update();
-
-                $this->getDruidEntrypoints($campaign);
-            } catch (\Exception $e) {
-                \Log::debug('Error: ' . $e->getMessage());
-            }
-        }
 
         return redirect()->route('campaigns.home')
             ->with('success','Campaign created successfully');
@@ -91,9 +83,10 @@ class CampaignsController extends AdminController
      */
     public function edit($id)
     {
+        $druid_apps = DruidApp::all();
         $campaign = Campaign::find($id);
 
-        return view('promotion::campaigns.edit',compact('campaign'));
+        return view('promotion::campaigns.edit',compact('campaign', 'druid_apps'));
     }
 
     /**
@@ -113,22 +106,11 @@ class CampaignsController extends AdminController
             'name' => ['required',
                         Rule::unique('promo_campaign')->ignore($id)
             ],
-            'ends' => 'nullable|after:starts'
+            'ends' => 'nullable|after:starts',
+            'client_id' => 'nullable|exists:druid_apps,client_id'
         ]);
 
-        $campaign = Campaign::find($id);
-
-        if (($campaign->client_id)&&($campaign->secret)) {
-            try {
-                $druid_app = \RestApi::searchAppsBy(['key' => $campaign->client_id]);
-                $campaign->selflink = $druid_app->getUri();
-
-                $this->getDruidEntrypoints($campaign);
-
-            } catch (\Exception $e) {
-                \Log::debug('Error: ' . $e->getMessage());
-            }
-        }
+        $campaign = Campaign::findOrFail($id);
 
         $campaign->update($request->all());
 

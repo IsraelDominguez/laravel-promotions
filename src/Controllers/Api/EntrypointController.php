@@ -1,6 +1,7 @@
 <?php namespace Genetsis\Promotions\Controllers\Api;
 
-use Genetsis\Promotions\Models\Entrypoint;
+use Genetsis\Admin\Models\Entrypoint;
+use Genetsis\Promotions\Models\Campaign;
 
 class EntrypointController extends ApiController
 {
@@ -12,7 +13,9 @@ class EntrypointController extends ApiController
      */
     public function get($id) {
         try {
-            $entrypoints = Entrypoint::where('campaign_id', $id)->get();
+            $campaign = Campaign::findOrFail($id);
+
+            $entrypoints = Entrypoint::where('client_id', $campaign->druid_app->client_id)->get();
         } catch (\Exception $e) {
             return $this->sendError('Error', $e->getMessage());
         }

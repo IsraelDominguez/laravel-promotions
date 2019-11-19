@@ -14,20 +14,31 @@
             <i class="form-group__bar"></i>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="form-group">
-            <label>Client Id</label>
-            <input type="text" class="form-control" name="client_id" id="client_id" value="{{ old('client_id', $campaign->client_id  ?? null) }}">
-            <i class="form-group__bar"></i>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="form-group">
-            <label>Secret</label>
-            <input type="text" class="form-control" name="secret" id="secret" value="{{ old('secret', $campaign->secret ?? null) }}">
-            <i class="form-group__bar"></i>
-        </div>
-    </div>
+
+    @if (config('genetsis_admin.manage_druid_apps') == true)
+
+        @if (count($druid_apps) > 1)
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Druid App *</label>
+                    <select class="select2" name="client_id">
+                        <option value="">- Select -</option>
+                        @foreach ($druid_apps as $app)
+                            <option value="{{$app->client_id}}"
+                                    @if ((old('client_id', $campaign->client_id ?? null) == $app->client_id))
+                                    selected
+                                @endif
+                            >{{$app->client_id}} - {{$app->name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+        @else
+            <input type="hidden" name="client_id" value="{{(count($druid_apps)==1) ? $campaign->client_id ?? $druid_apps[0]->client_id : ''}}"/>
+        @endif
+
+    @endif
+
     <div class="col-md-6">
         <div class="form-group">
             <label for="entry_point">Entry Point</label>

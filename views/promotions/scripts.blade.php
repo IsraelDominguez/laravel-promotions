@@ -1,5 +1,5 @@
 <script>
-    var entrypoint_selected = '{{$promotion->entrypoint_id ?? ''}}';
+    var entrypoint_selected = '{{old('entrypoint_id', $promotion->entrypoint_id ?? '')}}';
 
     $(document).ready(function() {
         @if ($message = Session::get('success'))
@@ -24,7 +24,7 @@
         @endif
 
         $("#submit").click(function () {
-            @if (config('promotion.front_pages_enabled'))
+            @if (config('promotion.front_pages_enabled') && config('front_templates_enabled'))
                 initial_template = $("#initial_page_template").val();
                 result_template = $("#result_page_template").val();
 

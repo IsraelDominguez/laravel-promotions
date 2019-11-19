@@ -291,7 +291,7 @@ class PromotionsController extends AdminController
             $validations['key'] = ['required', Rule::unique('promo')->ignore($id),'alpha_dash', 'max:50'];
         }
 
-        if (config('promotion.front_share_enabled')) {
+        if (config('promotion.front_share_enabled') && config('front_templates_enabled')) {
             $validations['title'] = 'required';
             if ($id == null) {
                 $validations['image'] = 'required';

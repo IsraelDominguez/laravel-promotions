@@ -2,6 +2,7 @@
 
 namespace Genetsis\Promotions\Models;
 
+use Genetsis\Admin\Models\DruidApp;
 use Genetsis\Promotions\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,7 +16,7 @@ class Campaign extends Model
      */
     protected $table = 'promo_campaign';
 
-    protected $fillable = ['name', 'starts', 'ends', 'key', 'entry_point', 'client_id', 'secret', 'selflink'];
+    protected $fillable = ['name', 'starts', 'ends', 'key', 'entry_point', 'client_id'];
 
     protected $encryptable = ['secret'];
 
@@ -28,12 +29,10 @@ class Campaign extends Model
     }
 
     /**
-     * Get the Entrypoints associated to this Druid App
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function entrypoints(){
-        return $this->hasMany(Entrypoint::class, 'campaign_id', 'id');
+    public function druid_app(){
+        return $this->hasOne(DruidApp::class, 'client_id', 'client_id');
     }
 
     /**
