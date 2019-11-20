@@ -32,9 +32,7 @@ class PromotionsController extends AdminController
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        $promotions = Promotion::latest()->paginate(10);
-        return view('promotion::promotions.index',compact('promotions'))
-            ->with('i', (request()->input('page', 1) - 1) * 10);
+        return view('promotion::promotions.index');
     }
 
 
@@ -47,28 +45,27 @@ class PromotionsController extends AdminController
      */
     public function get(Request $request)
     {
-        if ($request->ajax()) {
-            $promotions = Promotion::with('campaign','type')->get();
-            return DataTables::of($promotions)
-                ->addColumn('participations', function($promotion) {
-                    return count($promotion->participations);
-                })
-                ->addColumn('active', function($promotion){
-                    return $promotion->isActive() ? '<label class="badge badge-success">Yes</label>' : 'No';
-                })
-                ->addColumn('options', function ($promotion) {
-                    return '
-                        <div class="actions" style="width:100px">
-                        <a class="actions__item zmdi zmdi-eye" href="' . route('promotions.show', $promotion->id) . '"></a>
-                        <a class="actions__item zmdi zmdi-edit" href="' . route('promotions.edit', $promotion->id) . '"></a>
-                        <a class="actions__item zmdi zmdi-link" href="' . url($promotion->key) . '" target="_blank"></a>
-                        </div>                        
-                        ';
-                })
-                ->addColumn('delete', 'promotion::partials.deletetable')
-                ->rawColumns(['active', 'options', 'delete'])
-                ->make(true);
-        }
+        $promotions = Promotion::with('campaign','type');
+
+        return \datatables()->eloquent($promotions)
+            ->addColumn('participations', function($promotion) {
+                return count($promotion->participations);
+            })
+            ->addColumn('active', function($promotion){
+                return $promotion->isActive() ? '<label class="badge badge-success">Yes</label>' : 'No';
+            })
+            ->addColumn('options', function ($promotion) {
+                return '
+                    <div class="actions" style="width:100px">
+                    <a class="actions__item zmdi zmdi-eye" href="' . route('promotions.show', $promotion->id) . '"></a>
+                    <a class="actions__item zmdi zmdi-edit" href="' . route('promotions.edit', $promotion->id) . '"></a>
+                    <a class="actions__item zmdi zmdi-link" href="' . url($promotion->key) . '" target="_blank"></a>
+                    </div>                        
+                    ';
+            })
+            ->addColumn('delete', 'promotion::partials.deletetable')
+            ->rawColumns(['active', 'options', 'delete'])
+            ->make(true);
     }
 
 
