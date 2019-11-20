@@ -32,9 +32,6 @@ class PromotionsController extends AdminController
      * @return \Illuminate\Http\Response
      */
     public function index() {
-
-        //factory(User::class, 10)->create();
-        //factory(Participation::class, 50)->create();
         $promotions = Promotion::latest()->paginate(10);
         return view('promotion::promotions.index',compact('promotions'))
             ->with('i', (request()->input('page', 1) - 1) * 10);
@@ -68,13 +65,7 @@ class PromotionsController extends AdminController
                         </div>                        
                         ';
                 })
-                ->addColumn('delete', function ($promotion) {
-                    return '
-                        <div class="actions">                                                
-                        <a class="actions__item zmdi zmdi-delete del" data-id="' . $promotion->id . '"></a>
-                        </div>                        
-                        ';
-                })
+                ->addColumn('delete', 'promotion::partials.deletetable')
                 ->rawColumns(['active', 'options', 'delete'])
                 ->make(true);
         }

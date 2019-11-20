@@ -9,6 +9,8 @@ Route::group(['middleware' => ['web']], function () {
         //Route::namespace('Genetsis\Promotions\Controllers')->group(function () {
 
         Route::group(['namespace' => 'Genetsis\Promotions\Controllers'], function () {
+            Route::get('campaigns/get', 'CampaignsController@get')->name('campaigns.api');
+
             Route::resource('campaigns', 'CampaignsController', [
                 'only' => ['index', 'show', 'edit', 'create', 'store', 'update', 'destroy'],
                 'names' => ['index' => 'campaigns.home']

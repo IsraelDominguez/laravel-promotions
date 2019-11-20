@@ -12,52 +12,48 @@
 
 @section('section-content')
     <div class="table-responsive">
-        <table class="table table-sm  table-striped mb-3">
+        <table id="data-campaigns" class="table table-bordered table-striped">
             <thead class="thead-inverse">
                 <tr>
-                    <th>#</th>
-                    <th>Title</th>
-                    <th>Starts</th>
-                    <th>Ends</th>
-                    @if (config('genetsis_admin.manage_druid_apps'))<th>Druid App</th>@endif
-                    <th width="280px">Action</th>
+                    <td>#</td>
+                    <td>Title</td>
+                    <td>Starts</td>
+                    <td>Ends</td>
+                    @if (config('genetsis_admin.manage_druid_apps'))<td>Druid App</td>@endif
                 </tr>
             </thead>
-            <tbody>
-            @foreach ($campaigns as $campaign)
-                <tr>
-                    <th scope="row">{{ ++$i }}</th>
-                    <td>{{ $campaign->name}}</td>
-                    <td>{{ $campaign->starts }}</td>
-                    <td>{{ $campaign->ends }}</td>
-                    @if (config('genetsis_admin.manage_druid_apps'))<td>{{$campaign->druid_app->client_id. ' - ' .$campaign->druid_app->name}}</td>@endif
-                    <td>
-                        <div class="actions">
-                            <a class="actions__item zmdi zmdi-eye" href="{{ route('campaigns.show',$campaign->id) }}"></a>
-                            <a class="actions__item zmdi zmdi-edit" href="{{ route('campaigns.edit',$campaign->id) }}"></a>
-                            <a class="actions__item zmdi zmdi-delete del" data-id="{{$campaign->id}}"></a>
-                        </div>
-                        <form action="{{ route('campaigns.destroy', $campaign->id) }}" method="POST" id="form-{{$campaign->id}}">
-                            {{ csrf_field() }}
-                            {{ method_field('DELETE') }}
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-            </tbody>
         </table>
     </div>
-    {{ $campaigns->links('genetsis-admin::partials.pagination.bootstrap-4') }}
 @endsection
 
 @push('custom-js')
     <script>
         $(document).ready(function() {
-            $('.del').click(function(){
-                clicked = this.dataset.id;
+            var table_campaigns = $('#data-campaigns').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{{route('campaigns.api')}}',
+                columns: [
+                    {data: 'id', orderable: false, searchable: false},
+                    {data: 'name'},
+                    {data: 'starts'},
+                    {data: 'ends'},
+                    {data: 'druid_app', name: 'druid_app.client_id'},
+                    {data: 'options', name: 'options', orderable: false, searchable: false, className: 'options-actions'},
+                    {data: 'delete', name: 'delete', orderable: false, searchable: false, className: 'options-delete'},
+                ],
+                order: [[1,'desc']]
+            });
+
+
+            $('#data-campaigns tbody').on('click', 'td.options-delete', function () {
+                var tr = $(this).closest('tr');
+                var row = table_campaigns.row(tr);
+                var id = row.data().id;
+
                 swal({
                     title: 'Are you sure?',
-                    text: 'You will not be able to recover this promotion!',
+                    text: 'You will not be able to recover this Campaign!',
                     type: 'warning',
                     showCancelButton: true,
                     buttonsStyling: false,
@@ -65,7 +61,23 @@
                     confirmButtonText: 'Yes, delete it!',
                     cancelButtonClass: 'btn btn-secondary'
                 }).then(function(){
-                    $('#form-'+clicked).submit()
+                    delete_url = '{{route('campaigns.destroy', ':id')}}';
+                    delete_url = delete_url.replace(':id', id);
+
+                    $.ajax({
+                        url: delete_url,
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function (response) {
+                            notify(response.message);
+                            table_campaigns.ajax.reload();
+                        },
+                        error: function(response) {
+                            notify('An error has ocurred','top','right','','danger');
+                        }
+                    });
                 }).catch(swal.noop);
             });
 

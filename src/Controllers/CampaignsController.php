@@ -6,7 +6,7 @@ use Genetsis\Promotions\Models\Campaign;
 use Genetsis\Promotions\Models\Entrypoint;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use JMS\Serializer\Tests\Fixtures\Log;
+use Yajra\DataTables\DataTables;
 
 class CampaignsController extends AdminController
 {
@@ -22,11 +22,37 @@ class CampaignsController extends AdminController
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        $campaigns = Campaign::latest()->paginate(10);
-        return view('promotion::campaigns.index',compact('campaigns'))
-            ->with('i', (request()->input('page', 1) - 1) * 10);
+        return view('promotion::campaigns.index');
     }
 
+    /**
+     * Api for DataTables
+     *
+     * @param Request $request
+     * @return mixed
+     * @throws \Exception
+     */
+    public function get(Request $request)
+    {
+        $campaigns = Campaign::with('druid_app');
+
+        return \datatables()->eloquent($campaigns)
+            ->addColumn('druid_app', function($campaign) {
+                return $campaign->druid_app->client_id . ' - ' . $campaign->druid_app->name;
+            })
+            ->addColumn('options', function ($campaign) {
+                return '
+                    <div class="actions" style="width:65px">
+                    <a class="actions__item zmdi zmdi-eye" href="' . route('campaigns.show', $campaign->id) . '"></a>
+                    <a class="actions__item zmdi zmdi-edit" href="' . route('campaigns.edit', $campaign->id) . '"></a>                    
+                    </div>                        
+                    ';
+            })
+            ->addColumn('delete', 'promotion::partials.deletetable')
+            ->rawColumns(['options', 'delete'])
+            ->make(true);
+
+    }
 
     /**
      * Show the form for creating a new resource.
