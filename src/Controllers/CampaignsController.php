@@ -38,7 +38,7 @@ class CampaignsController extends AdminController
 
         return \datatables()->eloquent($campaigns)
             ->addColumn('druid_app', function($campaign) {
-                return $campaign->druid_app->client_id . ' - ' . $campaign->druid_app->name;
+                return (isset($campaign->druid_app)) ? $campaign->druid_app->client_id . ' - ' . $campaign->druid_app->name : '';
             })
             ->addColumn('options', function ($campaign) {
                 return '

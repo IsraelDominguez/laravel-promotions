@@ -47,7 +47,11 @@
                     {data: 'active'},
                     {data: 'campaign.name'},
                     {data: 'type.name'},
-                    {data: 'entrypoint_id', orderable: false},
+                    @if(config('genetsis_admin.manage_druid_apps'))
+                    {data: 'entrypoint_id'},
+                    @else
+                    {data: 'entry_point'},
+                    @endif
                     {data: 'participations', searchable: false},
                     {data: 'options', name: 'options', orderable: false, searchable: false, className: 'options-actions'},
                     {data: 'delete', name: 'delete', orderable: false, searchable: false, className: 'options-delete'},
