@@ -78,7 +78,6 @@ class PromotionsController extends AdminController
     {
         $campaigns = Campaign::latest()->get();
         $promo_types = PromoType::enabled()->get();
-
         return view('promotion::promotions.create', compact('campaigns', 'promo_types'));
     }
 
@@ -270,7 +269,9 @@ class PromotionsController extends AdminController
             'pack_name' => 'nullable|max:100',
             'pack_max' => 'nullable|integer',
             'win_moment_file' => 'nullable',
-            'pincodes_file' => 'nullable'
+            'pincodes_file' => 'nullable',
+            'lang' => 'nullable|max:4',
+            'timezone' => 'nullable|timezone'
         ];
 
         // Edit Promotion

@@ -117,6 +117,29 @@
             <i class="form-group__bar"></i>
         </div>
     </div>
+
+    @if (count(config('promotion.langs')) > 1)
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Lang *</label>
+
+                <select class="select2 required" name="lang" id="lang">
+                    <option value="">- Select -</option>
+                    @foreach (config('promotion.langs') as $lang => $timezone)
+                        <option value="{{$lang}}"
+                                @if ((old('lang', $promotion->lang ?? null) == $lang))
+                                selected
+                            @endif
+                        >{{$lang}}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+    @else
+        <input type="hidden" name="lang" value="{{array_key_first(config('promotion.langs'))}}">
+    @endif
+
+
 {{--    <div class="col-6">--}}
 {{--        <div class="form-group">--}}
 {{--            <label>Max User Participations By Day</label>--}}
