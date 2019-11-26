@@ -21,7 +21,7 @@
                 </div>
             </div>
         </div>
-        @if(!empty($promotion))
+        @if(!empty($promotion) && ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::MOMENT_TYPE))
             <div class="col-xs-12 col-md-6">
                 Total Moments: {{ count($promotion->moment) }}
                 <br/>

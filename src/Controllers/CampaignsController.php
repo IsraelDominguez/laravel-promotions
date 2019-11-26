@@ -4,9 +4,10 @@ use Genetsis\Admin\Controllers\AdminController;
 use Genetsis\Admin\Models\DruidApp;
 use Genetsis\Promotions\Models\Campaign;
 use Genetsis\Promotions\Models\Entrypoint;
+use Genetsis\Promotions\Models\Participation;
+use Genetsis\Promotions\Models\Promotion;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Yajra\DataTables\DataTables;
 
 class CampaignsController extends AdminController
 {
@@ -34,7 +35,7 @@ class CampaignsController extends AdminController
      */
     public function get(Request $request)
     {
-        $campaigns = Campaign::with('druid_app');
+        $campaigns = Campaign::with(['druid_app', 'promotions'])->withCount('promotions');
 
         return \datatables()->eloquent($campaigns)
             ->addColumn('druid_app', function($campaign) {
@@ -98,7 +99,10 @@ class CampaignsController extends AdminController
     public function show($id)
     {
         $campaign = Campaign::find($id);
-        return view('promotion::campaigns.show',compact('campaign'));
+
+        $dashboard_data['promotions'] = Promotion::where('campaign_id', $id)->withCount('participations')->get();
+
+        return view('promotion::campaigns.show',compact('campaign', 'dashboard_data'));
     }
 
     /**
@@ -152,9 +156,13 @@ class CampaignsController extends AdminController
      */
     public function destroy($id)
     {
-        Campaign::find($id)->delete();
-        return redirect()->route('campaigns.home')
-            ->with('success','Campaign deleted successfully');
+        try {
+            Campaign::find($id)->delete();
+
+            return response()->json(['Status' => 'Ok', 'message'=>'Campaign Deleted']);
+        } catch (\Exception $e) {
+            return response()->json('Error:'.$e->getMessage(), 500);
+        }
     }
 
     /**

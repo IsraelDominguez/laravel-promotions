@@ -51,14 +51,15 @@ class ParticipationsController extends AdminController
     /**
      * @param Request $request
      * @param $id
-     * @return mixed
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function show(Request $request, $id) {
 
         if ($request->ajax()) {
-            $participations = Participation::with('user')->with('extraFields')->with('code')->with('moment')->with('qr')->select('promo_participations.*')->where('promo_id', $id);
+            $participations = Participation::with(['user','extraFields','code','moment','qr'])->select('promo_participations.*')->where('promo_id', $id);
 
-            return Datatables::of($participations)
+            return \datatables()->eloquent($participations)
                 ->addColumn('extra', function ($participation) {
                     $text = '';
                     foreach ($participation->extraFields as $extra_field_participation) {

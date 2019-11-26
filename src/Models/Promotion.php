@@ -23,11 +23,11 @@ class Promotion extends Model
      */
     public function campaign()
     {
-        return $this->belongsTo(Campaign::class);
+        return $this->hasOne(Campaign::class, 'id', 'campaign_id');
     }
 
     public function participations() {
-        return $this->hasMany(Participation::class, 'promo_id');
+        return $this->hasMany(Participation::class, 'promo_id', 'id');
     }
 
     public function type(){
@@ -35,23 +35,23 @@ class Promotion extends Model
     }
 
     public function extra_fields() {
-        return $this->hasMany(ExtraFields::class, 'promo_id');
+        return $this->hasMany(ExtraFields::class, 'promo_id', 'id');
     }
 
     public function rewards() {
-        return $this->hasMany(Rewards::class, 'promo_id');
+        return $this->hasMany(Rewards::class, 'promo_id','id');
     }
 
     public function codes() {
-        return $this->hasMany(Codes::class, 'promo_id');
+        return $this->hasMany(Codes::class, 'promo_id', 'id');
     }
 
     public function moment() {
-        return $this->hasMany(Moment::class, 'promo_id');
+        return $this->hasMany(Moment::class, 'promo_id', 'id');
     }
 
     public function qrspack() {
-        return $this->hasOne(QrsPack::class, 'promo_id');
+        return $this->hasOne(QrsPack::class, 'promo_id', 'id');
     }
 
     public function entrypoint() {

@@ -45,12 +45,9 @@ class PromotionsController extends AdminController
      */
     public function get(Request $request)
     {
-        $promotions = Promotion::with('campaign','type');
+        $promotions = Promotion::with(['campaign', 'type'])->withCount('participations');
 
         return \datatables()->eloquent($promotions)
-            ->addColumn('participations', function($promotion) {
-                return count($promotion->participations);
-            })
             ->addColumn('active', function($promotion){
                 return $promotion->isActive() ? '<label class="badge badge-success">Yes</label>' : 'No';
             })

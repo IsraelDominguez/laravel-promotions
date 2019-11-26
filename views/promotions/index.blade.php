@@ -52,7 +52,7 @@
                     @else
                     {data: 'entry_point'},
                     @endif
-                    {data: 'participations', searchable: false},
+                    {data: 'participations_count', searchable: false},
                     {data: 'options', name: 'options', orderable: false, searchable: false, className: 'options-actions'},
                     {data: 'delete', name: 'delete', orderable: false, searchable: false, className: 'options-delete'},
                 ],

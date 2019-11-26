@@ -19,6 +19,7 @@
                     <td>Title</td>
                     <td>Starts</td>
                     <td>Ends</td>
+                    <td>Promotions</td>
                     @if (config('genetsis_admin.manage_druid_apps'))<td>Druid App</td>@endif
                 </tr>
             </thead>
@@ -38,6 +39,7 @@
                     {data: 'name'},
                     {data: 'starts'},
                     {data: 'ends'},
+                    {data: 'promotions_count', searchable: false},
                     {data: 'druid_app', name: 'druid_app.client_id'},
                     {data: 'options', name: 'options', orderable: false, searchable: false, className: 'options-actions'},
                     {data: 'delete', name: 'delete', orderable: false, searchable: false, className: 'options-delete'},

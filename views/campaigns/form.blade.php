@@ -16,7 +16,6 @@
     </div>
 
     @if (config('genetsis_admin.manage_druid_apps') == true)
-
         @if (count($druid_apps) > 1)
             <div class="col-md-6">
                 <div class="form-group">
@@ -34,18 +33,17 @@
                 </div>
             </div>
         @else
-            <input type="hidden" name="client_id" value="{{(count($druid_apps)==1) ? $campaign->client_id ?? $druid_apps[0]->client_id : ''}}"/>
+            <input type="hidden" name="client_id" value="{{(count($druid_apps)==1) ? (empty($campaign->client_id) ? $druid_apps->pop()->client_id : $campaign->client_id) : ''}}"/>
         @endif
-
-    @endif
-
-    <div class="col-md-6">
-        <div class="form-group">
-            <label for="entry_point">Entry Point</label>
-            <input type="text" class="form-control" name="entry_point" id="entry_point" value="{{ old('key', $campaign->entry_point ?? null) }}">
-            <i class="form-group__bar"></i>
+    @else
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="entry_point">Entry Point</label>
+                <input type="text" class="form-control" name="entry_point" id="entry_point" value="{{ old('key', $campaign->entry_point ?? null) }}">
+                <i class="form-group__bar"></i>
+            </div>
         </div>
-    </div>
+    @endif
 </div>
 
 <div class="row">

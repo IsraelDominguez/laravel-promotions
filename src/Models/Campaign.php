@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Campaign extends Model
 {
-    use Encryptable;
     /**
      * The table associated with the model.
      *
@@ -18,14 +17,12 @@ class Campaign extends Model
 
     protected $fillable = ['name', 'starts', 'ends', 'key', 'entry_point', 'client_id'];
 
-    protected $encryptable = ['secret'];
-
     /**
      * Get the promotions for a campaign.
      */
     public function promotions()
     {
-        return $this->hasMany(Promotion::class);
+        return $this->hasMany(Promotion::class, 'campaign_id', 'id');
     }
 
     /**
@@ -45,7 +42,9 @@ class Campaign extends Model
         parent::boot();
 
         Campaign::deleting(function ($model) {
-            $model->promotions()->delete();
+            foreach ($model->promotions as $promotion) {
+                $promotion->delete();
+            }
         });
     }
 

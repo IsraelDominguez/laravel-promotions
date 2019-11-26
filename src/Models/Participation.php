@@ -24,7 +24,7 @@ class Participation extends Model
     public $timestamps = false;
 
     public function promo() {
-        return $this->belongsTo(Promotion::class, 'promo_id');
+        return $this->belongsTo(Promotion::class, 'promo_id', 'id');
     }
 
     public function user() {

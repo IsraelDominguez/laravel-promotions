@@ -20,7 +20,8 @@
                 </div>
             </div>
         </div>
-        @if(!empty($promotion))
+
+        @if(!empty($promotion) && ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::PINCODE_TYPE))
             <div class="col-xs-12 col-md-6">
                 Total Moments: {{ count($promotion->codes) }}
                 <br/>
