@@ -54,7 +54,7 @@
             var table_participations = $('#data-participations').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: '/api/v1/participations/{{$promotion->id}}',
+                ajax: '{{route('api.participations', $promotion->id)}}',
                 columns: [
                     {data: 'id'},
                     {data: 'user_id'},

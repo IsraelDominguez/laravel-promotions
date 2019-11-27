@@ -49,47 +49,45 @@ class ParticipationsController extends AdminController
     }
 
     /**
-     * @param Request $request
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function show(Request $request, $id) {
+    public function show($id) {
 
-        if ($request->ajax()) {
-            $participations = Participation::with(['user','extraFields','code','moment','qr'])->select('promo_participations.*')->where('promo_id', $id);
+        $participations = Participation::with(['user','extraFields','code','moment','qr'])->select('promo_participations.*')->where('promo_id', $id);
 
-            return \datatables()->eloquent($participations)
-                ->addColumn('extra', function ($participation) {
-                    $text = '';
-                    foreach ($participation->extraFields as $extra_field_participation) {
-                        switch ($extra_field_participation->extra_field->type) {
-                            case ExtraFields::TYPE_STRING:
-                            case ExtraFields::TYPE_NUMBER:
-                            case ExtraFields::TYPE_DATE:
-                                $text .= $extra_field_participation->key . ": " . $extra_field_participation->value . '<br/>';
-                                break;
-                            case ExtraFields::TYPE_IMAGE:
-                                //$text .= '<a href="/test-show-image?img='.$extra_field_participation->value.'" target="_blank">'.$extra_field_participation->key.'</a><br/>';
-                                $text .= '<img src="'.$extra_field_participation->value.'" width="100px">';
-                                break;
-                            case ExtraFields::TYPE_LINK:
-                                $text .= '<a href="'.$extra_field_participation->value.'" target="_blank">'.$extra_field_participation->value.'</a><br/>';
-                                break;
-                        }
+        return \datatables()->eloquent($participations)
+            ->addColumn('extra', function ($participation) {
+                $text = '';
+                foreach ($participation->extraFields as $extra_field_participation) {
+                    switch ($extra_field_participation->extra_field->type) {
+                        case ExtraFields::TYPE_STRING:
+                        case ExtraFields::TYPE_NUMBER:
+                        case ExtraFields::TYPE_DATE:
+                            $text .= $extra_field_participation->key . ": " . $extra_field_participation->value . '<br/>';
+                            break;
+                        case ExtraFields::TYPE_IMAGE:
+                            //$text .= '<a href="/test-show-image?img='.$extra_field_participation->value.'" target="_blank">'.$extra_field_participation->key.'</a><br/>';
+                            $text .= '<img src="'.$extra_field_participation->value.'" width="100px">';
+                            break;
+                        case ExtraFields::TYPE_LINK:
+                            $text .= '<a href="'.$extra_field_participation->value.'" target="_blank">'.$extra_field_participation->value.'</a><br/>';
+                            break;
                     }
+                }
 
-                    return $text;
-                })
-                ->addColumn('delete', function ($participation) {
-                    return '<a class="actions__item zmdi zmdi-delete delete-participation" data-id="'.$participation->id.'"></a>';
-                })
-                ->addColumn('edit', function ($participation) {
-                    return '<a class="actions__item zmdi zmdi-edit edit-participation" data-toggle="modal" data-target="#modal-edition" data-id="'.$participation->id.'"></a>';
-                })
-                ->rawColumns(['delete','edit','extra'])
-                ->make(true);
-        }
+                return $text;
+            })
+            ->addColumn('delete', function ($participation) {
+                return '<a class="actions__item zmdi zmdi-delete delete-participation" data-id="'.$participation->id.'"></a>';
+            })
+            ->addColumn('edit', function ($participation) {
+                return '<a class="actions__item zmdi zmdi-edit edit-participation" data-toggle="modal" data-target="#modal-edition" data-id="'.$participation->id.'"></a>';
+            })
+            ->rawColumns(['delete','edit','extra'])
+            ->make(true);
+
     }
 
     /**
