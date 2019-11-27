@@ -43,7 +43,7 @@
                     @isset($promotion)
                         @foreach ($promotion->campaign->druid_app->entrypoints as $entrypoint)
                             <option value="{{$entrypoint->key}}"
-                                    @if ((old('entrypoint_id', $promotion->entrypoint_id ?? null) == $entrypoint->client_id))
+                                    @if ((old('entrypoint_id', $promotion->entrypoint_id ?? null) == $promotion->entrypoint_id))
                                     selected
                                 @endif
                             >{{$entrypoint->key}}</option>

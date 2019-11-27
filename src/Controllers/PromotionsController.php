@@ -225,17 +225,15 @@ class PromotionsController extends AdminController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id, Request $request)
+    public function destroy($id)
     {
         //TODO: delete all files asociated (images, legal,...)
-        if ($request->ajax()) {
-            try {
-                Promotion::find($id)->delete();
+        try {
+            Promotion::find($id)->delete();
 
-                return response()->json(['Status' => 'Ok', 'message'=>'Promotion Deleted']);
-            } catch (\Exception $e) {
-                return response()->json('Error:'.$e->getMessage(), 500);
-            }
+            return response()->json(['Status' => 'Ok', 'message'=>'Promotion Deleted']);
+        } catch (\Exception $e) {
+            return response()->json('Error:'.$e->getMessage(), 500);
         }
     }
 
