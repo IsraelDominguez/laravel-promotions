@@ -2,6 +2,7 @@
 
 namespace Genetsis\Promotions\Models;
 
+use Genetsis\Promotions\Services\ConsumerRewardsService;
 use Illuminate\Database\Eloquent\Model;
 
 class Qrs extends Model
@@ -20,5 +21,10 @@ class Qrs extends Model
 
     public function participation() {
         return $this->belongsTo(Participation::class, 'participation_id');
+    }
+
+    public function getQr() {
+        $cr = new ConsumerRewardsService();
+        return $cr->getQrById($this->object_id);
     }
 }

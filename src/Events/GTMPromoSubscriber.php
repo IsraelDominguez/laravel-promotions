@@ -15,7 +15,7 @@ class GTMPromoSubscriber
         GTM::sendRedeem($participation->promo->key);
     }
 
-    public function onUserWnner(PromotionParticipation $participation) {
+    public function onUserWinner(PromotionParticipation $participation) {
         GTM::sendWinnner($participation->promo->key);
     }
 
