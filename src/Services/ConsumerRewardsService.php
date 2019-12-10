@@ -17,10 +17,10 @@ class ConsumerRewardsService
     public function __construct() {
         try {
             $this->consumer_rewards = new ConsumerRewards([
-                'username' => config('promotion.consumer_rewards_username'),
-                'password' => config('promotion.consumer_rewards_password'),
-                'api' => config('promotion.consumer_rewards_api'),
-                'web' => config('promotion.consumer_rewards_web'),
+                'username' => config('promotion.consumer_rewards.username'),
+                'password' => config('promotion.consumer_rewards.password'),
+                'api' => config('promotion.consumer_rewards.api'),
+                'web' => config('promotion.consumer_rewards.web'),
             ], [
                 'logger' => app('log')->channel('stack')->getLogger()
             ]);

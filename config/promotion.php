@@ -11,10 +11,10 @@ return [
     'timezone' => 'Europe/Madrid',
 
     'consumer_rewards' => [
-        'CONSUMER_REWARDS_API' => 'https://api-consumerrewards-test.pernod-ricard-espana.com',
-        'CONSUMER_REWARDS_WEB' => 'https://consumerrewards-test.pernod-ricard-espana.com',
-        'CONSUMER_REWARDS_USERNAME' => '231705665113870',
-        'CONSUMER_REWARDS_PASSOWRD' => '2afMJr5Kk0ApHpT9lQkEefrGMAbDAJ'
+        'api' => 'https://api-consumerrewards-test.pernod-ricard-espana.com',
+        'web' => 'https://consumerrewards-test.pernod-ricard-espana.com',
+        'username' => '231705665113870',
+        'password' => '2afMJr5Kk0ApHpT9lQkEefrGMAbDAJ'
     ],
 
     'langs' => [

@@ -18,7 +18,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label>Campaign *</label>
-                <select class="select2" name="campaign_id">
+                <select class="select2" name="campaign_id" id="campaign_id">
                     <option value="">- Select -</option>
                     @foreach ($campaigns as $campaign)
                         <option value="{{$campaign->id}}"
@@ -43,7 +43,7 @@
                     @isset($promotion)
                         @foreach ($promotion->campaign->druid_app->entrypoints as $entrypoint)
                             <option value="{{$entrypoint->key}}"
-                                    @if ((old('entrypoint_id', $promotion->entrypoint_id ?? null) == $promotion->entrypoint_id))
+                                    @if ((old('entrypoint_id', $promotion->entrypoint_id ?? null) == $entrypoint->key))
                                     selected
                                 @endif
                             >{{$entrypoint->key}}</option>

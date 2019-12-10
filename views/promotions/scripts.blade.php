@@ -16,7 +16,7 @@
             @if (count($campaigns) > 1)
                 $('#campaign_id').on('change', function() {
                 var campaign_id = $('#campaign_id').val();
-                fillEntrypoints(campaign_id);
+                fillEntrypoints(campaign_id, '');
             });
             @else
                 fillEntrypoints({{$campaigns[0]->id}}, '{{$campaigns[0]->entry_point}}');
@@ -24,7 +24,7 @@
         @endif
 
         $("#submit").click(function () {
-            @if (config('promotion.front_pages_enabled') && config('front_templates_enabled'))
+            @if ((config('promotion.front_templates_enabled')) && (config('promotion.front_pages_enabled')) )
                 initial_template = $("#initial_page_template").val();
                 result_template = $("#result_page_template").val();
 
