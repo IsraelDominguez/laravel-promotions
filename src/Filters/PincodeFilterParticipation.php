@@ -42,4 +42,13 @@ class PincodeFilterParticipation extends GenericFilterParticipation implements F
             throw $e;
         }
     }
+
+    public function after(PromotionParticipationInterface $participation) {
+        parent::after($participation);
+
+        // Send Redeem Pincode Event
+        if (!empty($participation->getPincode())) {
+            event('promouser.redeem', $participation);
+        }
+    }
 }

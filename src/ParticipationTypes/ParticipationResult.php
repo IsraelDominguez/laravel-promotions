@@ -26,7 +26,7 @@ class ParticipationResult
     }
 
     /**
-     * @return mixed
+     * @return PromotionParticipation
      */
     public function getParticipation()
     {

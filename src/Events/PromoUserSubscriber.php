@@ -3,6 +3,7 @@
 use Genetsis\Promotions\Contracts\PromoUserEmailInterface;
 use Genetsis\Promotions\Contracts\PromoUserInterface;
 use Genetsis\Promotions\Models\User;
+use Genetsis\Promotions\ParticipationTypes\PromotionParticipation;
 
 class PromoUserSubscriber
 {
@@ -36,7 +37,6 @@ class PromoUserSubscriber
         }
     }
 
-
     public function subscribe($events)
     {
         $events->listen(
@@ -45,7 +45,6 @@ class PromoUserSubscriber
         );
 
         $events->listen('promouser.created', PromoUserSubscriber::class.'@onUserCreated');
-
     }
 
 }

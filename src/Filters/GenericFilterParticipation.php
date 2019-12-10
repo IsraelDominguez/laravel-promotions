@@ -41,6 +41,9 @@ class GenericFilterParticipation implements FilterParticipationInterface, AfterF
 
         // Consume Extra Participations is necessary
         $this->extra_participations->consumeUserExtraParticipation($participation);
+
+        // Send User Participation Event
+        event('promouser.participated', $participation);
     }
 
     public function before(PromotionParticipationInterface $participation) {
