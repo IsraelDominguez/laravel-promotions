@@ -5,6 +5,7 @@ namespace Genetsis\Promotions\Models;
 use Carbon\Carbon;
 use Genetsis\Admin\Models\Entrypoint;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\View;
 
 class Promotion extends Model
 {
@@ -85,6 +86,17 @@ class Promotion extends Model
         } else {
             return Carbon::now(new \DateTimeZone(config('promotion.timezone', config('app.timezone'))))->greaterThan(Carbon::createFromFormat('Y-m-d H:i:s', $this->starts, new \DateTimeZone(config('promotion.timezone', config('app.timezone')))));
         }
+    }
+
+    public function getContentTemplate(string $page, $data = []) {
+
+        $tmp = $this->templates()->page($page)->first();
+        if (!empty($tmp)) {
+            $content = view((View::exists('templatess.' . $tmp->template)) ? 'templates.' . $tmp->template : 'promotion::templates.' . $tmp->template,
+                array_merge(json_decode($tmp->content, true) ?? [], $data, ['page' => $page, 'promotion' => $this])
+            )->render();
+        }
+        return $content ?? '';
     }
 
     /**
