@@ -11,6 +11,7 @@ class ParticipationResult
     protected $status;
     protected $result;
     protected $message;
+    protected $exception;
 
     const STATUS_OK = 200;
     const STATUS_KO = 500;
@@ -94,6 +95,24 @@ class ParticipationResult
     public function setMessage($message)
     {
         $this->message = $message;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getException()
+    {
+        return $this->exception;
+    }
+
+    /**
+     * @param mixed $exception
+     * @return ParticipationResult
+     */
+    public function setException($exception)
+    {
+        $this->exception = $exception;
         return $this;
     }
 
