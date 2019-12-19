@@ -1,12 +1,17 @@
 <?php namespace Genetsis\Promotions\Services;
 
+use Carbon\Carbon;
 use Genetsis\Promotions\Contracts\PromotionParticipationInterface;
 use Genetsis\Promotions\Models\ExtraParticipation;
+use Genetsis\Promotions\Models\Promotion;
 use Illuminate\Support\Facades\Log;
 
 class ExtraParticipationService
 {
+    protected $tz;
+
     public function __construct() {
+        $this->tz = new \DateTimeZone(config('promotion.timezone', config('app.timezone')));
     }
 
     /**
@@ -42,7 +47,7 @@ class ExtraParticipationService
                 Log::debug('Consume Extra Participations after participate');
                 if ($this->userCountExtraParticipations($participation->user_id, $participation->promo) >= $participation->promo->max_user_participations) {
                     if ($extra_participation = ExtraParticipation::where('promo_id', $participation->promo->id)->where('user_id', $participation->user_id)->where('used', null)->first()) {
-                        $extra_participation->used = Carbon::now();
+                        $extra_participation->used = Carbon::now($this->tz);
                         $extra_participation->save();
                     }
                 }
@@ -60,7 +65,7 @@ class ExtraParticipationService
      * @param \Genetsis\Promotions\Models\Promotion $promotion
      * @return int
      */
-    public function userCountExtraParticipations($user_id, \Genetsis\Promotions\Models\Promotion $promotion) {
+    public function userCountExtraParticipations($user_id, Promotion $promotion) {
         return ExtraParticipation::where('promo_id', $promotion->id)->where('user_id', $user_id)->where('used', null)->count();
     }
 

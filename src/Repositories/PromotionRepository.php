@@ -9,14 +9,34 @@ use Genetsis\Promotions\Services\PromotionService;
 
 class PromotionRepository {
 
-    public function checkUserHasExtraParticipations($user_id, Promotion $promotion) {
-        if (ExtraParticipation::where('promo_id', $promotion->id)->where('user_id', $user_id)->where('used', null)->count()>0) {
-            return true;
-        }
-        return false;
+    protected $tz;
+
+    public function __construct()
+    {
+        $this->tz = new \DateTimeZone(config('promotion.timezone', config('app.timezone')));
     }
 
-    public function getParticipationsByExtraField($promo_id, $key, $value = '') {
+    /**
+     * Check if user has Extra Participations
+     * @param string $user_id
+     * @param Promotion $promotion
+     * @return bool
+     */
+    public function checkUserHasExtraParticipations(string $user_id, Promotion $promotion) {
+        return ExtraParticipation::where('promo_id', $promotion->id)
+                ->where('user_id', $user_id)
+                ->where('used', null)
+                ->count() > 0;
+    }
+
+    /**
+     * Get Participations by Extra Field
+     * @param string $promo_id
+     * @param string $key
+     * @param string $value
+     * @return mixed
+     */
+    public function getParticipationsByExtraField(string $promo_id, string $key, $value = '') {
 
         return Participation::whereHas('extraFields', function ($query) use ($key, $value) {
             $query->where('key', $key);
@@ -25,22 +45,28 @@ class PromotionRepository {
         })->where('promo_id', $promo_id)->get();
     }
 
+    /**
+     * Get First promotion by Campaign key
+     *
+     * @param $campaign_key
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function getPromotionActiveByCampaignKey($campaign_key) {
-        try {
-            $campaign = Campaign::where('key', $campaign_key)->firstOrFail();
-            return $this->getPromotionActiveByCampaign($campaign);
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        $campaign = Campaign::where('key', $campaign_key)->firstOrFail();
+
+        return $this->getPromotionActiveByCampaign($campaign);
     }
 
+    /**
+     * Get Promotion by id
+     *
+     * @param $campaign_id
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function getPromotionActiveByCampaignId($campaign_id) {
-        try {
-            $campaign = Campaign::findOrFail($campaign_id);
-            return $this->getPromotionActiveByCampaign($campaign);
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        $campaign = Campaign::findOrFail($campaign_id);
+
+        return $this->getPromotionActiveByCampaign($campaign);
     }
 
     /**
@@ -66,21 +92,30 @@ class PromotionRepository {
         }
     }
 
+    /**
+     * Get promotion by key, check if active
+     * @param $promotion_key
+     * @return mixed
+     */
     public function getPromotionActiveByKey($promotion_key) {
-        try {
-            return Promotion::where('starts','<=',now())->where('ends','>=',now())->where('key', $promotion_key)->firstOrFail();
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        return Promotion::where('key', $promotion_key)
+            ->where('starts', '<=', now($this->tz))
+            ->where('ends', '>=', now($this->tz))
+            ->firstOrFail();
     }
 
 
+    /**
+     * Get First promotion active by Campaign
+     * @param Campaign $campaign
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Relations\HasMany
+     */
     private function getPromotionActiveByCampaign(Campaign $campaign) {
-        try {
-            return $campaign->promotions()->where('starts','<=',now())->where('ends','>=',now())->firstOrFail();
-        } catch (\Exception $e) {
-            throw $e;
-        }
+
+        return $campaign->promotions()
+            ->where('starts', '<=', now($this->tz))
+            ->where('ends', '>=', now($this->tz))
+            ->firstOrFail();
     }
 
 
@@ -92,10 +127,10 @@ class PromotionRepository {
      * @throws \Exception
      */
     public function getPromotionsActiveByCampaign(Campaign $campaign) {
-        try {
-            return $campaign->promotions()->where('starts','<=',now())->where('ends','>=',now())->get();
-        } catch (\Exception $e) {
-            throw $e;
-        }
+
+        return $campaign->promotions()
+            ->where('starts', '<=', now($this->tz))
+            ->where('ends', '>=', now($this->tz))
+            ->get();
     }
 }
