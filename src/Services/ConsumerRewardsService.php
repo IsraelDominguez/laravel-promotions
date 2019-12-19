@@ -30,14 +30,13 @@ class ConsumerRewardsService
     }
 
     /**
+     * Get Qr by Id
+     *
      * @param string $qr_id
      * @return \ConsumerRewards\SDK\Transfer\Qr
-     * @throws \Exception
-     * @throws ConsumerRewardsException
-     * @throws RedeemQrException
-     * @throws InvalidQrException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getQrById($qr_id) {
+    public function getQrById(string $qr_id) {
 
         try {
             $status = $this->consumer_rewards->getMarketing()->checkById($qr_id);
