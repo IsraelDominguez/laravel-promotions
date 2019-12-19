@@ -7,10 +7,11 @@
             <td>Date</td>
             <td>Origin</td>
             @if ($promotion->has_mgm) <td>Sponsor</td> @endif
-            <td>Status</td>
             @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::PINCODE_TYPE) <td>Pincode</td> @endif
             @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::MOMENT_TYPE) <td>Moment</td><td>Code</td> @endif
             @if ($promotion->type->code == \Genetsis\Promotions\Models\PromoType::QRS_TYPE) <td>QR</td> @endif
+            <td>Status</td>
+            @if (count($promotion->extra_fields)>0) <td>Data</td> @endif
         </tr>
         </thead>
     </table>

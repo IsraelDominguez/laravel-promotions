@@ -30,6 +30,10 @@
             $("#submit").click(function() {
                 $("#form").submit();
             });
+
+            @if ($message = Session::get('success'))
+            notify('{{ $message }}');
+            @endif
         });
     </script>
 @endpush

@@ -1,13 +1,13 @@
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-6">
         <div class="form-group">
             <label>Name</label>
             <input type="text" class="form-control" name="name" id="name" value="{{ old('name', $campaign->name ?? '') }}">
             <i class="form-group__bar"></i>
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-6">
         <div class="form-group">
             <label for="key">Key</label>
             <input type="text" class="form-control" name="key" id="key" value="{{ old('key', $campaign->key ?? null) }}">
@@ -36,7 +36,7 @@
             <input type="hidden" name="client_id" value="{{(count($druid_apps)==1) ? (empty($campaign->client_id) ? $druid_apps->pop()->client_id : $campaign->client_id) : ''}}"/>
         @endif
     @else
-        <div class="col-md-6">
+        <div class="col-6">
             <div class="form-group">
                 <label for="entry_point">Entry Point</label>
                 <input type="text" class="form-control" name="entry_point" id="entry_point" value="{{ old('key', $campaign->entry_point ?? null) }}">
@@ -44,6 +44,13 @@
             </div>
         </div>
     @endif
+    <div class="col-6">
+        <div class="form-group">
+            <label>Max User Participations</label>
+            <input type="text" class="form-control number" maxlength="5" name="max_user_participations" id="max_user_participations" value="{{ old('max_user_participations', $campaign->max_user_participations ?? '') }}">
+            <i class="form-group__bar"></i>
+        </div>
+    </div>
 </div>
 
 <div class="row">

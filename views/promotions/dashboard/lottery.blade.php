@@ -71,7 +71,14 @@
         </div>
     </div>
 
-    <div class="col-md-12">
+    <div class="col-12">
+        <div class="form-group">
+            <label>Final Winners (comma separated)</label>
+            <input type="text" class="form-control" name="winners" id="winners" value="{{ old('winners', 1) }}" required>
+            <i class="form-group__bar"></i>
+        </div>
+    </div>
+    <div class="col-12">
         <ul class="nav justify-content-center">
             <li class="nav-item">
                 <a class="btn btn-success btn--icon-text waves-effect" id="send-winners" href="#"><i class="zmdi zmdi-refresh"></i> Send Winners</a>
@@ -79,7 +86,6 @@
         </ul>
     </div>
 </div>
-
 
 <style>
     .table-selected {
@@ -103,13 +109,15 @@
                 searching: false
             });
 
-            $('#data-winners tbody').on( 'click', 'tr', function () {
-                $(this).toggleClass('table-selected');
-            } );
 
-            $('#data-reserves tbody').on( 'click', 'tr', function () {
-                $(this).toggleClass('table-selected');
-            } );
+
+            // $('#data-winners tbody').on( 'click', 'tr', function () {
+            //     $(this).toggleClass('table-selected');
+            // } );
+            //
+            // $('#data-reserves tbody').on( 'click', 'tr', function () {
+            //     $(this).toggleClass('table-selected');
+            // } );
 
             // $('#send-winners').click( function () {
             //     var winners_selected = table_winners.rows('.table-selected').data().concat(table_reserves.rows('.table-selected').data());

@@ -45,8 +45,8 @@ class CampaignsController extends AdminController
                 return '
                     <div class="actions" style="width:65px">
                     <a class="actions__item zmdi zmdi-eye" href="' . route('campaigns.show', $campaign->id) . '"></a>
-                    <a class="actions__item zmdi zmdi-edit" href="' . route('campaigns.edit', $campaign->id) . '"></a>                    
-                    </div>                        
+                    <a class="actions__item zmdi zmdi-edit" href="' . route('campaigns.edit', $campaign->id) . '"></a>
+                    </div>
                     ';
             })
             ->addColumn('delete', 'promotion::partials.deletetable')
@@ -76,13 +76,7 @@ class CampaignsController extends AdminController
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'key' => 'required|unique:promo_campaign|alpha_dash|max:250',
-            'entry_point' => 'nullable|alpha_dash|max:100',
-            'name' => 'unique:promo_campaign|required',
-            'ends' => 'nullable|after:starts',
-            'client_id' => 'nullable|exists:druid_apps,client_id'
-        ]);
+        $request->validate($this->getValidations());
 
         $campaign = Campaign::create($request->all());
 
@@ -129,24 +123,38 @@ class CampaignsController extends AdminController
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'key' => ['required', 'alpha_dash', 'max:250',
-                Rule::unique('promo_campaign')->ignore($id)],
-            'entry_point' => 'nullable|alpha_dash|max:200',
-            'name' => ['required',
-                        Rule::unique('promo_campaign')->ignore($id)
-            ],
-            'ends' => 'nullable|after:starts',
-            'client_id' => 'nullable|exists:druid_apps,client_id'
-        ]);
+        $request->validate($this->getValidations($id));
 
         $campaign = Campaign::findOrFail($id);
 
         $campaign->update($request->all());
 
-        return redirect()->route('campaigns.home')
+        return redirect()->route('campaigns.edit', $id)
             ->with('success','Campaign updated successfully');
     }
+
+    /**
+     * @param $id
+     * @return array all validations
+     */
+    private function getValidations($id = null) {
+        $validations = [
+            'key' => 'required|unique:promo_campaign|alpha_dash|max:250',
+            'entry_point' => 'nullable|alpha_dash|max:200',
+            'name' => 'unique:promo_campaign|required',
+            'ends' => 'nullable|after:starts',
+            'client_id' => 'nullable|exists:druid_apps,client_id',
+            'max_user_participations' => 'nullable|digits_between:1,99999',
+        ];
+
+        if ($id != null) {
+            $validations['name'] = ['required', Rule::unique('promo_campaign')->ignore($id), 'max:50'];
+            $validations['key'] = ['required', Rule::unique('promo_campaign')->ignore($id),'alpha_dash', 'max:50'];
+        }
+
+        return $validations;
+    }
+
 
     /**
      * Remove the specified resource from storage.

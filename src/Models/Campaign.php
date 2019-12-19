@@ -15,7 +15,7 @@ class Campaign extends Model
      */
     protected $table = 'promo_campaign';
 
-    protected $fillable = ['name', 'starts', 'ends', 'key', 'entry_point', 'client_id'];
+    protected $fillable = ['name', 'starts', 'ends', 'key', 'entry_point', 'client_id','max_user_participations'];
 
     /**
      * Get the promotions for a campaign.

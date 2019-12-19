@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddPromoLang extends Migration
+class AddCampaignLimits extends Migration
 {
     /**
      * Run the migrations.
@@ -15,8 +15,8 @@ class AddPromoLang extends Migration
     {
         Schema::disableForeignKeyConstraints();
 
-        Schema::table('promo', function (Blueprint $table) {
-            $table->string('lang', 10)->nullable();
+        Schema::table('promo_campaign', function (Blueprint $table) {
+            $table->integer('max_user_participations')->unsigned()->nullable();
         });
 
     }
@@ -30,8 +30,8 @@ class AddPromoLang extends Migration
     public function down()
     {
         Schema::disableForeignKeyConstraints();
-        Schema::table('promo', function($table) {
-            $table->dropColumn('lang');
+        Schema::table('promo_campaign', function($table) {
+            $table->dropColumn('max_user_participations', 50);
         });
     }
 }

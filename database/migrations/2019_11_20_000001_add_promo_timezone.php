@@ -31,7 +31,7 @@ class AddPromoTimezone extends Migration
     {
         Schema::disableForeignKeyConstraints();
         Schema::table('promo', function($table) {
-            $table->string('timezone', 50);
+            $table->dropColumn('timezone');
         });
     }
 }

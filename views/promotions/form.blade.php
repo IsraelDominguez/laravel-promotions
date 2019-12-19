@@ -113,7 +113,7 @@
     <div class="col-6">
         <div class="form-group">
             <label>Max User Participations</label>
-            <input type="text" class="form-control number" maxlength="2" name="max_user_participations" id="max_user_participations" value="{{ old('max_user_participations', $promotion->max_user_participations ?? '1') }}">
+            <input type="text" class="form-control number" maxlength=5" name="max_user_participations" id="max_user_participations" value="{{ old('max_user_participations', $promotion->max_user_participations ?? '1') }}">
             <i class="form-group__bar"></i>
         </div>
     </div>
