@@ -57,7 +57,7 @@ class PromotionsController extends AdminController
                     <a class="actions__item zmdi zmdi-eye" href="' . route('promotions.show', $promotion->id) . '"></a>
                     <a class="actions__item zmdi zmdi-edit" href="' . route('promotions.edit', $promotion->id) . '"></a>
                     <a class="actions__item zmdi zmdi-link" href="' . url($promotion->key) . '" target="_blank"></a>
-                    </div>                        
+                    </div>
                     ';
             })
             ->addColumn('delete', 'promotion::partials.deletetable')
@@ -249,7 +249,7 @@ class PromotionsController extends AdminController
             'name' => 'required|unique:promo|max:50',
             'campaign_id' => ['required','integer'],
             'type_id' => 'required|integer',
-            'max_user_participations' => 'nullable|digits_between:1,99',
+            'max_user_participations' => 'nullable|digits_between:1,99999',
             'max_user_participations_by_day' => 'nullable|digits_between:1,99',
             'starts' => 'required',
             'ends' => 'nullable|after:starts',
