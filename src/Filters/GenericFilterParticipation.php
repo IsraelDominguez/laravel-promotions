@@ -55,8 +55,12 @@ class GenericFilterParticipation implements FilterParticipationInterface, AfterF
             $this->promotion_service->userCanParticipate($participation->getUserId(), $participation->promo);
 
             if (($participation->promo->has_mgm) && ($participation->getSponsor())) {
-                $promo_user = \Genetsis\Promotions\Models\User::where('sponsor_code', $participation->getSponsor())->firstOrFail();
-                $participation->setSponsor($promo_user->id);
+                try {
+                    $promo_user = \Genetsis\Promotions\Models\User::where('sponsor_code', $participation->getSponsor())->firstOrFail();
+                    $participation->setSponsor($promo_user->id);
+                } catch (ModelNotFoundException $e) {
+                    $participation->setSponsor('');
+                }
             }
 
             //Check Valid Extra Fields Defined in a Participation
