@@ -1,6 +1,5 @@
 <?php namespace Genetsis\Promotions\Events;
 
-
 use Genetsis\Admin\Utils\GTM;
 use Genetsis\Promotions\ParticipationTypes\PromotionParticipation;
 
@@ -8,26 +7,29 @@ class GTMPromoSubscriber
 {
 
     public function onUserGetQr(PromotionParticipation $participation) {
-        GTM::sendGetQr($participation->promo->key);
+        $event = \App::make('GtmEvents');
+        $event->send(GTM\EventFactory::viewPage($participation->promo->key));
     }
 
     public function onUserRedeem(PromotionParticipation $participation) {
-        GTM::sendRedeem($participation->promo->key);
+        $event = \App::make('GtmEvents');
+        $event->send(GTM\EventFactory::redeem($participation->promo->key));
     }
 
     public function onUserWinner(PromotionParticipation $participation) {
-        GTM::sendWinnner($participation->promo->key);
+        $event = \App::make('GtmEvents');
+        $event->send(GTM\EventFactory::winnner($participation->promo->key));
     }
 
     public function onUserReferred(PromotionParticipation $participation) {
-        GTM::sendReferred($participation->getSponsor());
+        $event = \App::make('GtmEvents');
+        $event->send(GTM\EventFactory::referred($participation->getSponsor()));
     }
 
     public function onUserParticipation(PromotionParticipation $participation) {
-
-        GTM::sendParticipation($participation->promo->key);
+        $event = \App::make('GtmEvents');
+        $event->send(GTM\EventFactory::participation($participation->promo->key));
     }
-
 
     public function subscribe($events)
     {
