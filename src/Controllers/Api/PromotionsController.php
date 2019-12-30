@@ -1,5 +1,8 @@
 <?php namespace Genetsis\Promotions\Controllers\Api;
 
+use Genetsis\Admin\Utils\GTM\EventFactory;
+use Genetsis\Admin\Utils\GTM\GtmEvent;
+use Genetsis\Admin\Utils\GTM\GtmServer;
 use Genetsis\Promotions\Models\Participation;
 use Genetsis\Promotions\Models\Promotion;
 use Genetsis\Promotions\Models\User;
@@ -28,4 +31,34 @@ class PromotionsController extends ApiController
         }
         return $this->sendResponse(compact('winners', 'reserves'), 'Winners');
     }
+
+    public function sendWinners(int $promotion_id, Request $request) {
+        try {
+            $winners = Participation::where('promo_id', $promotion_id)
+                ->whereIn('id', $request->input('winners', []))->get();
+
+            $winners->each(function (Participation $participation){
+                $participation->update(['winner'=> Participation::WINNERS]);
+
+                $gtm = new GtmServer();
+                $gtm->send(EventFactory::winner($participation->promo->key)
+                        ->setOid($participation->user->id)
+                        ->setDocumentPath('/winner')
+                        ->setDocumentTitle('User Win')
+
+                );
+            });
+
+            if ($winners->count() > 0) {
+                Participation::where('promo_id', $promotion_id)->whereIn('winner', [Participation::IS_WINNER, Participation::IS_RESERVE])->update(['winner' => null]);
+            }
+
+        } catch (\InvalidArgumentException $e) {
+            return $this->sendError($e->getMessage(), 'Winners Sends Error', 200);
+        } catch (\Exception $e) {
+            return $this->sendError('Error', $e->getMessage());
+        }
+        return $this->sendResponse(compact('winners'), 'Winners Send');
+    }
+
 }

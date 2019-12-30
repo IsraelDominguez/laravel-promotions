@@ -20,6 +20,7 @@ Route::group(['middleware' => ['web']], function () {
             Route::get('{id}/moments', 'Genetsis\Promotions\Controllers\PromotionsController@moments');
             Route::get('{id}/pincodes', 'Genetsis\Promotions\Controllers\PromotionsController@pincodes');
             Route::get('{id}/winners', 'Genetsis\Promotions\Controllers\Api\PromotionsController@winners')->name('promotion.winners');
+            Route::get('{id}/sendwinners', 'Genetsis\Promotions\Controllers\Api\PromotionsController@sendWinners')->name('promotion.sendwinners');
         });
     });
 

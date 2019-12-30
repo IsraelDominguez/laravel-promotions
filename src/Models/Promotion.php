@@ -71,9 +71,12 @@ class Promotion extends Model
         return $this->hasMany(Templates::class, 'promo_id');
     }
 
+    public function finalWinners() {
+        return $this->hasMany(Participation::class, 'promo_id')->winner(Participation::WINNERS);
+    }
+
     public function winners() {
         return $this->hasMany(Participation::class, 'promo_id')->winner(Participation::IS_WINNER);
-        //return $this->participations()->winner(Participation::IS_WINNER);
     }
 
     public function reserves() {

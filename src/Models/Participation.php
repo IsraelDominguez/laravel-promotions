@@ -9,6 +9,7 @@ class Participation extends Model
 
     const IS_WINNER = 'winner';
     const IS_RESERVE = 'reserve';
+    const WINNERS = 'final_win';
 
     /**
      * The table associated with the model.
