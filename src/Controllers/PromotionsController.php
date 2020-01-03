@@ -246,14 +246,14 @@ class PromotionsController extends AdminController
      */
     private function getValidations(Request $request, $id) {
         $validations = [
-            'name' => 'required|unique:promo|max:50',
+            'name' => 'required|unique:promo|max:250',
             'campaign_id' => ['required','integer'],
             'type_id' => 'required|integer',
             'max_user_participations' => 'nullable|digits_between:1,99999',
             'max_user_participations_by_day' => 'nullable|digits_between:1,99',
             'starts' => 'required',
             'ends' => 'nullable|after:starts',
-            'key' => 'required|unique:promo|alpha_dash|max:50',
+            'key' => 'required|unique:promo|alpha_dash|max:250',
             'entrypoint_id' => 'nullable|alpha_dash|max:200',
             'has_mgm' => 'nullable',
             'is_public' => 'nullable',
@@ -271,8 +271,8 @@ class PromotionsController extends AdminController
 
         // Edit Promotion
         if ($id != null) {
-            $validations['name'] = ['required', Rule::unique('promo')->ignore($id), 'max:50'];
-            $validations['key'] = ['required', Rule::unique('promo')->ignore($id),'alpha_dash', 'max:50'];
+            $validations['name'] = ['required', Rule::unique('promo')->ignore($id), 'max:250'];
+            $validations['key'] = ['required', Rule::unique('promo')->ignore($id),'alpha_dash', 'max:250'];
         }
 
         if (config('promotion.front_share_enabled') && config('front_templates_enabled')) {
