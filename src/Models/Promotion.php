@@ -95,7 +95,7 @@ class Promotion extends Model
 
         $tmp = $this->templates()->page($page)->first();
         if (!empty($tmp)) {
-            $content = view((View::exists('templatess.' . $tmp->template)) ? 'templates.' . $tmp->template : 'promotion::templates.' . $tmp->template,
+            $content = view((View::exists('templates.' . $tmp->template)) ? 'templates.' . $tmp->template : 'promotion::templates.' . $tmp->template,
                 array_merge(json_decode($tmp->content, true) ?? [], $data, ['page' => $page, 'promotion' => $this])
             )->render();
         }
