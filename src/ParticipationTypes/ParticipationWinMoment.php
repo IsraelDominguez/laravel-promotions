@@ -46,11 +46,14 @@ class ParticipationWinMoment extends PromotionParticipation implements Promotion
 
             $this->after($this);
 
+            $result_participation = ParticipationResult::i()->setParticipation($this)->setStatus(ParticipationResult::STATUS_OK)->setResult($participation_result);
         } catch (\Exception $e) {
-            return ParticipationResult::i()->setParticipation($this)->setStatus(ParticipationResult::STATUS_KO)->setMessage($e->getMessage())->setException($e);
+            $result_participation = ParticipationResult::i()->setParticipation($this)->setStatus(ParticipationResult::STATUS_KO)->setMessage($e->getMessage())->setException($e);
         }
 
-        return ParticipationResult::i()->setParticipation($this)->setStatus(ParticipationResult::STATUS_OK)->setResult($participation_result);
+        // Send User Participation Event
+        event('promouser.participated', $result_participation);
+        return $result_participation;
     }
 
 

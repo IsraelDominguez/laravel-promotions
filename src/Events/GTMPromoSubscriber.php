@@ -1,6 +1,7 @@
 <?php namespace Genetsis\Promotions\Events;
 
 use Genetsis\Admin\Utils\GTM;
+use Genetsis\Promotions\ParticipationTypes\ParticipationResult;
 use Genetsis\Promotions\ParticipationTypes\PromotionParticipation;
 
 class GTMPromoSubscriber
@@ -26,9 +27,9 @@ class GTMPromoSubscriber
         $event->send(GTM\EventFactory::referred($participation->getSponsor()));
     }
 
-    public function onUserParticipation(PromotionParticipation $participation) {
+    public function onUserParticipation(ParticipationResult $participation_result) {
         $event = \App::make('GtmEvents');
-        $event->send(GTM\EventFactory::participation($participation->promo->key));
+        $event->send(GTM\EventFactory::participation($participation_result->getParticipation()->promo->key));
     }
 
     public function subscribe($events)

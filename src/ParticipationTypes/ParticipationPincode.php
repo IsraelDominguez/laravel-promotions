@@ -60,13 +60,16 @@ class ParticipationPincode extends PromotionParticipation implements PromotionPa
 
             $this->after($this);
 
+            $result_participation =  ParticipationResult::i()->setParticipation($this)->setStatus(ParticipationResult::STATUS_OK)->setResult($participation_result);
         } catch (InvalidPincodeException $e) {
-            return ParticipationResult::i()->setParticipation($this)->setStatus(ParticipationResult::STATUS_KO)->setMessage($e->getMessage())->setResult(ParticipationResult::RESULT_INVALID_PINCODE)->setException($e);
+            $result_participation = ParticipationResult::i()->setParticipation($this)->setStatus(ParticipationResult::STATUS_KO)->setMessage($e->getMessage())->setResult(ParticipationResult::RESULT_INVALID_PINCODE)->setException($e);
         } catch (\Exception $e) {
-            return ParticipationResult::i()->setParticipation($this)->setStatus(ParticipationResult::STATUS_KO)->setMessage($e->getMessage())->setException($e);
+            $result_participation = ParticipationResult::i()->setParticipation($this)->setStatus(ParticipationResult::STATUS_KO)->setMessage($e->getMessage())->setException($e);
         }
 
-        return ParticipationResult::i()->setParticipation($this)->setStatus(ParticipationResult::STATUS_OK)->setResult($participation_result);
+        // Send User Participation Event
+        event('promouser.participated', $result_participation);
+        return $result_participation;
     }
 
 

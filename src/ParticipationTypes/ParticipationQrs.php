@@ -56,12 +56,16 @@ class ParticipationQrs extends PromotionParticipation implements PromotionPartic
             $this->after($this);
 
             \Log::info(sprintf('User %s participate in a QRs Promotion %s', $this->getUserId(), $this->promo->name));
+
+            $participation_result = ParticipationResult::i()->setParticipation($this)->setStatus(ParticipationResult::STATUS_OK);
         } catch (\Exception $e) {
             \Log::error($e->getMessage());
-            return ParticipationResult::i()->setParticipation($this)->setStatus(ParticipationResult::STATUS_KO)->setMessage($e->getMessage())->setException($e);
+            $participation_result = ParticipationResult::i()->setParticipation($this)->setStatus(ParticipationResult::STATUS_KO)->setMessage($e->getMessage())->setException($e);
         }
 
-        return ParticipationResult::i()->setParticipation($this)->setStatus(ParticipationResult::STATUS_OK);
+        // Send User Participation Event
+        event('promouser.participated', $participation_result);
+        return $participation_result;
     }
 }
 
