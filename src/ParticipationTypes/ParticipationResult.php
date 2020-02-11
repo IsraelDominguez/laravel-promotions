@@ -22,10 +22,6 @@ class ParticipationResult
     public function __construct() {
     }
 
-    public static function i() {
-        return new ParticipationResult();
-    }
-
     /**
      * @return PromotionParticipation
      */

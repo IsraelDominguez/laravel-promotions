@@ -23,10 +23,16 @@ class ParticipationSorteo extends PromotionParticipation implements PromotionPar
 
             \Log::info(sprintf('User %s participate in a Sorteo Promotion %s', $this->getUserId(), $this->promo->name));
 
-            $participation_result =  ParticipationResult::i()->setParticipation($this)->setStatus(ParticipationResult::STATUS_OK);
+            $participation_result =  (new ParticipationResult)
+                                        ->setParticipation($this)
+                                        ->setStatus(ParticipationResult::STATUS_OK);
         } catch (\Exception $e) {
             \Log::error($e->getMessage());
-            $participation_result = ParticipationResult::i()->setParticipation($this)->setStatus(ParticipationResult::STATUS_KO)->setMessage($e->getMessage())->setException($e);
+            $participation_result = (new ParticipationResult)
+                                        ->setParticipation($this)
+                                        ->setStatus(ParticipationResult::STATUS_KO)
+                                        ->setMessage($e->getMessage())
+                                        ->setException($e);
         }
 
         // Send User Participation Event

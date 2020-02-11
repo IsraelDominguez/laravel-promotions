@@ -39,16 +39,6 @@ class User extends Model implements PromoUserInterface, PromoUserEmailInterface,
         return $this->belongsToMany(ExtraParticipation::class);
     }
 
-
-    /**
-     * Instancia static to Promo Users
-     * @return EventData
-     */
-    public static function i(){
-        return new User();
-    }
-
-
     public function setId($value)
     {
         $this->attributes['id'] = $value;
@@ -93,7 +83,7 @@ class User extends Model implements PromoUserInterface, PromoUserEmailInterface,
     {
         return $this->photo;
     }
-    
+
     public function setPhoto($photo)
     {
         $this->photo = $photo;
