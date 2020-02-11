@@ -53,6 +53,9 @@ class PromotionsController extends ApiController
                 Participation::where('promo_id', $promotion_id)->whereIn('winner', [Participation::IS_WINNER, Participation::IS_RESERVE])->update(['winner' => null]);
             }
 
+            // Send Winners Event
+            event('promouser.sorteo-winners', $promotion_id);
+
         } catch (\InvalidArgumentException $e) {
             return $this->sendError($e->getMessage(), 'Winners Sends Error', 200);
         } catch (\Exception $e) {
