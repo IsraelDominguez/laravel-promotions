@@ -64,6 +64,9 @@ class ParticipationPincode extends PromotionParticipation implements PromotionPa
                                         ->setParticipation($this)
                                         ->setStatus(ParticipationResult::STATUS_OK)
                                         ->setResult($participation_result);
+
+            event('promouser.redeem', $result_participation);
+
         } catch (InvalidPincodeException $e) {
             $result_participation = (new ParticipationResult)->setParticipation($this)->setStatus(ParticipationResult::STATUS_KO)->setMessage($e->getMessage())->setResult(ParticipationResult::RESULT_INVALID_PINCODE)->setException($e);
         } catch (\Exception $e) {

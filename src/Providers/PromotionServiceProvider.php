@@ -1,5 +1,6 @@
 <?php namespace Genetsis\Promotions\Providers;
 
+use App\Http\Middleware\PromotionActiveByCampaign;
 use Genetsis\Promotions\Commands\InstallPromotions;
 use Genetsis\Promotions\Events\PromoUserSubscriber;
 use Genetsis\Promotions\Middleware\PromotionActive;
@@ -36,6 +37,7 @@ class PromotionServiceProvider extends ServiceProvider
         Storage::disk('local')->putFileAs('samples', new File(__DIR__.'/../../config/pincodes_sample.csv'), 'pincodes_sample.csv');
 
         app('router')->aliasMiddleware('promotion-active', PromotionActive::class);
+        app('router')->aliasMiddleware('promotion-active-campaign', PromotionActiveByCampaign::class);
 
         if ($this->app->runningInConsole()) {
             $this->publishes([

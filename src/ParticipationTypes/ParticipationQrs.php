@@ -61,6 +61,11 @@ class ParticipationQrs extends PromotionParticipation implements PromotionPartic
                                         ->setParticipation($this)
                                         ->setStatus(ParticipationResult::STATUS_OK);
 
+            // Send QR promotion generated
+            if (!empty($this->rewards)) {
+                event('promouser.getqr', $participation_result);
+            }
+
         } catch (\Exception $e) {
             \Log::error($e->getMessage());
             $participation_result = (new ParticipationResult)

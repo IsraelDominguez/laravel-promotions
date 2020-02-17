@@ -50,6 +50,14 @@ class ParticipationWinMoment extends PromotionParticipation implements Promotion
                                         ->setParticipation($this)
                                         ->setStatus(ParticipationResult::STATUS_OK)
                                         ->setResult($participation_result);
+
+            if ($participation_result == ParticipationResult::RESULT_WIN) {
+                // Send Winner Event
+                event('promouser.winner', $result_participation);
+            } else {
+                // Send Not Winner Event
+                event('promouser.notwinner', $result_participation);
+            }
         } catch (\Exception $e) {
             $result_participation = (new ParticipationResult)->setParticipation($this)->setStatus(ParticipationResult::STATUS_KO)->setMessage($e->getMessage())->setException($e);
         }

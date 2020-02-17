@@ -6,7 +6,7 @@
         <div class="col-xs-12 col-md-6">
             <div class="form-group">
                 <label>Import File (csv) <a href="{{route('download-sample', ['file' => 'pincodes_sample'])}}" target="_blank">download sample</a></label>
-                <input type="file" class="form-control" name="pincodes_file" id="pincodes_file" accept="csv">
+                <input type="file" class="form-control" name="pincodes_file" id="pincodes_file" accept="text/csv">
                 <i class="form-group__bar"></i>
             </div>
         </div>

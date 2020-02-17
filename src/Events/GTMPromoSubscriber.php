@@ -7,19 +7,19 @@ use Genetsis\Promotions\ParticipationTypes\PromotionParticipation;
 class GTMPromoSubscriber
 {
 
-    public function onUserGetQr(PromotionParticipation $participation) {
+    public function onUserGetQr(ParticipationResult $participation_result) {
         $event = \App::make('GtmEvents');
-        $event->send(GTM\EventFactory::viewPage($participation->promo->key));
+        $event->send(GTM\EventFactory::getQr($participation_result->getParticipation()->promo->key));
     }
 
-    public function onUserRedeem(PromotionParticipation $participation) {
+    public function onUserRedeem(ParticipationResult $participation_result) {
         $event = \App::make('GtmEvents');
-        $event->send(GTM\EventFactory::redeem($participation->promo->key));
+        $event->send(GTM\EventFactory::redeem($participation_result->getParticipation()->promo->key));
     }
 
-    public function onUserWinner(PromotionParticipation $participation) {
+    public function onUserWinner(ParticipationResult $participation_result) {
         $event = \App::make('GtmEvents');
-        $event->send(GTM\EventFactory::winnner($participation->promo->key));
+        $event->send(GTM\EventFactory::winnner($participation_result->getParticipation()->promo->key));
     }
 
     public function onUserReferred(PromotionParticipation $participation) {

@@ -17,14 +17,6 @@ class WinMomentFilterParticipation extends GenericFilterParticipation implements
 
     public function after(PromotionParticipationInterface $participation) {
         parent::after($participation);
-
-        if (!empty($participation->moment)) {
-            // Send Winner Event
-            event('promouser.winner', $participation);
-        } else {
-            // Send Not Winner Event
-            event('promouser.notwinner', $participation);
-        }
     }
 
 }

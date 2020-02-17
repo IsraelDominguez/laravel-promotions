@@ -17,10 +17,5 @@ class QrsFilterParticipation extends GenericFilterParticipation implements Filte
 
     public function after(PromotionParticipationInterface $participation) {
         parent::after($participation);
-
-        // Send Get Qr Pincode Event
-        if (!empty($participation->rewards)) {
-            event('promouser.getqr', $participation);
-        }
     }
 }
