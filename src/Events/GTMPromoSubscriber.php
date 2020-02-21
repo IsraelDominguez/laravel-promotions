@@ -19,7 +19,7 @@ class GTMPromoSubscriber
 
     public function onUserWinner(ParticipationResult $participation_result) {
         $event = \App::make('GtmEvents');
-        $event->send(GTM\EventFactory::winnner($participation_result->getParticipation()->promo->key));
+        $event->send(GTM\EventFactory::winner($participation_result->getParticipation()->promo->key));
     }
 
     public function onUserReferred(PromotionParticipation $participation) {
