@@ -368,12 +368,13 @@ class PromotionsController extends AdminController
         $user = new User();
         $user->setSponsorCode('345763');
         $participation->user = $user;
+        $participations = collect();
 
         $sponsorcode = '';
         $content = '';
         if ($tmp = $promotion->templates()->page($page)->first()){
             if (View::exists('templates.'.$tmp->template)) {
-                $content = view('templates.'.$tmp->template, array_merge(json_decode($tmp->content, true)??[], compact('promotion', 'sponsorcode', 'page', 'participation')))->render();
+                $content = view('templates.'.$tmp->template, array_merge(json_decode($tmp->content, true)??[], compact('promotion', 'sponsorcode', 'page', 'participation','participations')))->render();
             }
         }
 
