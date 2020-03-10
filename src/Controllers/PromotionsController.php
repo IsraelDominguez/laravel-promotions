@@ -318,14 +318,14 @@ class PromotionsController extends AdminController
 
         if (($entrypoint_selected === 'simple') || ($entrypoint_selected === 'complete')) {
             try {
-                config(['druid_entrypoints.default.app' => $campaign->selflink]);
+                config(['druid_entrypoints.default.app' => $campaign->druid_app->selflink]);
                 config(['druid_entrypoints.default.key' => $campaign->client_id . '-' . $request->input('key')]);
                 config(['druid_entrypoints.default.description' => 'Promotion ' . $request->input('name')]);
                 config(['druid_entrypoints.default.url' => url($request->input('key'))]);
 
                 $entrypoint_link = \RestApi::createEntrypoints(array_merge(config('druid_entrypoints.default'), config('druid_entrypoints.' . $entrypoint_selected)));
 
-                $entrypoint = new Entrypoint();
+                $entrypoint = new \Genetsis\Admin\Model\Entrypoint();
                 $entrypoint->key = $campaign->client_id . '-' . $request->input('key');
                 $entrypoint->name = config('druid_entrypoints.default.description');
                 $entrypoint->campaign_id = $campaign->id;
