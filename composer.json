@@ -11,8 +11,8 @@
     "require": {
         "php": "^7.0",
         "yajra/laravel-datatables-oracle": "^9.0@dev",
-        "israeldominguez/sdk-consumer-rewards": "dev-master",
-        "israeldominguez/druid-rest-api": "dev-master"
+        "dru-id/sdk-consumer-rewards": "dev-master",
+        "dru-id/druid-rest-api": "dev-master"
     },
     "require-dev": {
         "illuminate/database": "~5.4.0",
