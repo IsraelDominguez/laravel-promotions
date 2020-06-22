@@ -21,11 +21,11 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/israeldominguez/sdk-consumer-rewards"
+            "url": "https://github.com/dru-id/sdk-consumer-rewards"
         },
         {
             "type": "vcs",
-            "url": "https://github.com/israeldominguez/druid-rest-api"
+            "url": "https://github.com/dru-id/druid-rest-api"
         }
     ],
     "autoload": {
