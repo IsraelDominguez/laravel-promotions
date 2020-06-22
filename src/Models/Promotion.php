@@ -101,6 +101,15 @@ class Promotion extends Model
         }
         return $content ?? '';
     }
+    public function scopeIsStarted() {
+        return !Carbon::now(new \DateTimeZone(config('promotion.timezone', config('app.timezone'))))->lessThan(Carbon::createFromFormat('Y-m-d H:i:s',$this->starts,new \DateTimeZone(config('promotion.timezone', config('app.timezone')))));
+    }
+
+    public function scopeIsFinished() {
+        if ($this->ends) {
+            return Carbon::now(new \DateTimeZone(config('promotion.timezone', config('app.timezone'))))->greaterThan(Carbon::createFromFormat('Y-m-d H:i:s',$this->ends, new \DateTimeZone(config('promotion.timezone', config('app.timezone')))));
+        }
+    }
 
     /**
      * The "booting" method of the model.
