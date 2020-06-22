@@ -325,10 +325,10 @@ class PromotionsController extends AdminController
 
                 $entrypoint_link = \RestApi::createEntrypoints(array_merge(config('druid_entrypoints.default'), config('druid_entrypoints.' . $entrypoint_selected)));
 
-                $entrypoint = new \Genetsis\Admin\Model\Entrypoint();
+                $entrypoint = new \Genetsis\Admin\Models\Entrypoint();
                 $entrypoint->key = $campaign->client_id . '-' . $request->input('key');
                 $entrypoint->name = config('druid_entrypoints.default.description');
-                $entrypoint->campaign_id = $campaign->id;
+                $entrypoint->client_id = $campaign->client_id;
                 $entrypoint->ids = json_encode(config('druid_entrypoints.simple.config_id'));
                 $entrypoint->fields = json_encode(config('druid_entrypoints.simple.config_field'));
                 $entrypoint->selflink = $entrypoint_link;
